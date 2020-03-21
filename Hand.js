@@ -21,11 +21,10 @@ function startHand(){
 	//set people who are in the hand
 	var ctr=0;
 	for (var i =0; i<9;i++) {
-		if(PlayerList.getData(i,2)=="playing") {
-			PlayerList.setData(i,2,"inhand");
+		if(PlayerList.getPlayer(i).status=="playing") {
+			PlayerList.changeStatus(i,"inhand");
 		}
 	}
-
 	//set firstbettor to lowest playing seat
 	firstBettor=findFirstBettor();
 
@@ -34,7 +33,7 @@ function startHand(){
 
 	//get num of people in hand
 	for (var i=0;i<9;i++) {
-		if(PlayerList.getData(i,2)=="inhand")
+		if(PlayerList.getPlayer(i).status=="inhand")
 			playersPlaying++;
 	}
 
@@ -48,7 +47,7 @@ function startHand(){
 
 function findFirstBettor () {
 	for(var i=0;i<8;i++) {
-		if(PlayerList.getData(i,2)=="inhand")
+		if(PlayerList.getPlayer(i).status=="inhand")
 			return i;
 	}
 }
@@ -63,7 +62,7 @@ function getNextinHandSeat (currentSeat) {
 	if (currentSeat<8) {
 		ctr = currentSeat+1;
 		while (ctr<=8) {
-			if(PlayerList.getData(ctr,2)=="inhand")
+			if(PlayerList.getPlayer(ctr).status=="inhand")
 				return ctr;
 			else
 				ctr++;
@@ -71,7 +70,7 @@ function getNextinHandSeat (currentSeat) {
 	}
 		ctr=0;
 		while (ctr<currentSeat) {
-			if(PlayerList.getData(ctr,2)=="inhand")
+			if(PlayerList.getPlayer(ctr).status=="inhand")
 				return ctr;
 			else
 				throw "cant find next player";
@@ -94,14 +93,14 @@ function dealOutHands() {
 	var deck = Deck.getDeck();
 	
 	//deal first card
-	for (var i=0; i<=playersPlaying;i++) {
-		PlayerList.setData(currentPlayer,3,deck[nextCard]);
+	for (var i=0; i<playersPlaying;i++) {
+		PlayerList.setCardOne(currentPlayer, deck[nextCard]);
 		nextCard++;
 		moveToNextPlayer();
 	}
 	//deal second card
-	for (var i=0; i<=playersPlaying;i++) {
-		PlayerList.setData(currentPlayer,4,deck[nextCard]);
+	for (var i=0; i<playersPlaying;i++) {
+		PlayerList.setCardTwo(currentPlayer, deck[nextCard]);
 		nextCard++;
 		moveToNextPlayer();
 	}

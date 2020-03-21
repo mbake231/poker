@@ -96,24 +96,24 @@ var gameData = {
 };
 
 
+
+
 function startGame(tableid) {
 
 	
 
-	http.listen(3001, function(){
-	  console.log('listening on *:3001');
-	});
-	
-	io.on('connection', function(socket){
-		//console.log('a user connected');
-		socket.on('disconnect', function(){
 
-		//console.log('user disconnected');
-	  	});
-	});
+
+	
 
 	io.on('connection', function(socket) {
-	  socket.on('joinGame', function(joinDetails) {
+	console.log("userconnected");
+	var sessionid = socket.id;
+
+
+	
+
+	socket.on('joinGame', function(joinDetails) {
 	     // joinGame(userid, function (err, res) {
 
 	    //  });
@@ -123,37 +123,45 @@ function startGame(tableid) {
 	 	  	joinDetails.userid,
 	    	joinDetails.seat,
 	    	joinDetails.balance,
-	    	joinDetails.status);
-
-	    
+	    	joinDetails.status,
+	    	sessionid);
 	  });
 	});
+
+	socket.on('identify', function (cookie) {
+		console.log("checking cookie");
+		if (Playerlist.findPlayerByCookie(cookie))
+			io.emit('handshake', true);
+		});
 };
 
 
-function joinGame(userid,seat,balance,status) {
+function joinGame(userid,seat,balance,status,sessionid,cookie) {
 
 	/*NEED TO FIX GETTING STUFF FROM DB
 	db.getUser(userid, function (err, user) {
 		if (!err) {
 			console.log("added player");
-			players.AddPlayer(seat,"method man",balance,status);
+			players.AddPlayer(seat,user.username,balance,status);
 			
-
 			 update();
 		}
-	});*/
-	//console.log(seat,userid,balance,status);
+	});
+	//console.log(seat,userid,balance,status);*/
+
+
+
 	if(status="playing") {
 		playersActive++;
 	}
-	console.log(seat,userid,balance,status);
-	PlayerList.addPlayer(seat,userid,balance,status);
+	console.log("uid: "+userid+" seat: "+seat+" balance:"+balance+" status:"+status+"sid:"+sessionid+"cookie:"+cookie);
+	//PlayerList.addPlayer(seat,userid,balance,status,sessionid);
+
 	update();
 
-	if (playersActive>2)
+	//if (playersActive>2)
 		//console.log("hi");
-		Hand.startHand();
+		//Hand.startHand();
 }
 
 function update(){
@@ -211,6 +219,7 @@ exports.startGame = startGame;
 
 exports.update = update;
 
+exports.joinGame = joinGame;
 
 
 	

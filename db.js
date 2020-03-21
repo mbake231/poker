@@ -26,7 +26,7 @@ function getUser (id, cb) {
 	MongoClient.connect(URL, function(err, db) {
 	  if (err) throw err;
 	  var dbo = db.db("mydb");
-	  dbo.collection("users").findOne({_id:ObjectId(id)}.username, function(err, user) {
+	  dbo.collection("users").findOne({_id:ObjectId(id)}, function(err, user) {
 	    if (err) throw err;
 	    username = user.username;
 	    db.close();
@@ -36,6 +36,26 @@ function getUser (id, cb) {
 	return "ServerName";
 
 }
+
+/*function getUser (id, cb) {
+
+	var MongoClient = require('mongodb').MongoClient;
+	var username;
+
+	MongoClient.connectAsync(URL).then(()=>{
+		var dbo = db.db("mydb");
+		username = dbo.collection("users").findOneAsync({_id:ObjectId(id)}).then(
+		db.close();
+		return username;
+	}
+		)
+	)
+
+	
+	console.log(username);
+	return "ServerName";
+
+}*/
 
 function createTable (t, cb) {
 	mongoose.connect(URL);

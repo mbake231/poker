@@ -8,13 +8,37 @@ var Game = require('./models/Game');
 var gameData = require('./gameData');
 var db = require('./db');
 var express=require('express');
-var app=express();
+//HEREvar app=express();
 var passport = require('passport');
 var GoogleStrategy = require('passport-google-oauth').OAuthStrategy;
 var bodyParser = require('body-parser');
-var http = require('http').createServer(app);
+//HEREvar http = require('http').createServer(app);
 var io = require('socket.io')(http);
 var crypto = require('crypto');
+
+
+var app = express()
+  , http = require('http').createServer(app)
+  , io = io.listen(http);
+
+http.listen(3000);
+
+io.on('connection', function(socket){
+//	console.log('a user connected');
+	socket.on('disconnect', function(){
+
+//	console.log('user disconnected');
+	  });
+});
+
+/*HEREvar server=app.listen(3000,function() {});
+
+	http.listen(3001, function(){
+	  console.log('listening on *:3001');
+	});*/
+
+		
+
 
 
 app.set('view engine','pug');
@@ -24,8 +48,26 @@ app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 app.use(express.static(__dirname + '/public'));
 
-var server=app.listen(3000,function() {});
 
+
+
+app.get('/pokerTable',function(req,res)
+{
+	var tableid = req.query.tableid;
+
+	res.render('pokerTable');
+
+
+});
+
+app.get('/joinTable',function(req,res)
+{
+	//var tableid = req.query.tableid;
+
+	res.render('joinTable');
+
+
+});
 
 
 app.get('/',function(req,res)
@@ -44,27 +86,24 @@ app.get('/',function(req,res)
 			gameData.startGame(table.tableid)
 				
 			res.redirect('/pokerTable?tableid='+tableid);
-				
-				
-			
-  			
 		}
 	});
-	
-
-
 });
 
 
-app.get('/pokerTable',function(req,res)
-{
-	var tableid = req.query.tableid;
+app.post('/joinTable', (req, res) => {
 
-	res.render('pokerTable');
-
+	gameData.joinGame(
+		userid=req.body.userid,
+		seat=req.body.seat,
+		balance=req.body.balance,
+		status=req.body.status,
+		sessionid=null,
+		cookie=req.body.cookie
+		);
+	res.redirect('/pokerTable');
 
 });
-
 
 //CREATION SHIT
 

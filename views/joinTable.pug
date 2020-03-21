@@ -1,0 +1,29 @@
+block content
+ script.
+  var x = Math.round(Math.random()*10000);
+  document.cookie = "user="+x;
+  function loadcookie(){document.getElementById("cookie").value = x;};
+ body
+  .main.container
+      .row
+        .col-md-6.col-md-offset-3
+          h1.display-4.m-b-2 Join
+          // register form
+          form(method='POST' action='/joinTable')
+            div.form-group
+              label(for='userid') UserID:
+              input#userid.form-control(type='userid', placeholder='userid' name='userid')
+            div.form-group
+              label(for='userid') Seat:
+              input#seat.form-control(type='seat', placeholder='seat' name='seat')
+            div.form-group
+              label(for='balance') Balance:
+              input#balance.form-control(type='balance', value='100' name='balance')
+            div.form-group
+              label(for='status') Status:
+              input#status.form-control(type='status' value='playing' name='status')
+            div.form-group
+              label(for='status') Cookie:
+              input#cookie.form-control(type='cookie' name='cookie')
+            button.btn.btn-primary(type='submit') Go
+          button.btn.btn-primary(type='loadcookie' onclick="loadcookie();") Load Cookie

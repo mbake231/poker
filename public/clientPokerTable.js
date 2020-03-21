@@ -1,10 +1,21 @@
 
-var socket = io('http://localhost:3001');
+var socket = io('http://localhost:3000');
 
+var cookie = ('; ' + document.cookie)
+.split('; ' + "user" + '=')
+.pop()
+.split(';')
+.shift();
 
+socket.emit('identify', {
+	cookie:cookie
+});
 
+socket.on('handshake', function() {
+	console.log("APPROVED");
+});
 
-socket.emit('joinGame', {
+/*socket.emit('joinGame', {
 	userid:"fart",
 	seat:1,
 	balance:100,
@@ -23,7 +34,7 @@ socket.emit('joinGame', {
 	seat:8,
 	balance:100,
 	status:"playing"}
-	);
+	);*/
 
 socket.on('update', function(gameData) {
 	//gameUpdate=JSON.parse(gameData);
