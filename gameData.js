@@ -1,11 +1,14 @@
 var User = require('./models/User');
 var Table = require('./models/Table');
 var Game = require('./models/Game');
+var Deck = require('./Deck');
+var Hand = require('./Hand');
+var PlayerList = require('./PlayerList');
 var http = require('http').createServer(app);
 var io = require('socket.io')(http);
 var express=require('express');
 var app=express();
-
+var db = require('./db');
 var currentPot = 0;
 var minRaise = 0;
 var seatList = ({});
@@ -21,7 +24,7 @@ var card5 = "";
 var smallblind = 0;
 var bigblind = 0;
 
-var actionOnPlayer = "";
+var playersActive = 0;
 
 var gameData = {
 	
@@ -33,39 +36,48 @@ var gameData = {
 		seatList: {
 			seat1: {
 				name: "mike",
-				stack: "4.23"
+				balance: "4.23",
+				status: "playing"
 			} ,
 			seat2: {
 				name: "dan",
-				stack: "24.23"
+				balance: "24.23",
+				status:"playing"
 			} ,
 			seat3: {
 				name: "shane",
-				stack: "43.23"
+				balance: "43.23",
+				status: "playing"
 			} ,
 			seat4: {
 				name: "todd",
-				stack: "124.23"
+				balance: "124.23",
+				status: "playing"
 			},
 			seat5: {
 				name: null,
-				stack: null
+				balance: null,
+				status: "empty"
 			},
 			seat6: {
 				name: "clint",
-				stack: "0.23"
+				balance: "0.23",
+				status: "playing"
 			},
 			seat7: {
 				name: "mark",
-				stack: "1224.23"
+				balance: "1224.23",
+				status: "out"
 			},
 			seat8: {
 				name: "tony",
-				stack: "90.23"
+				balance: "90.23",
+				status: "out"
 			},
 			seat9: {
 				name: null,
-				stack: null
+				balance: null,
+				status: "empty"
 			}
 		},
 		actionOnPlayer: 'Who knows',
@@ -86,6 +98,8 @@ var gameData = {
 
 function startGame(tableid) {
 
+	
+
 	http.listen(3001, function(){
 	  console.log('listening on *:3001');
 	});
@@ -99,63 +113,103 @@ function startGame(tableid) {
 	});
 
 	io.on('connection', function(socket) {
-	  socket.on('joinGame', function(userid) {
+	  socket.on('joinGame', function(joinDetails) {
 	     // joinGame(userid, function (err, res) {
 
 	    //  });
-	    console.log("hand");
-	    update();
+	    //console.log(joinDetails.userid,joinDetails.seat,joinDetails.balance,joinDetails.status);
+
+	 	  joinGame(
+	 	  	joinDetails.userid,
+	    	joinDetails.seat,
+	    	joinDetails.balance,
+	    	joinDetails.status);
+
+	    
 	  });
 	});
 };
 
-function joinGame(userid, cb) {
+
+function joinGame(userid,seat,balance,status) {
+
+	/*NEED TO FIX GETTING STUFF FROM DB
+	db.getUser(userid, function (err, user) {
+		if (!err) {
+			console.log("added player");
+			players.AddPlayer(seat,"method man",balance,status);
+			
+
+			 update();
+		}
+	});*/
+	//console.log(seat,userid,balance,status);
+	if(status="playing") {
+		playersActive++;
+	}
+	console.log(seat,userid,balance,status);
+	PlayerList.addPlayer(seat,userid,balance,status);
 	update();
+
+	if (playersActive>2)
+		//console.log("hi");
+		Hand.startHand();
 }
 
 function update(){
 
+		var updatedPlayerList = PlayerList.getPlayerList();
+
+		gameData.game_info.seatList.seat1.name = updatedPlayerList[0][0];
+		gameData.game_info.seatList.seat1.balance = updatedPlayerList[0][1];
+		gameData.game_info.seatList.seat1.status  = updatedPlayerList[0][2];
+		gameData.game_info.seatList.seat2.name = updatedPlayerList[1][0];
+		gameData.game_info.seatList.seat2.balance = updatedPlayerList[1][1];
+		gameData.game_info.seatList.seat2.status = updatedPlayerList[1][2];
+		gameData.game_info.seatList.seat3.name = updatedPlayerList[2][0];
+		gameData.game_info.seatList.seat3.balance = updatedPlayerList[2][1];
+		gameData.game_info.seatList.seat3.status = updatedPlayerList[2][2];
+		gameData.game_info.seatList.seat4.name = updatedPlayerList[3][0];
+		gameData.game_info.seatList.seat4.balance = updatedPlayerList[3][1];
+		gameData.game_info.seatList.seat4.status = updatedPlayerList[3][2];
+		gameData.game_info.seatList.seat5.name = updatedPlayerList[4][0];
+		gameData.game_info.seatList.seat5.balance = updatedPlayerList[4][1];
+		gameData.game_info.seatList.seat5.status = updatedPlayerList[4][2];
+		gameData.game_info.seatList.seat6.name = updatedPlayerList[5][0];
+		gameData.game_info.seatList.seat6.balance = updatedPlayerList[5][1];
+		gameData.game_info.seatList.seat6.status = updatedPlayerList[5][2];
+		gameData.game_info.seatList.seat7.name = updatedPlayerList[6][0];
+		gameData.game_info.seatList.seat7.balance = updatedPlayerList[6][1];
+		gameData.game_info.seatList.seat7.status = updatedPlayerList[6][2];
+		gameData.game_info.seatList.seat8.name = updatedPlayerList[7][0];
+		gameData.game_info.seatList.seat8.balance = updatedPlayerList[7][1];
+		gameData.game_info.seatList.seat8.status = updatedPlayerList[7][2];
+		gameData.game_info.seatList.seat9.name = updatedPlayerList[8][0];
+		gameData.game_info.seatList.seat9.balance = updatedPlayerList[8][1];
+		gameData.game_info.seatList.seat9.status = updatedPlayerList[8][2];
+
+
 	    io.emit('update', gameData);
-	    
-	   
-	//  })
-}
 
-function makeDeck() {
-	var ranks = new Array("A", "2", "3", "4", "5", "6", "7", "8", "9", "10","J", "Q", "K");
-    var suits = new Array("c", "d", "h", "s");
-    var deck = new Array(52);
-    var i, j;
-    for (i = 0; i < suits.length; i++) {
-        for (j = 0; j < ranks.length; j++) {
-            deck[i*ranks.length + j] = ranks[j] + suits[i];
-           // console.log(ranks[j] + suits[i]);
-        }
-    }
-    return deck;
-}
-
-function shuffleDeck(deck) {
-	var j, x, i;
-    for (i = deck.length - 1; i > 0; i--) {
-        j = Math.floor(Math.random() * (i + 1));
-        x = deck[i];
-        deck[i] = deck[j];
-        deck[j] = x;
-    }
-    console.log(deck);
-    return deck;
 }
 
 function newHand() {
-	var deck = makeDeck();
-	var shuffledDeck = shuffleDeck(deck);
-	var twiceShuffledDeck = shuffleDeck(shuffledDeck);
+	var deck = getDeck();
+	
 }
+
+
+
+
+
+
+
+
 
 
 exports.startGame = startGame;
 
+exports.update = update;
 
 
 
