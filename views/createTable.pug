@@ -1,0 +1,18 @@
+block content
+  .main.container
+    .row
+      .col-md-6.col-md-offset-3
+        h1.display-4.m-b-2 Sign Up
+
+        // register form
+        form(method='POST' action='/maketable')
+          div.form-group
+            label(for='tablename') Table Name:
+            input#tablename.form-control(type='tablename', placeholder='tablename' name='tablename')
+          div.form-group
+            label(for='smallblind') Small Blind:
+            input#smallblind.form-control(type='smallblind', placeholder='smallblind' name='smallblind')
+          div.form-group
+            label(for='bigblind') Big Blind:
+            input#bigblind.form-control(type='bigblind' name='bigblind')
+          button.btn.btn-primary(type='submit') Sign up
