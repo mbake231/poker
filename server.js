@@ -23,13 +23,6 @@ var app = express()
 
 http.listen(3000);
 
-/*io.on('connection', function(socket){
-	console.log('a user connected');
-	socket.on('disconnect', function(){
-	console.log('user disconnected');
-	  });
-});*/
-
 app.set('view engine','pug');
 app.set('view cache', false);
 app.use(bodyParser.urlencoded({ extended: false }))
@@ -81,7 +74,7 @@ app.post('/joinTable', (req, res) => {
 	gameData.joinGame(
 		userid=req.body.userid,
 		seat=req.body.seat,
-		balance=req.body.balance,
+		balance=Number(req.body.balance),
 		status=req.body.status,
 		sessionid=null,
 		cookie=parseInt(req.body.cookie)

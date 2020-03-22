@@ -102,7 +102,7 @@ var gameData = {
 function startGame(tableid) {
 
 	
-server.io.on('connection', function(socket){
+	server.io.on('connection', function(socket){
 
 			//console.log("connected");
 			//globalSocket=socket;
@@ -133,38 +133,36 @@ server.io.on('connection', function(socket){
 			socket.emit('update',PlayerList.getPublicPlayerData());
 			socket.broadcast.emit('update',PlayerList.getPublicPlayerData());
 
+
 			//check to see if i should start the game 
 			
 			if(checkToStartGame()){
 				console.log("LETS SHUFFLE AND DEAL");
 				Hand.startHand();
+
+				socket.emit('handdetails',Hand.getHandDetails());
+				socket.broadcast.emit('handdetails',Hand.getHandDetails());
 			}
 
-			}
+		}
 
-			//send hands out
-			
-			//socket.emit('update',updatePlayer(socket.id));
+		//listen for bet
+		socket.on('sendBet', function (bet) {
+			Hand.processAction(socket.id,bet); 
+
+			socket.emit('update',PlayerList.getPublicPlayerData());
+			socket.broadcast.emit('update',PlayerList.getPublicPlayerData());
+
+			socket.emit('handdetails',Hand.getHandDetails());
+			socket.broadcast.emit('handdetails',Hand.getHandDetails());
+
+
+		});
+
 		});
 	});
 
 };
-
-
-	/*
-	socket.on('joinGame', function(joinDetails) {
-	     // joinGame(userid, function (err, res) {
-
-	    //  });
-	    //console.log(joinDetails.userid,joinDetails.seat,joinDetails.balance,joinDetails.status);
-	 	  joinGame(
-	 	  	joinDetails.userid,
-	    	joinDetails.seat,
-	    	joinDetails.balance,
-	    	joinDetails.status,
-	    	sessionid);
-	  });
-	*/
 
 function sendHands() {
 
@@ -222,10 +220,6 @@ function updatePlayer(player, payload) {
 }
 
 function getPublicGameData(){
-
-		//var updatedPlayerList = PlayerList.getPlayerList();
-
-		//console.log(updatedPlayerList);
 
 		server.io.on('connection', function(socket){
 

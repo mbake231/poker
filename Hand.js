@@ -3,18 +3,49 @@ var PlayerList = require('./PlayerList');
 var gameData = require('./gameData');
 var PlayerList = require('./PlayerList');
 
-var playersPlaying=0;
+/*var playersPlaying=0;
+var betsMade=0;
 var firstBettor=0;
 var bigblind=-4;
 var smallblind=-3;
 
 var currentPot=0;
+var currentBet=0;
+var lastBet=0;
+var betsMade=0;
 
 var currentPlayer=0;
-var nextPlayer=0;
+var nextPlayer=0;*/
 
 var nextCard=0;
 var server = require('./server');
+var deck;
+var handDetails = {
+	playersPlaying:0,
+	betsMade:0,
+	firstBettor:0,
+	bigblind:4,
+	smallblind:2,
+	currentPot:0,
+	currentBet:0,
+	lastBet:0,
+	betsMade:0,
+	currentPlayer:0,
+	nextPlayer:0,
+	currentRound:0,
+	card1:null,
+	card2:null,
+	card3:null,
+	card4:null,
+	card5:null
+}
+
+/*CURRRENT ROUND KEY
+0 = ante + betting
+1 = flop & betting
+2 = turn & betting
+3 = river & betting
+*/
 
 function startHand(cb){
 
@@ -26,18 +57,18 @@ function startHand(cb){
 		}
 	}
 	//set firstbettor to lowest playing seat
-	firstBettor=findFirstBettor();
+	handDetails.firstBettor=findFirstBettor();
 
 	//setCurrentPlayer to firstBettor
-	currentPlayer=firstBettor;
+	handDetails.currentPlayer=handDetails.firstBettor;
 
 	//get num of people in hand
 	for (var i=0;i<9;i++) {
 		if(PlayerList.getPlayer(i).status=="inhand")
-			playersPlaying++;
+			handDetails.playersPlaying++;
 	}
 
-	console.log('In hand ct: '+playersPlaying);
+	console.log('In hand ct: '+handDetails.playersPlaying);
 
 	payBlinds();
 
@@ -53,8 +84,8 @@ function findFirstBettor () {
 }
 
 function moveToNextPlayer () {
-	currentPlayer = getNextinHandSeat(currentPlayer);
-	nextPlayer = getNextinHandSeat(currentPlayer);
+	handDetails.currentPlayer = getNextinHandSeat(handDetails.currentPlayer);
+	handDetails.nextPlayer = getNextinHandSeat(handDetails.currentPlayer);
 }
 
 function getNextinHandSeat (currentSeat) {
@@ -79,10 +110,12 @@ function getNextinHandSeat (currentSeat) {
 }
 
 function payBlinds() {
-	PlayerList.changeBalance(firstBettor,smallblind);
-	currentPot += smallblind;
-	PlayerList.changeBalance(getNextinHandSeat(firstBettor),bigblind);
-	currentPot += bigblind;
+	PlayerList.addToLine(handDetails.firstBettor,handDetails.smallblind);
+	handDetails.currentPot += handDetails.smallblind;
+	PlayerList.addToLine(getNextinHandSeat(handDetails.firstBettor),handDetails.bigblind);
+	handDetails.currentPot += handDetails.bigblind;
+
+	handDetails.currentBet = handDetails.bigblind;
 
 	dealOutHands();
 
@@ -90,33 +123,177 @@ function payBlinds() {
 }
 
 function dealOutHands() {
-	var deck = Deck.getDeck();
+	deck = Deck.getDeck();
 	
 	//deal first card
-	for (var i=0; i<playersPlaying;i++) {
-		PlayerList.setCardOne(currentPlayer, deck[nextCard]);
+	for (var i=0; i<handDetails.playersPlaying;i++) {
+		PlayerList.setCardOne(handDetails.currentPlayer, deck[nextCard]);
 		nextCard++;
 		moveToNextPlayer();
 	}
 	//deal second card
-	for (var i=0; i<playersPlaying;i++) {
-		PlayerList.setCardTwo(currentPlayer, deck[nextCard]);
+	for (var i=0; i<handDetails.playersPlaying;i++) {
+		PlayerList.setCardTwo(handDetails.currentPlayer, deck[nextCard]);
 		nextCard++;
 		moveToNextPlayer();
 	}
-	console.log("after deal next player is: "+nextPlayer);
+	console.log("after deal next player is: "+handDetails.nextPlayer);
 	//console.log(PlayerList.getPlayerList());
 	gameData.sendHands();
-	startBettingRound();
+	bettingRound();
 }
 
-function startBettingRound() {
-	server.io.to(
-						PlayerList.getPlayer(currentPlayer).sessionid)
-						.emit(
-							'betToMe',
-							PlayerList.getPrivatePlayerData(PlayerList.getPlayer(currentPlayer))
-							);
+function dealFlop () {
+
+	var burnCard = deck[nextCard];
+	nextCard++;
+	handDetails.card1= deck[nextCard];
+	nextCard++;
+	handDetails.card2= deck[nextCard];
+	nextCard++;
+	handDetails.card3= deck[nextCard];
+	nextCard++;
+	bettingRound();
 }
 
+function nextRound() {
+	/*CURRRENT ROUND KEY
+0 = ante + betting
+1 = flop & betting
+2 = turn & betting
+3 = river & betting
+*/
+	clearBettingRoundData();
+	if(handDetails.currentRound==2)
+	{
+
+		handDetails.currentRound++;
+		console.log("to the river");
+		//dealRiver();
+	}
+
+	else if(handDetails.currentRound==1)
+	{
+		handDetails.currentRound++;
+		console.log("to the turn");
+		//dealTurn();
+	}
+
+	else if(handDetails.currentRound==0)
+	{
+		//change to round 1
+		handDetails.currentRound++;
+		//deal flop
+		console.log("to the flop");
+		dealFlop();
+	}
+	
+
+}
+
+function clearBettingRoundData(){
+	handDetails.betsMade=0;
+	handDetails.currentBet=0;
+	handDetails.lastBet=0;
+
+	PlayerList.clearMoneyOnLine();
+}
+
+function bettingRound() {
+
+	//if new round of betting
+	if(handDetails.betsMade==0&&handDetails.currentRound>0){
+		//set current player for firstbettor incase
+		handDetails.currentPlayer=handDetails.firstBettor;
+		server.io.to(
+		PlayerList.getPlayer(handDetails.currentPlayer).sessionid)
+				.emit(
+				'openActionToMe',
+				PlayerList.getPrivatePlayerData(PlayerList.getPlayer(handDetails.currentPlayer))
+				);
+	}
+
+	//if player needs to add to pot so you can either CALL, RAISE, FOLD
+	if(PlayerList.getPlayer(handDetails.currentPlayer).moneyOnLine < handDetails.currentBet) {
+		server.io.to(
+		PlayerList.getPlayer(handDetails.currentPlayer).sessionid)
+				.emit(
+				'betToMe',
+				PlayerList.getPrivatePlayerData(PlayerList.getPlayer(handDetails.currentPlayer))
+				);
+	}
+	//if everyone has called
+	else if(PlayerList.getPlayer(handDetails.currentPlayer).moneyOnLine == handDetails.currentBet && PlayerList.getPlayer(handDetails.currentPlayer).seat==handDetails.firstBettor) {
+		nextRound();
+	}
+
+
+	//let the next person to check go
+	else if(PlayerList.getPlayer(handDetails.currentPlayer).moneyOnLine == handDetails.currentBet && handDetails.lastBet == 'check') {
+		server.io.to(
+		PlayerList.getPlayer(handDetails.currentPlayer).sessionid)
+				.emit(
+				'openActionToMe',
+				PlayerList.getPrivatePlayerData(PlayerList.getPlayer(handDetails.currentPlayer))
+				);
+	}
+
+	//big blind to check
+	else if(PlayerList.getPlayer(handDetails.currentPlayer).moneyOnLine == handDetails.currentBet && handDetails.betsMade==handDetails.playersPlaying-1) {
+		server.io.to(
+		PlayerList.getPlayer(handDetails.currentPlayer).sessionid)
+				.emit(
+				'openActionToMe',
+				PlayerList.getPrivatePlayerData(PlayerList.getPlayer(handDetails.currentPlayer))
+				);
+	}
+
+}
+
+function processAction(sessionid, bet) {
+	if (PlayerList.getPlayer(handDetails.currentPlayer).sessionid == sessionid)
+	{
+		if(bet=='call') {
+			var toPutIn = handDetails.currentBet - PlayerList.getPlayer(handDetails.currentPlayer).moneyOnLine;
+			PlayerList.addToLine(handDetails.currentPlayer,toPutIn);
+			handDetails.currentPot += toPutIn;
+			handDetails.betsMade++;
+			moveToNextPlayer();
+			bettingRound();
+		}
+
+		else if(bet=='fold') {
+			//fold
+		}
+
+		else if(bet=='check') {
+			handDetails.lastBet='check';
+			handDetails.betsMade++;
+			moveToNextPlayer();
+			bettingRound();
+		}
+
+		//is a raise
+		else {
+			//Here i first need to match the caller than raise
+			var toPutIn = handDetails.currentBet - PlayerList.getPlayer(handDetails.currentPlayer).moneyOnLine + Number(bet);
+			handDetails.currentBet = handDetails.currentBet+Number(bet);
+			PlayerList.addToLine(handDetails.currentPlayer,toPutIn);
+			handDetails.betsMade++;
+			moveToNextPlayer();
+			bettingRound();
+		}	
+	}
+	
+}
+
+function getHandDetails () {
+	return handDetails;
+}
+
+
+
+
+exports.getHandDetails=getHandDetails;
+exports.processAction=processAction;
 exports.startHand= startHand;

@@ -18,7 +18,8 @@ var PlayerArray = [
 		card2:null,
 		sessionid:null,
 		cookie:null,
-		seat:null},
+		seat:null,
+		moneyOnLine:0},
 	{	userid:null,
 		balance:0,
 		status:"empty",
@@ -26,7 +27,8 @@ var PlayerArray = [
 		card2:null,
 		sessionid:null,
 		cookie:null,
-		seat:null},
+		seat:null,
+		moneyOnLine:0},
 	{	userid:null,
 		balance:0,
 		status:"empty",
@@ -34,7 +36,8 @@ var PlayerArray = [
 		card2:null,
 		sessionid:null,
 		cookie:null,
-		seat:null},
+		seat:null,
+		moneyOnLine:0},
 	{	userid:null,
 		balance:0,
 		status:"empty",
@@ -42,7 +45,8 @@ var PlayerArray = [
 		card2:null,
 		sessionid:null,
 		cookie:null,
-		seat:null},
+		seat:null,
+		moneyOnLine:0},
 	{	userid:null,
 		balance:0,
 		status:"empty",
@@ -50,7 +54,8 @@ var PlayerArray = [
 		card2:null,
 		sessionid:null,
 		cookie:null,
-		seat:null},
+		seat:null,
+		moneyOnLine:0},
 	{	userid:null,
 		balance:0,
 		status:"empty",
@@ -58,7 +63,8 @@ var PlayerArray = [
 		card2:null,
 		sessionid:null,
 		cookie:null,
-		seat:null},
+		seat:null,
+		moneyOnLine:0},
 	{	userid:null,
 		balance:0,
 		status:"empty",
@@ -66,7 +72,8 @@ var PlayerArray = [
 		card2:null,
 		sessionid:null,
 		cookie:null,
-		seat:null},
+		seat:null,
+		moneyOnLine:0},
 	{	userid:null,
 		balance:0,
 		status:"empty",
@@ -74,7 +81,8 @@ var PlayerArray = [
 		card2:null,
 		sessionid:null,
 		cookie:null,
-		seat:null},
+		seat:null,
+		moneyOnLine:0},
 	{	userid:null,
 		balance:0,
 		status:"empty",
@@ -82,7 +90,8 @@ var PlayerArray = [
 		card2:null,
 		sessionid:null,
 		cookie:null,
-		seat:null}
+		seat:null,
+		moneyOnLine:0}
 ];
 
 
@@ -166,7 +175,8 @@ function getPublicPlayerData () {
 			{userid:getPlayer(i).userid,
 			balance:getPlayer(i).balance,
 			status:getPlayer(i).status,
-			seat:getPlayer(i).seat
+			seat:getPlayer(i).seat,
+			moneyOnLine:getPlayer(i).moneyOnLine
 		});
 	return publicPlayerData;
 }
@@ -194,6 +204,17 @@ function findPlayerByCookie (cookieToFind) {
 	return false;
 }
 
+function addToLine (seat,bet) {
+	PlayerArray[seat].balance -= Number(bet);
+	PlayerArray[seat].moneyOnLine += Number(bet);
+
+}
+
+function clearMoneyOnLine() {
+	for (var i=0;i<9;i++)
+		PlayerArray[i].moneyOnLine=0;
+}
+
 exports.addPlayer = addPlayer;
 exports.removePlayer = removePlayer;
 exports.changeStatus = changeStatus;
@@ -207,4 +228,7 @@ exports.findPlayerByCookie = findPlayerByCookie;
 exports.changeSessionID = changeSessionID;
 exports.getPublicPlayerData = getPublicPlayerData;
 exports.getPrivatePlayerData = getPrivatePlayerData;
+
+exports.addToLine = addToLine;
+exports.clearMoneyOnLine = clearMoneyOnLine;
 

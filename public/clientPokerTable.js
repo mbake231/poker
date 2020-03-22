@@ -23,10 +23,27 @@ socket.on('newhand', function(privateData) {
 
 });
 
+socket.on('openActionToMe', function () {
+	console.log("OPEN ACTION TO ME");
+	document.getElementById('openBettingBar').style= "display: block";
+});
+
+socket.on('handdetails', function (handData) {
+	document.getElementById('handDetails').innerHTML='HAND DETAILS: ' + JSON.stringify(handData);
+});
+
 socket.on('betToMe', function () {
 	console.log("BET TO ME");
-	document.getElementById('bettingBar').style= "display: block";
+	document.getElementById('betBettingBar').style= "display: block";
 });
+
+function sendAction (bet) {
+	socket.emit('sendBet', bet);
+	document.getElementById('betBettingBar').style= "display: none";
+	document.getElementById('openBettingBar').style= "display: none";
+
+
+};
 /*
 socket.emit('joinGame', {
 	userid:"fart",

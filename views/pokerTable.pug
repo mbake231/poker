@@ -37,6 +37,12 @@ main
       div#card5
       div#currentPot
       div#minRaise
-    div#bettingBar(class="hidden" display="none" style="display:none;")
-       button.btn.btn-primary(type='bet' onclick="bet();") Bet 5
-       button.btn.btn-primary(type='check' onclick="check();") Check
+    div#betBettingBar(class="hidden" display="none" style="display:none;")
+       button.btn.btn-primary(type='raise' onclick="sendAction(5);") Raise 5
+       button.btn.btn-primary(type='call' onclick="sendAction('call');") Call
+       button.btn.btn-primary(type='call' onclick="sendAction('fold');") Fold
+    div#openBettingBar(class="hidden" display="none" style="display:none;")
+       button.btn.btn-primary(type='bet' onclick="sendAction(5);") Bet 5
+       button.btn.btn-primary(type='check' onclick="sendAction('check');") Check
+       button.btn.btn-primary(type='call' onclick="sendAction('call');") Call
+    div#handDetails
