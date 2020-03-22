@@ -23,39 +23,25 @@ var app = express()
 
 http.listen(3000);
 
-io.on('connection', function(socket){
-//	console.log('a user connected');
+/*io.on('connection', function(socket){
+	console.log('a user connected');
 	socket.on('disconnect', function(){
-
-//	console.log('user disconnected');
+	console.log('user disconnected');
 	  });
-});
-
-/*HEREvar server=app.listen(3000,function() {});
-
-	http.listen(3001, function(){
-	  console.log('listening on *:3001');
-	});*/
-
-		
-
-
+});*/
 
 app.set('view engine','pug');
 app.set('view cache', false);
-
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 app.use(express.static(__dirname + '/public'));
 
 
-
-
 app.get('/pokerTable',function(req,res)
 {
 	var tableid = req.query.tableid;
-
 	res.render('pokerTable');
+	gameData.startGame(123);
 
 
 });
@@ -92,14 +78,13 @@ app.get('/',function(req,res)
 
 
 app.post('/joinTable', (req, res) => {
-
 	gameData.joinGame(
 		userid=req.body.userid,
 		seat=req.body.seat,
 		balance=req.body.balance,
 		status=req.body.status,
 		sessionid=null,
-		cookie=req.body.cookie
+		cookie=parseInt(req.body.cookie)
 		);
 	res.redirect('/pokerTable');
 
@@ -160,7 +145,7 @@ app.post('/maketable', (req, res) => {
 
 
 
-
+exports.io = io;
 
 
 

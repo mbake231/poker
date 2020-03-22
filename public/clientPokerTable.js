@@ -7,15 +7,17 @@ var cookie = ('; ' + document.cookie)
 .split(';')
 .shift();
 
-socket.emit('identify', {
-	cookie:cookie
-});
+cookie = parseInt(cookie);
+
+console.log("trying "+cookie);
+
+socket.emit('identify', cookie);
 
 socket.on('handshake', function() {
 	console.log("APPROVED");
 });
-
-/*socket.emit('joinGame', {
+/*
+socket.emit('joinGame', {
 	userid:"fart",
 	seat:1,
 	balance:100,

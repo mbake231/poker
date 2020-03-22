@@ -4,14 +4,14 @@ var Game = require('./models/Game');
 var Deck = require('./Deck');
 var Hand = require('./Hand');
 var PlayerList = require('./PlayerList');
-var http = require('http').createServer(app);
-var io = require('socket.io')(http);
+
 var express=require('express');
 var app=express();
 var db = require('./db');
 var currentPot = 0;
 var minRaise = 0;
 var seatList = ({});
+var server = require('./server');
 
 var tablename = "";
 
@@ -96,29 +96,29 @@ var gameData = {
 };
 
 
-
-
 function startGame(tableid) {
 
-	
+	server.io.on('connection', function(socket){
 
+			//console.log("connected");
 
+	socket.on('identify', function (cookie) {
+		//console.log(PlayerList.getPlayerList());
+		var cookieToFind = parseInt(cookie);
+		if (PlayerList.findPlayerByCookie(cookieToFind)) {		
+			var thisPlayer=PlayerList.findPlayerByCookie(cookieToFind);
+			console.log("CONNECTED: "+thisPlayer.userid);	
+			PlayerList.changeSessionID(thisPlayer.seat,socket.id);
+			server.io.emit('handshake', true);
 
-	
-
-	io.on('connection', function(socket) {
-	console.log("userconnected");
-	var sessionid = socket.id;
-
-
-	
-
+		}
+	});
+	/*
 	socket.on('joinGame', function(joinDetails) {
 	     // joinGame(userid, function (err, res) {
 
 	    //  });
 	    //console.log(joinDetails.userid,joinDetails.seat,joinDetails.balance,joinDetails.status);
-
 	 	  joinGame(
 	 	  	joinDetails.userid,
 	    	joinDetails.seat,
@@ -126,13 +126,10 @@ function startGame(tableid) {
 	    	joinDetails.status,
 	    	sessionid);
 	  });
+	*/
 	});
 
-	socket.on('identify', function (cookie) {
-		console.log("checking cookie");
-		if (Playerlist.findPlayerByCookie(cookie))
-			io.emit('handshake', true);
-		});
+
 };
 
 
@@ -154,8 +151,9 @@ function joinGame(userid,seat,balance,status,sessionid,cookie) {
 	if(status="playing") {
 		playersActive++;
 	}
+	
 	console.log("uid: "+userid+" seat: "+seat+" balance:"+balance+" status:"+status+"sid:"+sessionid+"cookie:"+cookie);
-	//PlayerList.addPlayer(seat,userid,balance,status,sessionid);
+	PlayerList.addPlayer(seat,userid,balance,status,sessionid,cookie);
 
 	update();
 
@@ -167,6 +165,8 @@ function joinGame(userid,seat,balance,status,sessionid,cookie) {
 function update(){
 
 		var updatedPlayerList = PlayerList.getPlayerList();
+
+		//console.log(updatedPlayerList);
 
 		gameData.game_info.seatList.seat1.name = updatedPlayerList[0][0];
 		gameData.game_info.seatList.seat1.balance = updatedPlayerList[0][1];
@@ -197,7 +197,7 @@ function update(){
 		gameData.game_info.seatList.seat9.status = updatedPlayerList[8][2];
 
 
-	    io.emit('update', gameData);
+	    server.io.emit('update', gameData);
 
 }
 
