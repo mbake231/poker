@@ -1,5 +1,6 @@
 body
 script(src='http://localhost:3000/socket.io/socket.io.js')
+link(src='PokerTable.css')
 script(src='clientPokerTable.js')
 main
   .container
@@ -28,6 +29,7 @@ main
       div#seat9Name
       div#seat9Stack
     div.cards
+      div#mycards
       div#card1
       div#card2
       div#card3
@@ -35,3 +37,6 @@ main
       div#card5
       div#currentPot
       div#minRaise
+    div#bettingBar(class="hidden" display="none" style="display:none;")
+       button.btn.btn-primary(type='bet' onclick="bet();") Bet 5
+       button.btn.btn-primary(type='check' onclick="check();") Check

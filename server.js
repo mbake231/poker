@@ -108,7 +108,7 @@ app.get('/createTable',function(req,res)
 });
 
 app.post('/register', (req, res) => {
-  console.log(req.body);
+  //console.log(req.body);
   const name = req.body.email;
 
   var user = new User({

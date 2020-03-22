@@ -14,9 +14,9 @@ var currentPlayer=0;
 var nextPlayer=0;
 
 var nextCard=0;
+var server = require('./server');
 
-
-function startHand(){
+function startHand(cb){
 
 	//set people who are in the hand
 	var ctr=0;
@@ -105,8 +105,18 @@ function dealOutHands() {
 		moveToNextPlayer();
 	}
 	console.log("after deal next player is: "+nextPlayer);
-	console.log(PlayerList.getPlayerList());
-	gameData.update();
+	//console.log(PlayerList.getPlayerList());
+	gameData.sendHands();
+	startBettingRound();
+}
+
+function startBettingRound() {
+	server.io.to(
+						PlayerList.getPlayer(currentPlayer).sessionid)
+						.emit(
+							'betToMe',
+							PlayerList.getPrivatePlayerData(PlayerList.getPlayer(currentPlayer))
+							);
 }
 
 exports.startHand= startHand;

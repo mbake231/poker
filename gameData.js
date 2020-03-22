@@ -12,7 +12,7 @@ var currentPot = 0;
 var minRaise = 0;
 var seatList = ({});
 var server = require('./server');
-
+var globalSocket;
 var tablename = "";
 
 var card1 = "";
@@ -20,6 +20,8 @@ var card2 = "";
 var card3 = "";
 var card4 = "";
 var card5 = "";
+
+var gameStarted=false;
 
 var smallblind = 0;
 var bigblind = 0;
@@ -96,23 +98,59 @@ var gameData = {
 };
 
 
+
 function startGame(tableid) {
 
-	server.io.on('connection', function(socket){
+	
+server.io.on('connection', function(socket){
 
 			//console.log("connected");
+			//globalSocket=socket;
 
 	socket.on('identify', function (cookie) {
-		//console.log(PlayerList.getPlayerList());
+
 		var cookieToFind = parseInt(cookie);
+
+		//if this person has the cookie of the registered account
 		if (PlayerList.findPlayerByCookie(cookieToFind)) {		
 			var thisPlayer=PlayerList.findPlayerByCookie(cookieToFind);
-			console.log("CONNECTED: "+thisPlayer.userid);	
-			PlayerList.changeSessionID(thisPlayer.seat,socket.id);
-			server.io.emit('handshake', true);
+			console.log("AUTHORIZED: "+thisPlayer.userid+" ON SEAT: "+thisPlayer.seat+ " SESSION: "+socket.id);	
+			
+			//store session id if they match
 
-		}
+			PlayerList.changeSessionID(thisPlayer.seat,socket.id);
+
+			//server.io.to(PlayerList.getPlayer(0).sessionid).emit('newhand',"hello seat 0");
+
+			//send confirm
+			socket.emit('handshake', true);
+
+			//increase players playing if this guy is active
+			if (thisPlayer.status=='playing')
+				playersActive++;
+
+			//update public game data to this client and everyone
+			socket.emit('update',PlayerList.getPublicPlayerData());
+			socket.broadcast.emit('update',PlayerList.getPublicPlayerData());
+
+			//check to see if i should start the game 
+			
+			if(checkToStartGame()){
+				console.log("LETS SHUFFLE AND DEAL");
+				Hand.startHand();
+			}
+
+			}
+
+			//send hands out
+			
+			//socket.emit('update',updatePlayer(socket.id));
+		});
 	});
+
+};
+
+
 	/*
 	socket.on('joinGame', function(joinDetails) {
 	     // joinGame(userid, function (err, res) {
@@ -127,11 +165,38 @@ function startGame(tableid) {
 	    	sessionid);
 	  });
 	*/
-	});
+
+function sendHands() {
+
+	for (var i=0;i<9;i++) {
+				if (PlayerList.getPlayer(i).status=="inhand") {
+
+					console.log("SESSION "+PlayerList.getPlayer(i).sessionid+" CARD "+
+						JSON.stringify(PlayerList.getPrivatePlayerData(PlayerList.getPlayer(i))));
 
 
-};
+					server.io.to(
+						PlayerList.getPlayer(i).sessionid)
+						.emit(
+							'newhand',
+							PlayerList.getPrivatePlayerData(PlayerList.getPlayer(i))
+							);
+				}
+			}
 
+}
+
+function checkToStartGame() {
+	if(playersActive<2) {
+		return false;
+	}
+	else if(playersActive>1 && !gameStarted) {
+		gameStarted = true;
+		return true;
+	}
+	else
+		return false;
+}
 
 function joinGame(userid,seat,balance,status,sessionid,cookie) {
 
@@ -145,82 +210,36 @@ function joinGame(userid,seat,balance,status,sessionid,cookie) {
 		}
 	});
 	//console.log(seat,userid,balance,status);*/
-
-
-
-	if(status="playing") {
-		playersActive++;
-	}
 	
 	console.log("uid: "+userid+" seat: "+seat+" balance:"+balance+" status:"+status+"sid:"+sessionid+"cookie:"+cookie);
 	PlayerList.addPlayer(seat,userid,balance,status,sessionid,cookie);
-
-	update();
-
-	//if (playersActive>2)
-		//console.log("hi");
-		//Hand.startHand();
 }
 
-function update(){
 
-		var updatedPlayerList = PlayerList.getPlayerList();
+function updatePlayer(player, payload) {
+	server.io(PlayerList.getPlayer(player).sessionid).emit('update', payload);
+
+}
+
+function getPublicGameData(){
+
+		//var updatedPlayerList = PlayerList.getPlayerList();
 
 		//console.log(updatedPlayerList);
 
-		gameData.game_info.seatList.seat1.name = updatedPlayerList[0][0];
-		gameData.game_info.seatList.seat1.balance = updatedPlayerList[0][1];
-		gameData.game_info.seatList.seat1.status  = updatedPlayerList[0][2];
-		gameData.game_info.seatList.seat2.name = updatedPlayerList[1][0];
-		gameData.game_info.seatList.seat2.balance = updatedPlayerList[1][1];
-		gameData.game_info.seatList.seat2.status = updatedPlayerList[1][2];
-		gameData.game_info.seatList.seat3.name = updatedPlayerList[2][0];
-		gameData.game_info.seatList.seat3.balance = updatedPlayerList[2][1];
-		gameData.game_info.seatList.seat3.status = updatedPlayerList[2][2];
-		gameData.game_info.seatList.seat4.name = updatedPlayerList[3][0];
-		gameData.game_info.seatList.seat4.balance = updatedPlayerList[3][1];
-		gameData.game_info.seatList.seat4.status = updatedPlayerList[3][2];
-		gameData.game_info.seatList.seat5.name = updatedPlayerList[4][0];
-		gameData.game_info.seatList.seat5.balance = updatedPlayerList[4][1];
-		gameData.game_info.seatList.seat5.status = updatedPlayerList[4][2];
-		gameData.game_info.seatList.seat6.name = updatedPlayerList[5][0];
-		gameData.game_info.seatList.seat6.balance = updatedPlayerList[5][1];
-		gameData.game_info.seatList.seat6.status = updatedPlayerList[5][2];
-		gameData.game_info.seatList.seat7.name = updatedPlayerList[6][0];
-		gameData.game_info.seatList.seat7.balance = updatedPlayerList[6][1];
-		gameData.game_info.seatList.seat7.status = updatedPlayerList[6][2];
-		gameData.game_info.seatList.seat8.name = updatedPlayerList[7][0];
-		gameData.game_info.seatList.seat8.balance = updatedPlayerList[7][1];
-		gameData.game_info.seatList.seat8.status = updatedPlayerList[7][2];
-		gameData.game_info.seatList.seat9.name = updatedPlayerList[8][0];
-		gameData.game_info.seatList.seat9.balance = updatedPlayerList[8][1];
-		gameData.game_info.seatList.seat9.status = updatedPlayerList[8][2];
+		server.io.on('connection', function(socket){
 
+			console.log(socket.id);
+		});
 
-	    server.io.emit('update', gameData);
+	    return PlayerList.getPublicPlayerPlayerData();
 
 }
-
-function newHand() {
-	var deck = getDeck();
-	
-}
-
-
-
-
-
-
-
-
-
 
 exports.startGame = startGame;
-
-exports.update = update;
-
+//exports.update = update;
 exports.joinGame = joinGame;
-
+exports.sendHands = sendHands;
 
 	
 

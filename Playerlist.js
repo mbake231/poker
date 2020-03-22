@@ -109,11 +109,12 @@ function addPlayer (seat,userid,balance,status,sessionid,cookie) {
 			PlayerArray[seat].sessionid = sessionid;
 			PlayerArray[seat].cookie = cookie;
 			PlayerArray[seat].seat = seat;
-			//return PlayerArray;
+			return true;
 		}
+		else 
+			console.log("seat full");
 	}
-	else 
-		return false; 
+	 
 }
 
 
@@ -135,8 +136,8 @@ function changeBalance (seat, delta) {
 
 }
 
-function changeSessionID (seat, sessionID) {
-	PlayerArray[seat].sessionid = sessionID;
+function changeSessionID (seat, sessionid) {
+	PlayerArray[seat].sessionid = sessionid;
 	//return PlayerArray;
 
 }
@@ -156,6 +157,29 @@ function setCardTwo (seat, card) {
 
 function getPlayerList (){
 	return PlayerArray;
+}
+
+function getPublicPlayerData () {
+	var publicPlayerData = [];
+	for (var i=0;i<9;i++)
+		publicPlayerData.push(
+			{userid:getPlayer(i).userid,
+			balance:getPlayer(i).balance,
+			status:getPlayer(i).status,
+			seat:getPlayer(i).seat
+		});
+	return publicPlayerData;
+}
+
+function getPrivatePlayerData (player) {
+	
+	var privateData = {userid:player.userid,
+			sessionid:player.sessionid,
+			card1:player.card1,
+			card2:player.card2
+		};
+
+	return privateData;
 }
 
 function findPlayerByCookie (cookieToFind) {
@@ -181,4 +205,6 @@ exports.setCardTwo = setCardTwo;
 exports.findPlayerByCookie = findPlayerByCookie;
 
 exports.changeSessionID = changeSessionID;
+exports.getPublicPlayerData = getPublicPlayerData;
+exports.getPrivatePlayerData = getPrivatePlayerData;
 
