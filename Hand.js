@@ -23,7 +23,7 @@ var deck;
 var handDetails = {
 	playersPlaying:0,
 	betsMade:0,
-	firstBettor:0,
+	dealer:0,
 	bigblind:4,
 	smallblind:2,
 	currentPot:0,
@@ -56,17 +56,20 @@ function startHand(cb){
 			PlayerList.changeStatus(i,"inhand");
 		}
 	}
-	//set firstbettor to lowest playing seat
-	handDetails.firstBettor=findFirstBettor();
-
-	//setCurrentPlayer to firstBettor
-	handDetails.currentPlayer=handDetails.firstBettor;
 
 	//get num of people in hand
 	for (var i=0;i<9;i++) {
 		if(PlayerList.getPlayer(i).status=="inhand")
 			handDetails.playersPlaying++;
 	}
+
+	//set dealer to lowest playing seat
+	handDetails.dealer=setDealer();
+
+	//setCurrentPlayer to the seat under the gun
+	handDetails.currentPlayer=getUnderTheGun();
+
+
 
 	console.log('In hand ct: '+handDetails.playersPlaying);
 
@@ -75,8 +78,13 @@ function startHand(cb){
 	
 
 }
+function getUnderTheGun () {
 
-function findFirstBettor () {
+
+}
+
+
+function setDealer () {
 	for(var i=0;i<8;i++) {
 		if(PlayerList.getPlayer(i).status=="inhand")
 			return i;
@@ -156,6 +164,20 @@ function dealFlop () {
 	bettingRound();
 }
 
+function dealTurn() {
+	var burnCard = deck[nextCard];
+	nextCard++;
+	handDetails.card4= deck[nextCard];
+	bettingRound();
+}
+
+function dealRiver() {
+	var burnCard = deck[nextCard];
+	nextCard++;
+	handDetails.card5= deck[nextCard];
+	bettingRound();
+}
+
 function nextRound() {
 	/*CURRRENT ROUND KEY
 0 = ante + betting
@@ -164,19 +186,27 @@ function nextRound() {
 3 = river & betting
 */
 	clearBettingRoundData();
+
+	if(handDetails.currentRound==3)
+	{
+
+		handDetails.currentRound++;
+		console.log("settle up");
+		//dealRiver();
+	}
 	if(handDetails.currentRound==2)
 	{
 
 		handDetails.currentRound++;
 		console.log("to the river");
-		//dealRiver();
+		dealRiver();
 	}
 
 	else if(handDetails.currentRound==1)
 	{
 		handDetails.currentRound++;
 		console.log("to the turn");
-		//dealTurn();
+		dealTurn();
 	}
 
 	else if(handDetails.currentRound==0)
@@ -202,8 +232,9 @@ function clearBettingRoundData(){
 function bettingRound() {
 
 	//if new round of betting
-	if(handDetails.betsMade==0&&handDetails.currentRound>0){
+	if(handDetails.betsMade==0&&handDetails.currentRound!=0){
 		//set current player for firstbettor incase
+		console.log("in here for round "+handDetails.currentRound);
 		handDetails.currentPlayer=handDetails.firstBettor;
 		server.io.to(
 		PlayerList.getPlayer(handDetails.currentPlayer).sessionid)
@@ -223,8 +254,10 @@ function bettingRound() {
 				);
 	}
 	//if everyone has called
-	else if(PlayerList.getPlayer(handDetails.currentPlayer).moneyOnLine == handDetails.currentBet && PlayerList.getPlayer(handDetails.currentPlayer).seat==handDetails.firstBettor) {
-		nextRound();
+	else if(PlayerList.getPlayer(handDetails.currentPlayer).moneyOnLine == handDetails.currentBet 
+		&& PlayerList.getPlayer(handDetails.currentPlayer).seat==handDetails.firstBettor 
+		&& handDetails.betsMade!=0) {
+				nextRound();
 	}
 
 
@@ -239,7 +272,8 @@ function bettingRound() {
 	}
 
 	//big blind to check
-	else if(PlayerList.getPlayer(handDetails.currentPlayer).moneyOnLine == handDetails.currentBet && handDetails.betsMade==handDetails.playersPlaying-1) {
+	else if(PlayerList.getPlayer(handDetails.currentPlayer).moneyOnLine == handDetails.currentBet 
+		&& handDetails.betsMade==handDetails.playersPlaying-1 && handDetails.currentRound==0) {
 		server.io.to(
 		PlayerList.getPlayer(handDetails.currentPlayer).sessionid)
 				.emit(
@@ -258,8 +292,19 @@ function processAction(sessionid, bet) {
 			PlayerList.addToLine(handDetails.currentPlayer,toPutIn);
 			handDetails.currentPot += toPutIn;
 			handDetails.betsMade++;
+
+			//is this the last caller?
+			//if(handDetails.currentPlayer)
 			moveToNextPlayer();
-			bettingRound();
+
+			/*
+			//SOLVE BIG BLIND TO CHECK 
+			if(PlayerList.getPlayer(handDetails.currentPlayer).moneyOnLine==handDetails.currentBet && ) {
+				nextRound();
+			}
+			else
+				bettingRound();*/
+
 		}
 
 		else if(bet=='fold') {

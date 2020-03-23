@@ -16,12 +16,66 @@ var bodyParser = require('body-parser');
 var io = require('socket.io')(http);
 var crypto = require('crypto');
 
+var player = require('./classes/player.js').player;
+var game = require('./classes/game.js').game;
+
+//var newgame = new game();
+	
+//function newPlayer(userid,cookie,balance,status)
+var mike =  new player("mike","cookie",23.50,"playing",);
+var jim =  new player("jim","cookie",50.50,"playing");
+var clint =  new player("clint","cookie",450.50,"playing");
+var shane =  new player("shane","cookie",504.50,"playing");
+var bob =  new player("bob","cookie",44.50,"playing");
+
+
+var game1 = new game();
+var game2 = new game();
+
+
+game1.addPlayer(mike,3);
+game1.addPlayer(jim,2);
+game1.addPlayer(shane,0);
+game1.addPlayer(clint,6);
+game1.addPlayer(bob,1);
+//game1.foldPlayer(bob);
+//game1.foldPlayer(clint);
+//game1.firstRound();
+game1.setDealer(shane);
+game1.postBlinds();
+game1.dealHands();
+game1.printSeats();
+game1.getNextAction();
+
+
+//game1.dealFlop();
+//game1.printBoard();
+//game1.dealTurn();
+//game1.printBoard();
+//game1.dealRiver();
+//game1.printBoard();
+
+
+//newgame.addPlayer(mike1);
+
+
+
+
+ 
+
+
+
 
 var app = express()
   , http = require('http').createServer(app)
   , io = io.listen(http);
 
 http.listen(3000);
+
+
+
+
+
 
 app.set('view engine','pug');
 app.set('view cache', false);
