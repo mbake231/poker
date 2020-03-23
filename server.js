@@ -2,17 +2,10 @@
 var Promise=require('bluebird');
 var MongoClient = Promise.promisifyAll(require('mongodb')).MongoClient;
 var mongoose = require('mongoose');
-var User = require('./models/User');
-var Table = require('./models/Table');
-var Game = require('./models/Game');
-var gameData = require('./gameData');
-var db = require('./db');
 var express=require('express');
-//HEREvar app=express();
 var passport = require('passport');
 var GoogleStrategy = require('passport-google-oauth').OAuthStrategy;
 var bodyParser = require('body-parser');
-//HEREvar http = require('http').createServer(app);
 var io = require('socket.io')(http);
 var crypto = require('crypto');
 

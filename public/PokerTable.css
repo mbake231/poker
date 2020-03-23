@@ -48,8 +48,13 @@
 .card2 {
 	width:50%;
 	float:left;
-
 }
+
+.actionOn {
+	background-color: lightblue !important;
+}
+
+
 
 .userid {
 	font-size: 22px;

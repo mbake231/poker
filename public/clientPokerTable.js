@@ -1,19 +1,27 @@
 
 
 var socket = io('http://localhost:3000');
-
 var cookie = ('; ' + document.cookie)
 .split('; ' + "user" + '=')
 .pop()
 .split(';')
 .shift();
 
+var gameData;
+
 cookie = parseInt(cookie);
 
-console.log("trying "+cookie);
+//console.log("trying "+cookie);
+//socket.emit('identify', cookie);
 
-socket.emit('identify', cookie);
+socket.on('update', function(privateData) {
+	console.log("incoming update " + privateData);
+	gameData = JSON.parse(privateData);
+	updateGameData(gameData);
+	//document.getElementById('mycards').innerHTML='MY CARDS: ' + JSON.stringify(privateData);
 
+});
+/*
 socket.on('handshake', function() {
 	console.log("APPROVED");
 });
@@ -44,9 +52,52 @@ function sendAction (bet) {
 	document.getElementById('openBettingBar').style= "display: none";
 
 
-};
+};*/
 
-var seats = [{
+function updateGameData(gameData) {
+
+	for (var i=0;i<gameData.game_size;i++) {
+		if(gameData.seats[i]!="empty") {
+
+			document.getElementById('player'+i).children[0].innerHTML = gameData.seats[i].userid;
+			document.getElementById('player'+i).children[1].innerHTML = gameData.seats[i].balance;
+		if(card1!=null){
+			document.getElementById('player'+i).children[2].children[0].innerHTML = 
+			'<img id="theImg" src="img/cards/'+gameData.seats[i].card1+'.svg" width="100%"/>';
+
+			document.getElementById('player'+i).children[2].children[1].innerHTML = 
+			'<img id="theImg" src="img/cards/'+gameData.seats[i].card1+'.svg" width="100%"/>';
+			}
+
+
+		}
+		if(gameData.bettingRound.actionOn.seat == i)
+		{
+			document.getElementById('player'+i).className = "player actionOn";
+			document.getElementById('player'+i).className = "player actionOn";
+
+		}
+
+		if(gameData.bettingRound.actionOn.seat != i)
+		{
+			document.getElementById('player'+i).className = "player";
+		}
+
+	}
+	location.reload();
+}
+
+function startGame() {
+	socket.emit('startGame', cookie);
+}
+
+
+/*
+
+$(window).on('load', function(){
+var seats=[];
+
+ var seatsStub = [{
 
 userid:"mike",
 cookie:"null",
@@ -83,25 +134,38 @@ seat:2}
 ];
 
 
+$(function () {
+    var socket = io('http://localhost:3000');
 
-$(window).on('load', function(){
 
- 
+socket.on('update', function(privateData) {
+	console.log("incoming update " + privateData);
+	seats = JSON.parse(privateData).seats;
+
+
+	//console.log(privateData);
+	//document.getElementById('mycards').innerHTML='MY CARDS: ' + JSON.stringify(privateData);
+
+
+
+
+
+
   var counter=0;
   $.each(seats, walker);
 
   function walker(key,value) {
   	if(key=='card1'){
   		var img = 
-  		$('#player'+counter).children('.cards').children("."+key).prepend('<img id="theImg" src="img/cards/'+value+'.svg" width="100%"/>');
+  		$('#player'+counter).children('.cards').children("."+key).html('<img id="theImg" src="img/cards/'+value+'.svg" width="100%"/>');
   	}
   	else if(key=='card2') {
-  		$('#player'+counter).children('.cards').children("."+key).prepend('<img id="theImg" src="img/cards/'+value+'.svg" width="100%"/>');
+  		$('#player'+counter).children('.cards').children("."+key).html('<img id="theImg" src="img/cards/'+value+'.svg" width="100%"/>');
   	}
   	else if(key=='balance') {
-		$('#player'+counter).children("."+key).append("$"+value);  	}
+		$('#player'+counter).children("."+key).text("$"+value);  	}
   	else {
-  		$('#player'+counter).children("."+key).append(value);
+  		$('#player'+counter).children("."+key).text(value);
   	}
 
 
@@ -111,8 +175,10 @@ $(window).on('load', function(){
 	  	}
   	}
 
-
+});
 
 });
 
+});
 
+*/

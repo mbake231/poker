@@ -10,102 +10,64 @@ var game = require('./classes/game.js').game;
 var game1 = new game();
 console.log("started game");
 
-function startConnection (cookie) {
-	server.io.on('connection', function(socket){
+var gameCount = 0;
 
-			//console.log("connected");
-			//globalSocket=socket;
-
-	socket.on('identify', function (cookie) {
-
-		var cookieToFind = parseInt(cookie);
-
-		//if this person has the cookie of the registered account
-		if (PlayerList.findPlayerByCookie(cookieToFind)) {		
-			var thisPlayer=PlayerList.findPlayerByCookie(cookieToFind);
-			console.log("AUTHORIZED: "+thisPlayer.userid+" ON SEAT: "+thisPlayer.seat+ " SESSION: "+socket.id);	
-			
-			//store session id if they match
-
-			PlayerList.changeSessionID(thisPlayer.seat,socket.id);
-
-			//server.io.to(PlayerList.getPlayer(0).sessionid).emit('newhand',"hello seat 0");
-
-			//send confirm
-			socket.emit('handshake', true);
-
-			//increase players playing if this guy is active
-			if (thisPlayer.status=='playing')
-				playersActive++;
-
-			//update public game data to this client and everyone
-			socket.emit('update',PlayerList.getPublicPlayerData());
-			socket.broadcast.emit('update',PlayerList.getPublicPlayerData());
-
-
-			//check to see if i should start the game 
-			
-			if(checkToStartGame()){
-				console.log("LETS SHUFFLE AND DEAL");
-				Hand.startHand();
-
-				socket.emit('handdetails',Hand.getHandDetails());
-				socket.broadcast.emit('handdetails',Hand.getHandDetails());
-			}
-
-		}
-
-		//listen for bet
-		socket.on('sendBet', function (bet) {
-			Hand.processAction(socket.id,bet); 
-
-			socket.emit('update',PlayerList.getPublicPlayerData());
-			socket.broadcast.emit('update',PlayerList.getPublicPlayerData());
-
-			socket.emit('handdetails',Hand.getHandDetails());
-			socket.broadcast.emit('handdetails',Hand.getHandDetails());
-
-
-		});
-
-		});
-	});
-}
+var firstDealer;
+var dealer;
 
 function joinGame (userid,cookie,balance,status,seat) {
 	
-
-
-	server.io.on('connection', function(socket){
-
-	socket.on('identify', function (cookie) {
-
-		var cookieToFind = parseInt(cookie);
-
-		//listen for bet
-		socket.on('sendBet', function (bet) {
-			Hand.processAction(socket.id,bet); 
-
-			socket.emit('update',PlayerList.getPublicPlayerData());
-			socket.broadcast.emit('update',PlayerList.getPublicPlayerData());
-
-			socket.emit('handdetails',Hand.getHandDetails());
-			socket.broadcast.emit('handdetails',Hand.getHandDetails());
-
-
-		});
-
-		});
-	});
-
 	var newPlayer = new player(userid,cookie,balance,status,sessionid);
 	game1.addPlayer(newPlayer,seat);
 	game1.printSeats();
-	
+	sendData();
+	startSocketConnetion();
+
+
 }
 
-function sendData() {
+function runGame() {
 
+	if(gameCount==0)
+	{
+		console.log("this is the first game");
+		dealer = game1.getLowestOccupiedSeat();
+	}
+	else {
+		console.log("game count is "+gameCount);
+		dealer = dealer.nextPlayer;
+	}
+	game1.setDealer(dealer);
+	game1.postBlinds();
+	game1.dealHands();
+	sendData();
+	game1.printSeats();
+	game1.getNextAction();
+	sendData();
+
+}
+
+function startSocketConnetion () {
+		server.io.on('connection', function(socket){
+		var cookieToFind = parseInt(cookie);
+
+		//listen for start game
+		socket.on('startGame', function () {
+			runGame();
+			});
+
+		});
+}
+
+
+
+function sendData() {
+	//console.log(game1.generatePrivatePlayerData());
+	server.io.on('connection', function(socket){
+
+		socket.emit('update',game1.generatePrivatePlayerData());
+		socket.broadcast.emit('update',game1.generatePrivatePlayerData());
+	});
 	//getPLayers |UNique payload and send it to thier sessionid
 	//game.getPlayers
 	//server.io(PlayerList.getPlayer(player).sessionid).emit('update', payload);

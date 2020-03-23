@@ -59,6 +59,7 @@ class game {
 
 	setNextPlayer (player) {
 		player.nextPlayer = this.getNextPlayer(player);
+		//console.log(player.userid+" then goes"+player.nextPlayer.userid);
 	}
 
 	addPlayer(player,seat) {
@@ -71,7 +72,7 @@ class game {
 				gameTable.seats[seat] = player;
 				player.setSeat(seat);
 				gameTable.numseats++;
-				console.log(player.userid+" joined game!")
+				console.log(player.userid+" joined game! at seat "+player.seat)
 			}
 			
 			if(gameTable.numseats!=1) {
@@ -118,6 +119,7 @@ class game {
 	//pass me who is the dealer
 	setDealer(player) {
 		gameTable.dealer=player;
+		//console.log("the dealer is now "+player.userid +" at seat" +player.seat+" "+gameTable.dealer.seat);
 	}
 	dealHands() {
 		
@@ -172,7 +174,9 @@ class game {
 	}
 
 	postBlinds() {
+		console.log("the dealer is at seat"+gameTable.dealer.seat);
 		var smallBlindPayer = gameTable.seats[gameTable.dealer.seat].nextPlayer;
+
 		var bigBlindPayer = gameTable.seats[smallBlindPayer.seat].nextPlayer;
 
 		//withdraw and add to line
@@ -199,7 +203,12 @@ class game {
 		return gameTable.bettingRound.actionOn;
 	}
 
-
+	getLowestOccupiedSeat() {
+		for (var i=0;i<gameTable.game_size;i++){
+			if (gameTable.seats[i]!="empty")
+				return gameTable.seats[i];
+		}
+	}
 	getNextAction () {
 
 		//BIG BLIND CAN ACT AT END OF PRE-FLOP BETTING
@@ -319,7 +328,17 @@ class game {
 			console.log("this player is not up");
 		}
 	}
-	generatePrivatePlayerData (player) {}
+	generatePrivatePlayerData () {
+		var privateGameTable =  JSON.stringify(gameTable,function( key, value) {
+ 			if(key == 'nextPlayer') { 
+    			return "removedForStringify";
+  			} 
+  			else {
+    			return value;
+  			};
+		});
+		return privateGameTable;
+	}
 
 
 }
