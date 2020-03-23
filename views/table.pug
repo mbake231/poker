@@ -1,0 +1,91 @@
+body
+script(src='https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js')
+script(src='http://localhost:3000/socket.io/socket.io.js')
+link(rel='stylesheet', href='PokerTable.css')
+script(src='clientPokerTable.js')
+main
+  .div#table
+    table.pokerTable
+      tr
+        td
+        td.player.player0
+         div.player#player0
+          div.userid
+          div.balance
+          div.cards
+           div.card1
+           div.card2
+        td
+        td.player.player1
+         div.player#player1
+          div.userid
+          div.balance
+          div.cards
+           div.card1
+           div.card2
+        td
+      tr
+        td.player.player8
+          div.player#player8
+            div.userid
+            div.balance
+            div.cards
+             div.card1
+             div.card2
+        td
+        td
+        td
+        td.player.player2
+          div.player#player2
+            div.userid
+            div.balance
+            div.cards
+             div.card1
+             div.card2
+      tr
+        td.player.player7
+          div.player#player7
+            div.userid
+            div.balance
+            div.cards
+             div.card1
+             div.card2
+        td
+        td
+        td
+        td.player.player3
+          div.player#player3
+            div.userid
+            div.balance
+            div.cards
+             div.card1
+             div.card2
+      tr
+        td
+        td.player.player8
+          div.player#player8
+            div.userid
+            div.balance
+            div.cards
+             div.card1
+             div.card2
+        td.player.player6
+          div.player#player6
+            div.userid
+            div.balance
+            div.cards
+             div.card1
+             div.card2
+        td.player.player5
+          div.player#player5
+            div.userid
+            div.balance
+            div.cards
+             div.card1
+             div.card2
+        td
+  div#actionBar
+   button.btn.btn-primary(type='raise' onclick="sendAction(5);") Raise 5
+   button.btn.btn-primary(type='call' onclick="sendAction('call');") Call
+   button.btn.btn-primary(type='check' onclick="sendAction('check');") Check
+   button.btn.btn-primary(type='fold' onclick="sendAction('fold');") Fold

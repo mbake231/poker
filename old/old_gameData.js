@@ -235,7 +235,8 @@ exports.startGame = startGame;
 exports.joinGame = joinGame;
 exports.sendHands = sendHands;
 
-	
+exports.startGame = startGame;
+
 
 
 	

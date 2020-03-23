@@ -33,6 +33,7 @@ class player {
 		this.card1=null;
 		this.card2=null;
 		this.moneyOnLine=0;
+		this.nextPlayer=null;
 		//return player;
 	}
 
@@ -50,6 +51,7 @@ class player {
 			return true;
 		return false;
 	}
+
 }
 
 exports.player = player;

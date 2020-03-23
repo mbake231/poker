@@ -71,6 +71,7 @@ class game {
 				gameTable.seats[seat] = player;
 				player.setSeat(seat);
 				gameTable.numseats++;
+				console.log(player.userid+" joined game!")
 			}
 			
 			if(gameTable.numseats!=1) {
@@ -96,8 +97,9 @@ class game {
 				console.log("Seat "+i+": "+gameTable.seats[i].userid+
 					" Balance:"+gameTable.seats[i].balance+
 					" Status: "+gameTable.seats[i].status+
-					" Next up :"+gameTable.seats[i].nextPlayer.userid+
-					" Hand: "+ gameTable.seats[i].card1+" "+gameTable.seats[i].card2);
+				//	" Next up :"+gameTable.seats[i].nextPlayer.userid+
+					" Hand: "+ gameTable.seats[i].card1+" "+gameTable.seats[i].card2+
+					" $ in: "+ gameTable.seats[i].moneyOnLine);
 			else
 				console.log("Seat "+i+": Empty");
 		}
@@ -163,6 +165,12 @@ class game {
 		console.log(gameTable.board);
 	}
 
+	getBigBlindPlayer() {
+		var smallBlindPayer = gameTable.seats[gameTable.dealer.seat].nextPlayer;
+		var bigBlindPayer = gameTable.seats[smallBlindPayer.seat].nextPlayer;
+		return bigBlindPayer;
+	}
+
 	postBlinds() {
 		var smallBlindPayer = gameTable.seats[gameTable.dealer.seat].nextPlayer;
 		var bigBlindPayer = gameTable.seats[smallBlindPayer.seat].nextPlayer;
@@ -187,16 +195,56 @@ class game {
 		gameTable.bettingRound.actionOn=player;
 	}
 
+	getActionOnPlayer() {
+		return gameTable.bettingRound.actionOn;
+	}
+
+
 	getNextAction () {
 
+		//BIG BLIND CAN ACT AT END OF PRE-FLOP BETTING
+		//IF ACTION IS TO BIGBLIND + AND NO ONE RAISED AKA LAST BET IS CALL AND THE CALL IS SAME AS BIG BLIND
+		//THEN BIG BLIND AND 
+		if(this.getActionOnPlayer().userid == this.getBigBlindPlayer().userid
+			&& this.getBigBlindPlayer().currentRaiseToCall == gameTable.bigBlind
+			&& gameTable.bettingRound.lastBet=='call') {
+			gameTable.bettingRound.nextActionsAvailable = ['raise','call','check']; 
+		}
 
-		//IF THE LAST THING TO HAPPEN WAS BLINDS POSTING, AND MY MOL IS < BLINDS, I NEED TO PAY THEM OR RAISE OR FOLD
+		//ROUND OVER IF LAST BET WAS CHECK AND UNDERGUN IS UP
+		if(gameTable.bettingRound.lastBet=='check' && this.getActionOnPlayer().userid==this.getUnderTheGunPlayer()){
+			console.log("round over everyone checked");
+			return false;
+		}
+
+		//ROUND OVER IF LAST BET WAS CALL AND PLAYER UP HAS MOL = CURRENTRAISE
+		if(gameTable.bettingRound.lastBet=='call' && this.getActionOnPlayer().moneyOnLine==gameTable.bettingRound.currentRaiseToCall){
+			console.log("round over all bets in");
+			return false;
+		}
+
+		
+
+		if(gameTable.bettingRound.lastBet=='check') {
+			gameTable.bettingRound.nextActionsAvailable = ['raise','call','check'];
+			console.log("action: "+gameTable.seats[gameTable.bettingRound.actionOn.seat].userid +" "+gameTable.bettingRound.nextActionsAvailable);
+
+		}
+
+		if(gameTable.bettingRound.lastBet=='call') {
+				gameTable.bettingRound.nextActionsAvailable = ['raise','call','fold'];
+				console.log("action: "+gameTable.seats[gameTable.bettingRound.actionOn.seat].userid +" "+gameTable.bettingRound.nextActionsAvailable);
+
+
+		}
+
+		//IF THE LAST THING TO HAPPEN WAS BLINDS POSTING, AND MY MOL IS < BLINDS, I NEED TO PAY BLIND OR RAISE OR FOLD
 		if(gameTable.bettingRound.lastBet=='blinds'
 			&& gameTable.seats[gameTable.bettingRound.actionOn.seat].moneyOnLine != gameTable.currentRaiseToCall) {
 			
 			gameTable.bettingRound.nextActionsAvailable = ['raise','call','fold']; 
 			
-			console.log("action: "+gameTable.seats[gameTable.bettingRound.actionOn.seat].userid+ nextActionsAvailable);
+			console.log("action: "+gameTable.seats[gameTable.bettingRound.actionOn.seat].userid +" "+gameTable.bettingRound.nextActionsAvailable);
 
 			//var result = {'actionOn':gameTable.seats[gameTable.bettingRound.actionOn.seat,
 			//		'options':availableOptions
@@ -207,34 +255,75 @@ class game {
 		}
 	}
 
+	advanceToNextPlayer(){
+		gameTable.bettingRound.actionOn=gameTable.seats[gameTable.bettingRound.actionOn.seat].nextPlayer;
+	}
+
 	doAction(player,action,amt) {
 
 		//check to see we have right player
 		if(player.userid == gameTable.seats[gameTable.bettingRound.actionOn.seat].userid) {
 			//check to see we have valid option
-			if(gameTable.bettingRound.nextActionsAvailable.include(action)){
+			if(gameTable.bettingRound.nextActionsAvailable.includes(action)){
 
 				if(action=="check") {
+					gameTable.bettingRound.lastBet='check';
+					this.advanceToNextPlayer();
+					console.log(player.userid+" has checked");
 				
 				}
 				else if (action=="fold") {
+					//must avance first cuz i unload nextplayer on fold
+					this.advanceToNextPlayer();
+					this.foldPlayer(player);
+					console.log(player.userid+" has folded");
+
 
 				}
 				else if (action=="call") {
+					if(player.hasEnough(gameTable.bettingRound.currentRaiseToCall)) {
+						player.addMoneyToLine(gameTable.bettingRound.currentRaiseToCall);
+						gameTable.bettingRound.totalOnLine+=gameTable.bettingRound.currentRaiseToCall;
+						gameTable.bettingRound.lastBet='call';
+						this.advanceToNextPlayer();
+						console.log(player.userid+" has called "+gameTable.bettingRound.currentRaiseToCall);
+
+					}
+					else
+						console.log("amount doesnt have enough for call");
 
 				}
-				else if (action=="raise") {
-
+				else if (action=='raise') {
+					//when you raise you need to call current pot and then raise further
+					var amtToRaise = (gameTable.bettingRound.currentRaiseToCall-player.moneyOnLine) + amt;
+					console.log("is this 12?"+amtToRaise);
+					if(player.hasEnough(amtToRaise)) {
+						player.addMoneyToLine(amtToRaise);
+						gameTable.bettingRound.totalOnLine+=amtToRaise;
+						gameTable.bettingRound.lastBet='raise';
+						gameTable.bettingRound.lastRaiser=player;
+						//so when player had to put more in, the actual raise number only goes up how much he raised it
+						gameTable.bettingRound.currentRaiseToCall+amt;
+						this.advanceToNextPlayer();
+						console.log(player.userid+" has raised to "+gameTable.bettingRound.currentRaiseToCall);
+					}
+					else
+						console.log("amount doesnt have enough for raise");
 				}
 			}
+			else
+				console.log("this is the right player, but you can't do that action");
 		}
 
 		else {
 			console.log("this player is not up");
 		}
 	}
+	generatePrivatePlayerData (player) {}
+
 
 }
+
 
 exports.game=game;
 //exports.addPlayer=addPlayer;

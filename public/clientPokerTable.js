@@ -1,4 +1,5 @@
 
+
 var socket = io('http://localhost:3000');
 
 var cookie = ('; ' + document.cookie)
@@ -44,65 +45,74 @@ function sendAction (bet) {
 
 
 };
-/*
-socket.emit('joinGame', {
-	userid:"fart",
-	seat:1,
-	balance:100,
-	status:"playing"}
-	);
 
-socket.emit('joinGame', {
-	userid:"poop",
-	seat:0,
-	balance:100,
-	status:"playing"}
-	);
+var seats = [{
 
-socket.emit('joinGame', {
-	userid:"leigh",
-	seat:8,
-	balance:100,
-	status:"playing"}
-	);*/
+userid:"mike",
+cookie:"null",
+balance:"23.12",
+status:"playing",
+card1:"Ad",
+card2:"Kd",
+moneyOnLine:"1.21",
+seat:1},
+{userid:"jim",
+cookie:"null",
+balance:"33.12",
+status:"playing",
+card1:"Jd",
+card2:"10d",
+moneyOnLine:"2.21",
+seat:2},
+{userid:"fart",
+cookie:"null",
+balance:"93.12",
+status:"playing",
+card1:"Jd",
+card2:"10d",
+moneyOnLine:"2.21",
+seat:2},
+{userid:"piss",
+cookie:"null",
+balance:"83.12",
+status:"playing",
+card1:"Jd",
+card2:"10d",
+moneyOnLine:"2.21",
+seat:2}
+];
 
-socket.on('update', function(gameData) {
-	//gameUpdate=JSON.parse(gameData);
-	//console.log(gameData);
-	
-		//document.getElementById('seat1Name').innerHTML='Player 1: ' + gameData[0].userid;
-		document.getElementById('seat1Name').innerHTML=JSON.stringify(gameData);
-		document.getElementById('seat1Stack').innerHTML='Stack: ' + gameData[0].balance;
-		document.getElementById('seat2Name').innerHTML='Player 2: ' + gameData[1].userid;
-		document.getElementById('seat2Stack').innerHTML='Stack: ' + gameData[1].balance;
-		document.getElementById('seat3Name').innerHTML='Player 3: ' + gameData[2].userid;
-		document.getElementById('seat3Stack').innerHTML='Stack: ' + gameData[2].balance;
-		document.getElementById('seat4Name').innerHTML='Player 4: ' + gameData[3].userid;
-		document.getElementById('seat4Stack').innerHTML='Stack: ' + gameData[3].balance;
-		document.getElementById('seat5Name').innerHTML='Player 5: ' + gameData[4].userid;
-		document.getElementById('seat5Stack').innerHTML='Stack: ' + gameData[4].balance;
-		document.getElementById('seat6Name').innerHTML='Player 6: ' + gameData[5].userid;
-		document.getElementById('seat6Stack').innerHTML='Stack: ' + gameData[5].balance;
-		document.getElementById('seat7Name').innerHTML='Player 7: ' + gameData[6].userid;
-		document.getElementById('seat7Stack').innerHTML='Stack: ' + gameData[6].balance;
-		document.getElementById('seat8Name').innerHTML='Player 8: ' + gameData[7].userid;
-		document.getElementById('seat8Stack').innerHTML='Stack: ' + gameData[7].balance;
-		document.getElementById('seat9Name').innerHTML='Player 9: ' + gameData[8].userid;
-		document.getElementById('seat9Stack').innerHTML='Stack: ' + gameData[8].balance;
-	/*
-		document.getElementById('card1').innerHTML='C1: ' + gameData.game_info.card1;
-		document.getElementById('card2').innerHTML='C2:  ' + gameData.game_info.card2;
-		document.getElementById('card3').innerHTML='C3:  ' + gameData.game_info.card3;
-		document.getElementById('card4').innerHTML='C4:  ' + gameData.game_info.card4;
-		document.getElementById('card5').innerHTML='C5:  ' + gameData.game_info.card5;
 
-		document.getElementById('currentPot').innerHTML='Pot:  ' + gameData.game_info.currentPot;
-		document.getElementById('minRaise').innerHTML='Min Raise:  ' + gameData.game_info.minRaise;
 
-		document.getElementById('tablename').innerHTML='Table Name:  ' + gameData.table_info.tablename;
-		document.getElementById('smallblind').innerHTML='Small Blind:  ' + gameData.table_info.smallblind;
-		document.getElementById('bigblind').innerHTML='Big Blind:  ' + gameData.table_info.bigblind;
-		document.getElementById('actionOnPlayer').innerHTML='Action On:  ' + gameData.game_info.actionOnPlayer;*/
+$(window).on('load', function(){
+
+ 
+  var counter=0;
+  $.each(seats, walker);
+
+  function walker(key,value) {
+  	if(key=='card1'){
+  		var img = 
+  		$('#player'+counter).children('.cards').children("."+key).prepend('<img id="theImg" src="img/cards/'+value+'.svg" width="100%"/>');
+  	}
+  	else if(key=='card2') {
+  		$('#player'+counter).children('.cards').children("."+key).prepend('<img id="theImg" src="img/cards/'+value+'.svg" width="100%"/>');
+  	}
+  	else if(key=='balance') {
+		$('#player'+counter).children("."+key).append("$"+value);  	}
+  	else {
+  		$('#player'+counter).children("."+key).append(value);
+  	}
+
+
+	  	if (typeof value === "object") {
+	  		$.each(value,walker);
+	  			counter++;
+	  	}
+  	}
+
+
+
 });
-	
+
 

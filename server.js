@@ -16,11 +16,61 @@ var bodyParser = require('body-parser');
 var io = require('socket.io')(http);
 var crypto = require('crypto');
 
-var player = require('./classes/player.js').player;
-var game = require('./classes/game.js').game;
+var gameController = require('./gameController.js');
+
+
+var app = express()
+  , http = require('http').createServer(app)
+  , io = io.listen(http);
+
+http.listen(3000);
+
+
+app.set('view engine','pug');
+app.set('view cache', false);
+app.use(bodyParser.urlencoded({ extended: false }))
+app.use(bodyParser.json())
+app.use(express.static(__dirname + '/public'));
+
+
+app.get('/table',function(req,res)
+{
+	res.render('table',
+		{title:'Neighborhood Poker',message:'Welcome'})
+
+});
+
+app.get('/joinTable',function(req,res)
+{
+	//var tableid = req.query.tableid;
+
+	res.render('joinTable');
+
+
+});
+
+
+app.post('/joinTable', (req, res) => {
+	gameController.joinGame(
+		userid=req.body.userid,
+		cookie=parseInt(req.body.cookie),
+		balance=Number(req.body.balance),
+		status=req.body.status,
+		seat=req.body.seat,
+		sessionid=null
+		
+		);
+	res.redirect('/table');
+
+});
+
+exports.io = io;
+
+
+//var game = require('./classes/game.js').game;
 
 //var newgame = new game();
-	
+	/*
 //function newPlayer(userid,cookie,balance,status)
 var mike =  new player("mike","cookie",23.50,"playing",);
 var jim =  new player("jim","cookie",50.50,"playing");
@@ -46,8 +96,20 @@ game1.postBlinds();
 game1.dealHands();
 game1.printSeats();
 game1.getNextAction();
-
-
+game1.doAction(mike,'call',4);
+game1.getNextAction();
+game1.doAction(clint,'raise',10);
+game1.getNextAction();
+game1.doAction(shane,'call',10);
+game1.getNextAction();
+game1.doAction(bob,'call',10);
+game1.getNextAction();
+game1.doAction(jim,'call',10);
+game1.getNextAction();
+game1.doAction(mike,'call',10);
+game1.getNextAction();
+game1.printSeats();
+*/
 //game1.dealFlop();
 //game1.printBoard();
 //game1.dealTurn();
@@ -61,29 +123,7 @@ game1.getNextAction();
 
 
 
- 
-
-
-
-
-var app = express()
-  , http = require('http').createServer(app)
-  , io = io.listen(http);
-
-http.listen(3000);
-
-
-
-
-
-
-app.set('view engine','pug');
-app.set('view cache', false);
-app.use(bodyParser.urlencoded({ extended: false }))
-app.use(bodyParser.json())
-app.use(express.static(__dirname + '/public'));
-
-
+/*
 app.get('/pokerTable',function(req,res)
 {
 	var tableid = req.query.tableid;
@@ -93,15 +133,7 @@ app.get('/pokerTable',function(req,res)
 
 });
 
-app.get('/joinTable',function(req,res)
-{
-	//var tableid = req.query.tableid;
-
-	res.render('joinTable');
-
-
-});
-
+//OLDER WORLD
 
 app.get('/',function(req,res)
 {
@@ -124,18 +156,6 @@ app.get('/',function(req,res)
 });
 
 
-app.post('/joinTable', (req, res) => {
-	gameData.joinGame(
-		userid=req.body.userid,
-		seat=req.body.seat,
-		balance=Number(req.body.balance),
-		status=req.body.status,
-		sessionid=null,
-		cookie=parseInt(req.body.cookie)
-		);
-	res.redirect('/pokerTable');
-
-});
 
 //CREATION SHIT
 
@@ -192,9 +212,8 @@ app.post('/maketable', (req, res) => {
 
 
 
-exports.io = io;
 
 
 
-
+*/
 
