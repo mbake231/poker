@@ -39,6 +39,10 @@ class player {
 		//return player;
 	}
 
+	givePot(amt) {
+		this.balance+=Number(amt);
+	}
+
 	setSeat(seat) {
 		this.seat=seat;
 	}
@@ -46,6 +50,10 @@ class player {
 	addMoneyToLine(amt) {
 		this.balance-=amt;
 		this.moneyOnLine+=amt;
+	}
+
+	clearMoneyOnLine(){
+		this.moneyOnLine=0;
 	}
 
 	hasEnough(amt) {

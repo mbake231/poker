@@ -21,6 +21,9 @@ function register () {
 		
 
 	}
+	function newGame() {
+		socket.emit('newGame', gameid);
+	}
 
 	function startGame() {
 		socket.emit('startGame', gameid);
@@ -74,7 +77,7 @@ $(window).on('load', function(){
 		if(gameData.bettingRound.actionOn!=null){
 			console.log("on me? "+gameData.bettingRound.actionOn.hash+" vs "+myid);
 			$('#player'+gameData.bettingRound.actionOn.seat).addClass('actionOn');
-			if(gameData.bettingRound.actionOn.hash===myid) {
+			if(gameData.bettingRound.actionOn.hash===myid && gameData.bettingRound.round!=null) {
 
 				$.each(gameData.bettingRound.nextActionsAvailable, function(index) {
 					$('#actionBar').find('#'+gameData.bettingRound.nextActionsAvailable[index]).css('display','block');
@@ -90,11 +93,33 @@ $(window).on('load', function(){
 				$('#actionBar').find('#fold').css('display','none');
 				$('#actionBar').css('display','none');
 			}
-		$('#board').html("");
-		$.each(gameData.board, function(index) {
-			$('#board').append('<img id="theImg" src="img/cards/'+gameData.board[index]+'.svg" width="50%"/>');
+
+			$('#board').html("");
+			$.each(gameData.board, function(index) {
+				$('#board').append('<img id="theImg" src="img/cards/'+gameData.board[index]+'.svg" width="40%"/>');
 		});
+			//add pot
+			$('#statusArea').html("Pot $"+gameData.currentPot+"<br>Line $"+gameData.bettingRound.totalOnLine);
+
+
 		}
+		//iff actionon is null
+		else {
+			$('#actionBar').find('#raise').css('display','none');
+			$('#actionBar').find('#check').css('display','none');
+			$('#actionBar').find('#call').css('display','none');
+			$('#actionBar').find('#fold').css('display','none');
+			$('#actionBar').css('display','none');
+		}
+
+		if(gameData.winner.players!=null) {
+			$.each(gameData.winner.players, function (index) {
+				$('#winnerDetails').append(gameData.winner.players[index].userid+" won $"+gameData.winner.winningPot+"with a "+gameData.winner.hand+"!");
+				
+			})
+			$('.winner').css('visibility','visible');
+		}
+
 	}
 
 	socket.on('update', function(privateData) {

@@ -18,7 +18,9 @@ var app = express()
   , io = io.listen(http);
 
 
+
 http.listen(3000);
+
 
 
 app.set('view engine','pug');
@@ -26,6 +28,9 @@ app.set('view cache', false);
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 app.use(express.static(__dirname + '/public'));
+
+
+
 
 //SOCKETS
 io.on('connection', function(socket){
@@ -48,6 +53,10 @@ io.on('connection', function(socket){
 
 		socket.on('incomingAction', function (data) {
 			gameController.incomingAction(data.game,data.userhash,data.action,data.amt);
+			});
+
+		socket.on('newGame', function (data) {
+			gameController.newGame();
 			});
 		
 		

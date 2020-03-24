@@ -17,12 +17,19 @@ var dealer;
 
 
 
-
 function incomingAction(game,user,action,amt){
-	game1.doAction(game1.getPlayerByHash(user), action, amt);
-	game1.getNextAction();
+
+	if(game1.getRound()<4) {
+		game1.doAction(game1.getPlayerByHash(user), action, amt);
+		game1.getNextAction();
+		sendDataToAllPlayers(game1);
+		game1.printSeats();
+	}
+else {
+
 	sendDataToAllPlayers(game1);
-	game1.printSeats();
+	console.log("FINALLY OVER");
+	}
 }
 
 
