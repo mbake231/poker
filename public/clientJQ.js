@@ -1,5 +1,6 @@
 //var socket = io('http://localhost:3000');
-var socket = io('https://fartmanjack.herokuapp.com/socket.io/socket.io.js');
+//const PORT = process.env.PORT || 3000;
+var socket = io(window.location.hostname+":3000");
 
 var gameData;
 var seats = [];
