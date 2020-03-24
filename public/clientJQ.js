@@ -1,5 +1,5 @@
-var socket = io();
-
+//var socket = io('http://localhost:3000');
+var socket = io(window.location.hostname);
 var gameData;
 var seats = [];
 var myid;
