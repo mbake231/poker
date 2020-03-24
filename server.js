@@ -70,7 +70,7 @@ io.on('connection', function(socket){
 exports.io = io;
 
 
-app.get('/table',function(req,res)
+app.get('/',function(req,res)
 {
 	res.render('table',
 		{title:'Neighborhood Poker',message:'Welcome'})

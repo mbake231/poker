@@ -1,4 +1,4 @@
-var socket = io('http://localhost:3000');
+var socket = io();
 
 var gameData;
 var seats = [];
