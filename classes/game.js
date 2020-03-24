@@ -37,6 +37,8 @@ class game {
 
 		gameTable.deck = new deck();
 		gameTable.hash = this.makeid(16);
+
+
 	}
 
 	makeid(length) {
