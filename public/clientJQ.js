@@ -4,12 +4,7 @@
 //script(src='./socket.io/socket.io.js')
 //var socket = io.connect(window.location.hostname);
 
-var HOST = location.origin.replace(/^http/, 'ws')
-var ws = new WebSocket(HOST);
-var el = document.getElementById('server-time');
-ws.onmessage = function (event) {
-  el.innerHTML = 'Server time: ' + event.data;
-};
+
 var socket = io();
 var gameData;
 var seats = [];
