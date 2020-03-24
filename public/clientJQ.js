@@ -1,6 +1,9 @@
 //var socket = io('http://localhost:3000');
 //const PORT = process.env.PORT || 3000;
-var socket = io(window.location.hostname+":3000");
+//var socket = io(window.location.hostname+":3000");
+//script(src='./socket.io/socket.io.js')
+var socket = io.connect(window.location.hostname);
+
 
 var gameData;
 var seats = [];
