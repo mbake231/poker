@@ -1,10 +1,16 @@
 //var socket = io('http://localhost:3000');
 //const PORT = process.env.PORT || 3000;
-var socket = io(window.location.hostname+":3000");
+//var socket = io(window.location.hostname+":3000");
 //script(src='./socket.io/socket.io.js')
 //var socket = io.connect(window.location.hostname);
 
-
+var HOST = location.origin.replace(/^http/, 'ws')
+var ws = new WebSocket(HOST);
+var el = document.getElementById('server-time');
+ws.onmessage = function (event) {
+  el.innerHTML = 'Server time: ' + event.data;
+};
+var socket = io();
 var gameData;
 var seats = [];
 var myid;
