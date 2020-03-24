@@ -2,6 +2,7 @@
 var deck = require('./deck.js').deck;
 
 var gameTable = {
+	hash:'train',
 	game_size:9,
  	seats:[],
 	numseats:0,
@@ -29,6 +30,17 @@ class game {
 			gameTable.seats[i] = "empty";
 
 		gameTable.deck = new deck();
+		gameTable.hash = this.makeid(16);
+	}
+
+	makeid(length) {
+	   var result           = '';
+	   var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+	   var charactersLength = characters.length;
+	   for ( var i = 0; i < length; i++ ) {
+	      result += characters.charAt(Math.floor(Math.random() * charactersLength));
+		}
+   		return result;
 	}
 
 	getPreviousPlayer (player) {
@@ -59,7 +71,17 @@ class game {
 
 	setNextPlayer (player) {
 		player.nextPlayer = this.getNextPlayer(player);
+		console.log("SEAT "+player.seat+" JOIN AND THEIR NEXT PLAYER IS " +player.nextPlayer);
+
 		//console.log(player.userid+" then goes"+player.nextPlayer.userid);
+	}
+
+	getPlayerByHash(hash) {
+		for (var i=0;i<gameTable.game_size;i++){
+			if(gameTable.seats[i].hash===hash)
+				return gameTable.seats[i];
+		}
+		console.log("found no user by that hash");
 	}
 
 	addPlayer(player,seat) {
@@ -74,8 +96,20 @@ class game {
 				gameTable.numseats++;
 				console.log(player.userid+" joined game! at seat "+player.seat)
 			}
-			
-			if(gameTable.numseats!=1) {
+			//need to ensure first guy gets his pointer set
+			if(gameTable.numseats==2) {
+				this.setNextPlayer(gameTable.seats[seat]);
+
+				//find person before them and set it to the new guy
+				this.getPreviousPlayer(player).nextPlayer=player;
+
+				//set the other guy to tyou
+				player.nextPlayer.nextPlayer = player;
+				player.nextPlayer.previousPlayer = player;
+
+				console.log (player.nextPlayer.seat + " the other guy is now pointing at me " + player.nextPlayer.nextPlayer )
+			}
+			if(gameTable.numseats>2) {
 				this.setNextPlayer(gameTable.seats[seat]);
 
 				//find person before them and set it to the new guy
@@ -170,14 +204,20 @@ class game {
 	getBigBlindPlayer() {
 		var smallBlindPayer = gameTable.seats[gameTable.dealer.seat].nextPlayer;
 		var bigBlindPayer = gameTable.seats[smallBlindPayer.seat].nextPlayer;
+		//console.log("Big Blind on Seat: "+bigBlindPayer.seat);
 		return bigBlindPayer;
 	}
 
-	postBlinds() {
-		console.log("the dealer is at seat"+gameTable.dealer.seat);
+	getSmallBlindPlayer () {
 		var smallBlindPayer = gameTable.seats[gameTable.dealer.seat].nextPlayer;
+		//console.log("Small Blind on Seat: "+smallBlindPayer.seat);
+		return smallBlindPayer;
+	}
 
-		var bigBlindPayer = gameTable.seats[smallBlindPayer.seat].nextPlayer;
+	postBlinds() {
+		var smallBlindPayer = this.getSmallBlindPlayer();
+		var bigBlindPayer = this.getBigBlindPlayer();
+
 
 		//withdraw and add to line
 		gameTable.seats[smallBlindPayer.seat].addMoneyToLine(gameTable.smallBlind);
@@ -209,38 +249,100 @@ class game {
 				return gameTable.seats[i];
 		}
 	}
+
+	clearRoundData() {
+			//clear data we dont need for next round, keeping round count OBVI
+			gameTable.bettingRound.lastRaiser=null;
+			gameTable.bettingRound.actionOn=null;
+			//set this for fuirst to act
+			gameTable.bettingRound.nextActionsAvailable=['raise','check'];
+			gameTable.bettingRound.totalOnLine=0;
+			gameTable.bettingRound.currentRaiseToCall=0;
+			gameTable.bettingRound.lastBet=null;
+	}
+
+	goToNextRound() {
+
+		if (gameTable.bettingRound.round==2) {
+			gameTable.bettingRound.round++;
+			this.dealRiver();
+			this.clearRoundData();
+			//set action to small blind
+			this.setActionOn(gameTable.dealer.nextPlayer);
+			gameTable.bettingRound.round++;
+
+		}
+		if (gameTable.bettingRound.round==1) {
+			gameTable.bettingRound.round++;
+			this.dealTurn();
+			this.clearRoundData();
+			//set action to small blind
+			this.setActionOn(gameTable.dealer.nextPlayer);
+			
+
+		}
+		if (gameTable.bettingRound.round==0) {
+			gameTable.bettingRound.round++;
+			this.dealFlop();
+			this.clearRoundData();
+			//set action to small blind
+			this.setActionOn(gameTable.dealer.nextPlayer);
+			
+		}
+		
+		
+	}
+
 	getNextAction () {
 
 		//BIG BLIND CAN ACT AT END OF PRE-FLOP BETTING
 		//IF ACTION IS TO BIGBLIND + AND NO ONE RAISED AKA LAST BET IS CALL AND THE CALL IS SAME AS BIG BLIND
 		//THEN BIG BLIND AND 
-		if(this.getActionOnPlayer().userid == this.getBigBlindPlayer().userid
-			&& this.getBigBlindPlayer().currentRaiseToCall == gameTable.bigBlind
-			&& gameTable.bettingRound.lastBet=='call') {
-			gameTable.bettingRound.nextActionsAvailable = ['raise','call','check']; 
+
+		if(gameTable.bettingRound.round==3) {
+			console.log("THE GAME IS OVA");
+			return false;
 		}
 
-		//ROUND OVER IF LAST BET WAS CHECK AND UNDERGUN IS UP
-		if(gameTable.bettingRound.lastBet=='check' && this.getActionOnPlayer().userid==this.getUnderTheGunPlayer()){
+		if(this.getActionOnPlayer().hash === this.getBigBlindPlayer().hash
+			&& gameTable.bettingRound.currentRaiseToCall == gameTable.bigBlind
+			&& gameTable.bettingRound.lastBet==='call'
+			&& gameTable.bettingRound.round==0) {
+			gameTable.bettingRound.nextActionsAvailable = ['raise','check']; 
+		}
+
+		//SEE IF BIG BLIND CHECKED
+		else if(gameTable.bettingRound.lastBet=='check' && gameTable.bettingRound.currentRaiseToCall == gameTable.bigBlind && gameTable.bettingRound.round==0){
+			console.log("round over the big blind checked");
+			this.goToNextRound();
+		}
+
+		//ROUND OVER IF LAST BET WAS CHECK AND SMALL IS UP
+
+	//	console.log(this.getActionOnPlayer().hash +" vs "+this.getSmallBlindPlayer().hash);
+
+		
+		else if(gameTable.bettingRound.lastBet==='check' && this.getActionOnPlayer().hash===this.getSmallBlindPlayer().hash){
+			console.log(this.getActionOnPlayer().hash +" vs "+this.getSmallBlindPlayer().hash);
 			console.log("round over everyone checked");
-			return false;
+			this.goToNextRound();
 		}
 
 		//ROUND OVER IF LAST BET WAS CALL AND PLAYER UP HAS MOL = CURRENTRAISE
-		if(gameTable.bettingRound.lastBet=='call' && this.getActionOnPlayer().moneyOnLine==gameTable.bettingRound.currentRaiseToCall){
+		else if(gameTable.bettingRound.lastBet==='call' && this.getActionOnPlayer().moneyOnLine==gameTable.bettingRound.currentRaiseToCall){
 			console.log("round over all bets in");
-			return false;
+			this.goToNextRound();
 		}
 
 		
 
-		if(gameTable.bettingRound.lastBet=='check') {
-			gameTable.bettingRound.nextActionsAvailable = ['raise','call','check'];
+		else if(gameTable.bettingRound.lastBet=='check') {
+			gameTable.bettingRound.nextActionsAvailable = ['raise','check'];
 			console.log("action: "+gameTable.seats[gameTable.bettingRound.actionOn.seat].userid +" "+gameTable.bettingRound.nextActionsAvailable);
 
 		}
 
-		if(gameTable.bettingRound.lastBet=='call') {
+		else if(gameTable.bettingRound.lastBet=='call') {
 				gameTable.bettingRound.nextActionsAvailable = ['raise','call','fold'];
 				console.log("action: "+gameTable.seats[gameTable.bettingRound.actionOn.seat].userid +" "+gameTable.bettingRound.nextActionsAvailable);
 
@@ -248,7 +350,7 @@ class game {
 		}
 
 		//IF THE LAST THING TO HAPPEN WAS BLINDS POSTING, AND MY MOL IS < BLINDS, I NEED TO PAY BLIND OR RAISE OR FOLD
-		if(gameTable.bettingRound.lastBet=='blinds'
+		else if(gameTable.bettingRound.lastBet=='blinds'
 			&& gameTable.seats[gameTable.bettingRound.actionOn.seat].moneyOnLine != gameTable.currentRaiseToCall) {
 			
 			gameTable.bettingRound.nextActionsAvailable = ['raise','call','fold']; 
@@ -278,6 +380,8 @@ class game {
 				if(action=="check") {
 					gameTable.bettingRound.lastBet='check';
 					this.advanceToNextPlayer();
+					console.log("WAITING ON SEAT: "+ gameTable.bettingRound.actionOn.seat);
+					console.log("SMALL BLIND IS "+this.getSmallBlindPlayer().seat);
 					console.log(player.userid+" has checked");
 				
 				}
@@ -290,9 +394,11 @@ class game {
 
 				}
 				else if (action=="call") {
+						var amtToCall = gameTable.bettingRound.currentRaiseToCall-player.moneyOnLine;
 					if(player.hasEnough(gameTable.bettingRound.currentRaiseToCall)) {
-						player.addMoneyToLine(gameTable.bettingRound.currentRaiseToCall);
-						gameTable.bettingRound.totalOnLine+=gameTable.bettingRound.currentRaiseToCall;
+						//need to get diff of what player has in vs whats to call
+						player.addMoneyToLine(amtToCall);
+						gameTable.bettingRound.totalOnLine+=amtToCall;
 						gameTable.bettingRound.lastBet='call';
 						this.advanceToNextPlayer();
 						console.log(player.userid+" has called "+gameTable.bettingRound.currentRaiseToCall);
@@ -328,19 +434,47 @@ class game {
 			console.log("this player is not up");
 		}
 	}
-	generatePrivatePlayerData () {
+
+
+	//so we can send data to everyone
+    getAllPlayerSessionIDs () {
+    	var allPlayers = [];
+
+    	for (var i=0;i<gameTable.game_size;i++){
+    		if(gameTable.seats[i]!="empty") {
+    			allPlayers.push({sessionid:gameTable.seats[i].sessionid,
+    							userhash:gameTable.seats[i].hash});
+    		}
+    	}
+    	return allPlayers;
+    }
+    //so we can package the data to send to everyone
+	generatePrivatePlayerData (thisSessionId) {
 		var privateGameTable =  JSON.stringify(gameTable,function( key, value) {
  			if(key == 'nextPlayer') { 
+    			return "removedForStringify";
+  			} 
+  			if(key == 'previousPlayer') { 
     			return "removedForStringify";
   			} 
   			else {
     			return value;
   			};
 		});
-		return privateGameTable;
+
+		privateGameTable = JSON.parse(privateGameTable);
+
+		for(var i=0; i<gameTable.game_size;i++){
+			if(privateGameTable.seats[i] != 'empty' 
+				&&  privateGameTable.seats[i].card1!=null
+				&&  !(privateGameTable.seats[i].sessionid===thisSessionId)) {
+					privateGameTable.seats[i].card1 = "private";
+					privateGameTable.seats[i].card2 = "private";
+
+			}
+		}
+		return JSON.stringify(privateGameTable);
 	}
-
-
 }
 
 

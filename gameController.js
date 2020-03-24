@@ -15,13 +15,37 @@ var gameCount = 0;
 var firstDealer;
 var dealer;
 
-function joinGame (userid,cookie,balance,status,seat) {
+
+
+
+function incomingAction(game,user,action,amt){
+	game1.doAction(game1.getPlayerByHash(user), action, amt);
+	game1.getNextAction();
+	sendDataToAllPlayers(game1);
+	game1.printSeats();
+}
+
+
+
+
+function addNewPlayerToGame (gameHash,userid,cookie,balance,status,seat,sessionid) {
 	
-	var newPlayer = new player(userid,cookie,balance,status,sessionid);
+	//constructor(userid,cookie,balance,status,sessionid) {
+	var newPlayer = new player(userid,cookie,Number(balance),status,sessionid);
+	
+	//some point will need to look up game by hash and add that way
 	game1.addPlayer(newPlayer,seat);
 	game1.printSeats();
-	sendData();
-	startSocketConnetion();
+
+
+	server.io.to(sessionid).emit('yourHash',newPlayer.hash);
+
+
+
+	sendDataToAllPlayers(game1);
+
+
+	
 
 
 }
@@ -40,34 +64,41 @@ function runGame() {
 	game1.setDealer(dealer);
 	game1.postBlinds();
 	game1.dealHands();
-	sendData();
+	sendDataToAllPlayers(game1);
 	game1.printSeats();
 	game1.getNextAction();
-	sendData();
+	sendDataToAllPlayers(game1);
 
 }
 
 function startSocketConnetion () {
-		server.io.on('connection', function(socket){
-		var cookieToFind = parseInt(cookie);
+		//server.io.on('connection', function(socket){
 
-		//listen for start game
-		socket.on('startGame', function () {
-			runGame();
-			});
-
-		});
+		
 }
 
 
 
-function sendData() {
+function sendDataToAllPlayers(thisGame) {
 	//console.log(game1.generatePrivatePlayerData());
-	server.io.on('connection', function(socket){
+	var sendList = thisGame.getAllPlayerSessionIDs();
 
-		socket.emit('update',game1.generatePrivatePlayerData());
-		socket.broadcast.emit('update',game1.generatePrivatePlayerData());
-	});
+
+	var sessionidToSend;
+	//var userHashToSend;
+	for (var i=0; i<sendList.length;i++)
+	{
+			sessionidToSend=sendList[i].sessionid;
+			//userHashToSend=sendList[i].userhash;
+			server.io.to(sessionidToSend).emit('update',thisGame.generatePrivatePlayerData(sessionidToSend));
+//			server.io.on('connection', function(socket){
+
+//				console.log(sessionidToSend+" is (emitting) user "+userHashToSend);
+				//server.update(thisGame);
+//				socket.emit('update',thisGame.generatePrivatePlayerData(socket.id));
+				//server.io.to(sessionidToSend).emit('update',thisGame.generatePrivatePlayerData(userHashToSend));
+//			});
+	}
 	//getPLayers |UNique payload and send it to thier sessionid
 	//game.getPlayers
 	//server.io(PlayerList.getPlayer(player).sessionid).emit('update', payload);
@@ -76,4 +107,8 @@ function sendData() {
 
 
 
-exports.joinGame = joinGame;
+exports.addNewPlayerToGame = addNewPlayerToGame;
+exports.runGame = runGame;
+exports.incomingAction = incomingAction;
+
+

@@ -25,7 +25,7 @@ exports.player = player;
 
 */
 class player {
-	constructor(userid,cookie,balance,status) {
+	constructor(userid,cookie,balance,status,sessionid) {
 		this.userid=userid;
 		this.cookie=cookie;
 		this.balance=balance.toFixed(2);;
@@ -34,6 +34,8 @@ class player {
 		this.card2=null;
 		this.moneyOnLine=0;
 		this.nextPlayer=null;
+		this.hash=this.makeid(16);
+		this.sessionid=sessionid;
 		//return player;
 	}
 
@@ -50,6 +52,15 @@ class player {
 		if (this.balance>=amt)
 			return true;
 		return false;
+	}
+	makeid(length) {
+	   var result           = '';
+	   var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+	   var charactersLength = characters.length;
+	   for ( var i = 0; i < length; i++ ) {
+	      result += characters.charAt(Math.floor(Math.random() * charactersLength));
+		}
+   		return result;
 	}
 
 }

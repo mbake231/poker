@@ -6,15 +6,17 @@ var express=require('express');
 var passport = require('passport');
 var GoogleStrategy = require('passport-google-oauth').OAuthStrategy;
 var bodyParser = require('body-parser');
-var io = require('socket.io')(http);
+
 var crypto = require('crypto');
 
 var gameController = require('./gameController.js');
+var io = require('socket.io')(http);
 
 
 var app = express()
   , http = require('http').createServer(app)
   , io = io.listen(http);
+
 
 http.listen(3000);
 
@@ -25,6 +27,39 @@ app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 app.use(express.static(__dirname + '/public'));
 
+//SOCKETS
+io.on('connection', function(socket){
+	var hash;
+		socket.on('register', function (regDetails) {
+			hash=gameController.addNewPlayerToGame(regDetails.gameHash,
+									regDetails.userid,
+									"cookie",
+									regDetails.balance,
+									regDetails.status,
+									regDetails.seat,
+									socket.id);
+			})
+		
+
+		//listen for start game
+		socket.on('startGame', function () {
+			gameController.runGame();
+			});
+
+		socket.on('incomingAction', function (data) {
+			gameController.incomingAction(data.game,data.userhash,data.action,data.amt);
+			});
+		
+		
+});
+
+
+
+//gameController.startSocketConnetion();
+
+
+exports.io = io;
+
 
 app.get('/table',function(req,res)
 {
@@ -32,7 +67,7 @@ app.get('/table',function(req,res)
 		{title:'Neighborhood Poker',message:'Welcome'})
 
 });
-
+/*
 app.get('/joinTable',function(req,res)
 {
 	//var tableid = req.query.tableid;
@@ -57,7 +92,7 @@ app.post('/joinTable', (req, res) => {
 
 });
 
-exports.io = io;
+
 
 
 //var game = require('./classes/game.js').game;
@@ -102,7 +137,7 @@ game1.getNextAction();
 game1.doAction(mike,'call',10);
 game1.getNextAction();
 game1.printSeats();
-*/
+
 //game1.dealFlop();
 //game1.printBoard();
 //game1.dealTurn();
@@ -116,7 +151,7 @@ game1.printSeats();
 
 
 
-/*
+
 app.get('/pokerTable',function(req,res)
 {
 	var tableid = req.query.tableid;

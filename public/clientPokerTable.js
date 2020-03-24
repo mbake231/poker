@@ -9,6 +9,8 @@ var cookie = ('; ' + document.cookie)
 
 var gameData;
 
+var myid;
+
 cookie = parseInt(cookie);
 
 //console.log("trying "+cookie);
@@ -21,11 +23,11 @@ socket.on('update', function(privateData) {
 	//document.getElementById('mycards').innerHTML='MY CARDS: ' + JSON.stringify(privateData);
 
 });
-/*
-socket.on('handshake', function() {
-	console.log("APPROVED");
-});
 
+socket.on('yourID', function(myNewid) {
+	myid=myNewid;
+});
+/*
 socket.on('newhand', function(privateData) {
 	console.log("MY HAND " + JSON.stringify(privateData));
 	document.getElementById('mycards').innerHTML='MY CARDS: ' + JSON.stringify(privateData);
