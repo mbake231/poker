@@ -1,5 +1,5 @@
 //var socket = io('http://localhost:3000');
-var socket = io.connect(window.location.hostname);
+var socket = io.connect('https://fartmanjack.herokuapp.com/socket.io/socket.io.js');
 
 var gameData;
 var seats = [];
