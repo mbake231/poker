@@ -1,5 +1,6 @@
 //var socket = io('http://localhost:3000');
-var socket = io(window.location.hostname);
+var socket = io.connect(window.location.hostname);
+
 var gameData;
 var seats = [];
 var myid;
