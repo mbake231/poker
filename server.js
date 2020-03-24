@@ -11,7 +11,7 @@ var crypto = require('crypto');
 
 var gameController = require('./gameController.js');
 var io = require('socket.io')(http);
-
+const PORT = process.env.PORT || 3000;
 
 var app = express()
   , http = require('http').createServer(app)
@@ -19,7 +19,7 @@ var app = express()
 
 
 
-http.listen(3000);
+http.listen(PORT);
 
 
 
