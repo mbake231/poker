@@ -566,7 +566,8 @@ class game {
 				}
 				else if (action=="call") {
 						var amtToCall = gameTable.bettingRound.currentRaiseToCall-player.moneyOnLine;
-					if(player.hasEnough(gameTable.bettingRound.currentRaiseToCall)) {
+						console.log('amt to call '+amtToCall+" hasEnough?"+player.hasEnough(gameTable.bettingRound.currentRaiseToCall));
+					if(player.hasEnough(amtToCall)) {
 						//need to get diff of what player has in vs whats to call
 						player.addMoneyToLine(amtToCall);
 						gameTable.bettingRound.totalOnLine+=amtToCall;
