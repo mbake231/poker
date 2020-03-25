@@ -128,4 +128,5 @@ exports.addNewPlayerToGame = addNewPlayerToGame;
 exports.runGame = runGame;
 exports.incomingAction = incomingAction;
 
+exports.nextHand = nextHand;
 

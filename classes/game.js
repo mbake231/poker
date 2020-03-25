@@ -43,17 +43,18 @@ class game {
 
 	goToNextHand () {
 		gameTable.deck = new deck();
-		gameTable.dealer=dealer.nextPlayer;
-		gametable.winner.player=null;
-		gametable.winner.hand=null;
-		gametable.winner.winningPot=null;
-		gametable.currentPot=0;
-		gametable.bettingRound.lastRaiser=null;
-		gametable.bettingRound.nextActionsAvailable=[];
-		gametable.bettingRound.round=0
-		gametable.bettingRound.totalOnLine=0;
-		gametable.bettingRound.currentRaiseToCall=0;
-		gametable.bettingRound.currentRaiseToCall=null;
+		gameTable.dealer=gameTable.dealer.nextPlayer;
+		gameTable.winner.player=null;
+		gameTable.winner.hand=null;
+		gameTable.winner.winningPot=null;
+		gameTable.board=[];
+		gameTable.currentPot=0;
+		gameTable.bettingRound.lastRaiser=null;
+		gameTable.bettingRound.nextActionsAvailable=[];
+		gameTable.bettingRound.round=0
+		gameTable.bettingRound.totalOnLine=0;
+		gameTable.bettingRound.currentRaiseToCall=0;
+		gameTable.bettingRound.currentRaiseToCall=null;
 
 	}
 

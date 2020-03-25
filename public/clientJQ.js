@@ -117,7 +117,9 @@ $(window).on('load', function(){
 			$('#actionBar').find('#fold').css('display','none');
 			$('#actionBar').css('display','none');
 		}
-
+		if(gameData.winner.players==null) {
+				$('.winner').css('visibility','hidden');
+		}
 		if(gameData.winner.players!=null) {
 			$.each(gameData.winner.players, function (index) {
 				$('#winnerDetails').append(gameData.winner.players[index].userid+" won $"+gameData.winner.winningPot+"with a "+gameData.winner.hand+"!");

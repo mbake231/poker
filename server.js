@@ -56,7 +56,7 @@ io.on('connection', function(socket){
 			});
 
 		socket.on('nextHand', function (data) {
-			gameController.newGame();
+			gameController.nextHand();
 			});
 		
 		
