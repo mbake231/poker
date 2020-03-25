@@ -21,14 +21,19 @@ function incomingAction(game,user,action,amt){
 
 	if(game1.getRound()<4) {
 		game1.doAction(game1.getPlayerByHash(user), action, amt);
-		game1.getNextAction();
-		sendDataToAllPlayers(game1);
-		game1.printSeats();
+		if(game1.getRound()<4){
+			game1.getNextAction();
+			sendDataToAllPlayers(game1);
+			game1.printSeats();
+		}
+		else {
+			sendDataToAllPlayers(game1);
+			console.log("FINALLY OVER");
+		}
 	}
 else {
 
-	sendDataToAllPlayers(game1);
-	console.log("FINALLY OVER");
+	
 	}
 }
 
@@ -37,6 +42,7 @@ function nextHand(){
 	game1.setDealer(dealer.nextPlayer);
 	dealer=dealer.nextPlayer;
 	game1.postBlinds();
+	game1.dealHands();
 	sendDataToAllPlayers(game1);
 	game1.printSeats();
 	game1.getNextAction();

@@ -67,6 +67,9 @@
 	display:none;
 
 }
+#raiseInput {
+	display: none;
+}
 #call {
 	display:none;
 }
@@ -85,7 +88,7 @@
 }
 
 .winner {
-	 visibility:hidden
+	 visibility:hidden;
 	}
 
 #overlay {

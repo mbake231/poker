@@ -9,6 +9,7 @@ var socket = io();
 var gameData;
 var seats = [];
 var myid;
+var mySeatData;
 var gameid='train';
 
 
@@ -47,8 +48,16 @@ function register () {
 		socket.emit('incomingAction', {game:gameid,userhash:myid,action:'fold'});
 	}
 
-	function raise(amt) {
-		socket.emit('incomingAction', {game:gameid,userhash:myid,action:'raise',amt:amt});
+	function raise() {
+		var inputedAmt = $("#raise").find('.raiseInput').val();
+		if(Number(inputedAmt)<=Number(mySeatData.balance)) {
+			console.log('sending raise of '+inputedAmt);
+			$('#raise').find('.raiseInput').css('color','black');
+			socket.emit('incomingAction', {game:gameid,userhash:myid,action:'raise',amt:Number(inputedAmt)});
+		}
+		else {
+			$('#raise').find('.raiseInput').css('color','red');
+		}
 	}
 
 $(window).on('load', function(){
@@ -59,6 +68,13 @@ $(window).on('load', function(){
 
 
 	function updateGameData(gameData){
+		//store MY data
+		$.each(seats,function(index) {
+			if(seats[index].hash === myid){
+				mySeatData = seats[index];
+				console.log("MY SEAT "+mySeatData.seat);
+			}
+		})
 		$.each(seats, function(index) {
 			if (seats[index]!='empty') {
 				$.each(seats[index], function (k,v) {
@@ -67,13 +83,22 @@ $(window).on('load', function(){
 					if(k=='userid')
 						$('#player'+index).find('.userid').html(v);
 					else if(k=='balance')
-						$('#player'+index).find('.balance').html(v);
-					else if(k=='card1')
-						$('#player'+index).find('.card1').html('<img id="theImg" src="img/cards/'+v+'.svg" width="100%"/>');
+						$('#player'+index).find('.balance').html("$"+Number(v).toFixed(2));
+					else if(k=='card1') {
+						if(gameData.seats[index].status=='inhand')
+							$('#player'+index).find('.card1').html('<img id="theImg" src="img/cards/'+v+'.svg" width="100%"/>');
+						else if(gameData.seats[index].status=='folded')
+							$('#player'+index).find('.card1').html('<img id="theImg" src="img/cards/fold.svg" width="100%"/>');
+
 						//$('#player'+index).find('.card1').append(v);
-					else if(k=='card2')
-						//$('#player'+index).find('.card2').append(v);
-						$('#player'+index).find('.card2').html('<img id="theImg" src="img/cards/'+v+'.svg" width="100%"/>');
+					}
+					else if(k=='card2') {
+						if(gameData.seats[index].status=='inhand')
+							$('#player'+index).find('.card2').html('<img id="theImg" src="img/cards/'+v+'.svg" width="100%"/>');
+						else if(gameData.seats[index].status=='folded')
+							$('#player'+index).find('.card2').html('<img id="theImg" src="img/cards/fold.svg" width="100%"/>');
+
+					}
 				});
 			}
 
@@ -81,7 +106,8 @@ $(window).on('load', function(){
 		//clear actionOn
 
 		if(gameData.bettingRound.actionOn!=null){
-			console.log("on me? "+gameData.bettingRound.actionOn.hash+" vs "+myid);
+			$('#start').css('display','none');
+			//console.log("on me? "+gameData.bettingRound.actionOn.hash+" vs "+myid);
 			$('#player'+gameData.bettingRound.actionOn.seat).addClass('actionOn');
 			if(gameData.bettingRound.actionOn.hash===myid && gameData.bettingRound.round!=null) {
 
@@ -95,6 +121,7 @@ $(window).on('load', function(){
 
 				$('#actionBar').find('#raise').css('display','none');
 				$('#actionBar').find('#check').css('display','none');
+				$('#actionBar').find('#raiseInput').css('display','none');
 				$('#actionBar').find('#call').css('display','none');
 				$('#actionBar').find('#fold').css('display','none');
 				$('#actionBar').css('display','none');
@@ -112,20 +139,22 @@ $(window).on('load', function(){
 		//iff actionon is null
 		else {
 			$('#actionBar').find('#raise').css('display','none');
+			$('#actionBar').find('#raiseInput').css('display','none');
 			$('#actionBar').find('#check').css('display','none');
 			$('#actionBar').find('#call').css('display','none');
 			$('#actionBar').find('#fold').css('display','none');
 			$('#actionBar').css('display','none');
 		}
-		if(gameData.winner.players==null) {
+		if(gameData.winner.hand==null) {
 				$('.winner').css('visibility','hidden');
 		}
-		if(gameData.winner.players!=null) {
+		if(gameData.winner.hand!=null) {
+			$('.winner').css('visibility','visible');
 			$.each(gameData.winner.players, function (index) {
-				$('#winnerDetails').append(gameData.winner.players[index].userid+" won $"+gameData.winner.winningPot+"with a "+gameData.winner.hand+"!");
+				$('#winner').html(gameData.winner.players[index].userid+" won $"+gameData.winner.winningPot+"with a "+gameData.winner.hand+"!");
 				
 			})
-			$('.winner').css('visibility','visible');
+			
 		}
 
 	}

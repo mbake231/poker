@@ -12,7 +12,7 @@ var gameTable = {
 	board:[],
 	dealer:null,
 	winner:{
-		player:null,
+		players:[],
 		hand:null,
 		winningPot:0},
 	currentPot:0,
@@ -44,17 +44,42 @@ class game {
 	goToNextHand () {
 		gameTable.deck = new deck();
 		gameTable.dealer=gameTable.dealer.nextPlayer;
-		gameTable.winner.player=null;
+		gameTable.winner.players=null;
 		gameTable.winner.hand=null;
 		gameTable.winner.winningPot=null;
 		gameTable.board=[];
 		gameTable.currentPot=0;
 		gameTable.bettingRound.lastRaiser=null;
 		gameTable.bettingRound.nextActionsAvailable=[];
-		gameTable.bettingRound.round=0
+		gameTable.bettingRound.round=0;
 		gameTable.bettingRound.totalOnLine=0;
 		gameTable.bettingRound.currentRaiseToCall=0;
 		gameTable.bettingRound.currentRaiseToCall=null;
+
+		//clear cards
+		for(var i=0;i<gameTable.game_size;i++)
+		{
+			if(gameTable.seats[i].status=='inhand'||gameTable.seats[i].status=='folded'){
+				gameTable.seats[i].card1=null;
+				gameTable.seats[i].card2=null;
+				}
+					
+			}
+		//set to waiting to play
+		for (var i=0;i<gameTable.game_size;i++)
+		{
+			if(gameTable.seats[i].status=='inhand' || gameTable.seats[i].status=='folded' )
+				gameTable.seats[i].status='playing';
+				console.log(gameTable.seats[i].seat+" is now set to "+gameTable.seats[i].status);
+		}
+
+		//restore pointers
+		for (var i=0;i<gameTable.game_size;i++) {
+			if(gameTable.seats[i].status=='playing' ) {
+				this.setNextPlayer(gameTable.seats[i]);
+			}
+		}
+
 
 	}
 
@@ -84,14 +109,13 @@ class game {
 	getNextPlayer(player) {
 		for (var i=Number(player.seat)+1;i<gameTable.game_size;i++){
 			if(gameTable.seats[i]!="empty") {
-				console.log(player+" YOUR NEXT PERSON IS NOW TOP "+i+".   f"+ gameTable.seats[i]);
+				//console.log(player.seat+" YOUR NEXT PERSON IS NOW TOP "+i+".   f"+ gameTable.seats[i]);
 				return gameTable.seats[i];
 			}
 		}
 		for (var i=0;i<player.seat;i++){
 			if(gameTable.seats[i]!="empty") {
-								console.log(player+" YOUR NEXT PERSON IS NOW "+ gameTable.seats[i]);
-
+				//console.log(player.seat+" YOUR NEXT PERSON IS NOW "+ gameTable.seats[i]);
 				return gameTable.seats[i];
 			}
 		}
@@ -159,7 +183,7 @@ class game {
 	foldPlayer (player) {
 		player.status="folded";
 		this.getPreviousPlayer(player).nextPlayer=this.getNextPlayer(player);
-		player.nextPlayer = "folded";
+		//player.nextPlayer = "folded";
 
 	}
 
@@ -181,7 +205,7 @@ class game {
 	getNumberPlayersInHand () {
 		let counter=0;
 		for (var i=0;i<gameTable.game_size;i++) {
-			if(gameTable.seats[i].status=="playing")
+			if(gameTable.seats[i].status=="inhand")
 				counter++;
 		}
 		return counter;
@@ -194,15 +218,22 @@ class game {
 		//console.log("the dealer is now "+player.userid +" at seat" +player.seat+" "+gameTable.dealer.seat);
 	}
 	dealHands() {
+
+		for (var i=0;i<gameTable.game_size;i++)
+		{
+			if(gameTable.seats[i].status=='playing'|| gameTable.seats[i].status=='folded')
+				gameTable.seats[i].status='inhand';
+		}
 		
 		//deal card 1
 		var cardGetter = gameTable.seats[gameTable.dealer.seat].nextPlayer;
 			while (cardGetter.card1==null)
 			{
+				console.log("dealing to seeat "+cardGetter.seat);
 				cardGetter.card1=gameTable.deck.dealCard();
 				cardGetter = gameTable.seats[cardGetter.seat].nextPlayer;
 			}
-
+			//deal card 1
 			while (cardGetter.card2==null)
 			{
 				cardGetter.card2=gameTable.deck.dealCard();
@@ -300,7 +331,7 @@ class game {
 	
 
 		for (var i=0;i<gameTable.game_size;i++)
-			if(gameTable.seats[i].status=='playing')
+			if(gameTable.seats[i].status=='inhand')
 				gameTable.seats[i].clearMoneyOnLine();
 	}
 
@@ -350,57 +381,74 @@ class game {
 
 	settleTheHand() {
 		console.log("SETTLING UP");
+		if(this.getNumberPlayersInHand()>1) {
+			gameTable.bettingRound.round=4;
+			var packageCards = {
+				boardCards:[],
+				playerCards:[]
+			};
+			var playerCardHolder;
+			packageCards.boardCards=gameTable.board;
 
-		var packageCards = {
-			boardCards:[],
-			playerCards:[]
-		};
-		var playerCardHolder;
-		packageCards.boardCards=gameTable.board;
+
+			for(var i=0;i<gameTable.game_size;i++) {
+				if(gameTable.seats[i].status=='inhand'){
+					playerCardHolder = {playerId:gameTable.seats[i].hash,
+										cards:[gameTable.seats[i].card1,gameTable.seats[i].card2]
+						};
+
+					packageCards.playerCards.push(playerCardHolder);
+					}
+				}
+			
+			//get the winner(s)
+			var winner = pokerCalc.getHoldemWinner(packageCards,{ compactCards: true});
+			var storeWinners = [];
+
+			for (var i=0;i<winner.length;i++) {
+				winner = winner[i].playerId;
+				winner=(this.getPlayerByHash(winner));
+				storeWinners.push(winner);
+
+			}
+			//i can get hand desc just once cuz if they tie itll be the same
+			var winningHand = [storeWinners[0].card1,storeWinners[0].card2,gameTable.board[0],gameTable.board[1],gameTable.board[2],gameTable.board[3],gameTable.board[4]];
+			winningHand = Hand.solve(winningHand).descr;
+			
+			gameTable.winner.players=storeWinners;
+			gameTable.winner.hand=winningHand;
+
+			//save and give the pot
+			gameTable.winner.winningPot=(gameTable.currentPot/storeWinners.length).toFixed(2);
+			for (var i=0;i<storeWinners.length;i++) {
+				storeWinners[i].givePot((gameTable.currentPot/storeWinners.length).toFixed(2));
+
+			}
 
 
-		for(var i=0;i<gameTable.game_size;i++) {
-			if(gameTable.seats[i].status=='playing'){
-				playerCardHolder = {playerId:gameTable.seats[i].hash,
-									cards:[gameTable.seats[i].card1,gameTable.seats[i].card2]
-					};
-
-				packageCards.playerCards.push(playerCardHolder);
+		}//if
+		else {
+			this.clearRoundData();
+			//find last guy and guy pot
+			for(var i=0;i<gameTable.game_size;i++){
+				if(gameTable.seats[i].status=='inhand'){
+					gameTable.winner.players=[gameTable.seats[i]];
+					gameTable.winner.hand="everyone folded";
+					gameTable.winner.winningPot=gameTable.currentPot.toFixed(2);
+					gameTable.seats[i].givePot(gameTable.currentPot.toFixed(2));
 				}
 			}
-		
-		//get the winner(s)
-		var winner = pokerCalc.getHoldemWinner(packageCards,{ compactCards: true});
-		var storeWinners = [];
-
-		for (var i=0;i<winner.length;i++) {
-			winner = winner[i].playerId;
-			winner=(this.getPlayerByHash(winner));
-			storeWinners.push(winner);
-
-	}
-		//i can get hand desc just once cuz if they tie itll be the same
-		var winningHand = [storeWinners[0].card1,storeWinners[0].card2,gameTable.board[0],gameTable.board[1],gameTable.board[2],gameTable.board[3],gameTable.board[4]];
-		winningHand = Hand.solve(winningHand).descr;
-		
-		gameTable.winner.players=storeWinners;
-		gameTable.winner.hand=winningHand;
-
-		//save and give the pot
-		gameTable.winner.winningPot=(gameTable.currentPot/storeWinners.length).toFixed(2);
-		for (var i=0;i<storeWinners.length;i++) {
-			storeWinners[i].givePot((gameTable.currentPot/storeWinners.length).toFixed(2));
-
 		}
-
-
-	}
+}
 
 	getNextAction () {
 
 		//BIG BLIND CAN ACT AT END OF PRE-FLOP BETTING
 		//IF ACTION IS TO BIGBLIND + AND NO ONE RAISED AKA LAST BET IS CALL AND THE CALL IS SAME AS BIG BLIND
 		//THEN BIG BLIND AND 
+
+
+
 		console.log("ROUND "+gameTable.bettingRound.round);
 		if(this.getActionOnPlayer().hash === this.getBigBlindPlayer().hash
 			&& gameTable.bettingRound.currentRaiseToCall == gameTable.bigBlind
@@ -408,6 +456,8 @@ class game {
 			&& gameTable.bettingRound.round==0) {
 			gameTable.bettingRound.nextActionsAvailable = ['raise','check']; 
 		}
+
+		//else if(gameTable.bettingRound.lastBet=='check' && )
 
 		//SEE IF BIG BLIND CHECKED
 		else if(gameTable.bettingRound.lastBet=='check' && gameTable.bettingRound.currentRaiseToCall == gameTable.bigBlind && gameTable.bettingRound.round==0){
@@ -480,7 +530,7 @@ class game {
 	}
 
 	doAction(player,action,amt) {
-
+		var foldCounter=0;
 		//check to see we have right player
 		if(player.userid == gameTable.seats[gameTable.bettingRound.actionOn.seat].userid) {
 			//check to see we have valid option
@@ -493,11 +543,25 @@ class game {
 				
 				}
 				else if (action=="fold") {
-					//must avance first cuz i unload nextplayer on fold
-					this.advanceToNextPlayer();
-					this.foldPlayer(player);
 					console.log(player.userid+" has folded");
-
+					this.foldPlayer(player);
+					
+					//chek to see if only one guy left
+					for(var i=0;i<gameTable.game_size;i++){
+						if(gameTable.seats[i].status=='inhand')
+							foldCounter++;
+						
+					}
+					if(foldCounter==1){
+						this.settleTheHand();
+						gameTable.bettingRound.round=4;
+					}
+					else{
+						//must avance first cuz i unload nextplayer on fold
+						this.advanceToNextPlayer();
+						
+					}
+					
 
 				}
 				else if (action=="call") {

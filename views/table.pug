@@ -44,8 +44,9 @@ main
              div.card1
              div.card2
         td#board
-        td#winnerDetails.winner
-           button.winner(type='raise' onclick="nextHand();") Next Hand
+        td
+          div#winner.winner Ass
+          button.winner(type='raise' onclick="nextHand();") Next Hand
         td#statusArea
         td.player.player2
           div.player#player2
@@ -97,8 +98,10 @@ main
              div.card2
         td
   div#actionBar
-   button#raise(type='raise' onclick="raise(5);") Raise 5
+   div#raise
+    button.raiseButton(type='raise' onclick="raise(5);") Raise
+    input.raiseInput(type="text" name="raise" placeholder="")
    button#call(type='call' onclick="call();") Call
    button#check(type='check' onclick="check();") Check
    button#fold(type='fold' onclick="fold();") Fold
-  button.btn.btn-primary(type='raise' onclick="startGame();") Start Game
+  button#start(type='raise' onclick="startGame();") Start Game
