@@ -27,8 +27,8 @@ function register () {
 		
 
 	}
-	function newGame() {
-		socket.emit('newGame', gameid);
+	function nextHand() {
+		socket.emit('nextHand', gameid);
 	}
 
 	function startGame() {

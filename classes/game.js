@@ -19,13 +19,13 @@ var gameTable = {
 	smallBlind:1,  //add to constructor
 	bigBlind:2,
 	bettingRound: {
-	lastRaiser:null,
+		lastRaiser:null,
 		actionOn:null,
 		nextActionsAvailable:[],
 		round:0,
 		totalOnLine:0,
 		currentRaiseToCall:0,
-		lastBet:null
+		currentRaiseToCall:null
 		}
 };
 
@@ -38,6 +38,22 @@ class game {
 		gameTable.deck = new deck();
 		gameTable.hash = this.makeid(16);
 
+
+	}
+
+	goToNextHand () {
+		gameTable.deck = new deck();
+		gameTable.dealer=dealer.nextPlayer;
+		gametable.winner.player=null;
+		gametable.winner.hand=null;
+		gametable.winner.winningPot=null;
+		gametable.currentPot=0;
+		gametable.bettingRound.lastRaiser=null;
+		gametable.bettingRound.nextActionsAvailable=[];
+		gametable.bettingRound.round=0
+		gametable.bettingRound.totalOnLine=0;
+		gametable.bettingRound.currentRaiseToCall=0;
+		gametable.bettingRound.currentRaiseToCall=null;
 
 	}
 
@@ -65,23 +81,32 @@ class game {
 	}
 
 	getNextPlayer(player) {
-		for (var i=player.seat+1;i<gameTable.game_size;i++){
+		for (var i=Number(player.seat)+1;i<gameTable.game_size;i++){
 			if(gameTable.seats[i]!="empty") {
+				console.log(player+" YOUR NEXT PERSON IS NOW TOP "+i+".   f"+ gameTable.seats[i]);
 				return gameTable.seats[i];
 			}
 		}
 		for (var i=0;i<player.seat;i++){
 			if(gameTable.seats[i]!="empty") {
+								console.log(player+" YOUR NEXT PERSON IS NOW "+ gameTable.seats[i]);
+
 				return gameTable.seats[i];
 			}
 		}
 	}
 
+	printEveryonesNextPlayer() {
+		for (var i=0;i<gameTable.game_size;i++) {
+			if(gameTable.seats[i]!='empty')
+				console.log("Seat 1's next is"+gameTable.seats[i].nextPlayer.seat+ "and previos us is");
+		}
+	}
+
 	setNextPlayer (player) {
 		player.nextPlayer = this.getNextPlayer(player);
-		//console.log("SEAT "+player.seat+" JOIN AND THEIR NEXT PLAYER IS " +player.nextPlayer);
 
-		//console.log(player.userid+" then goes"+player.nextPlayer.userid);
+		console.log(player.nextPlayer.seat+" then goes"+player.seat);
 	}
 
 	getPlayerByHash(myhash) {
@@ -106,7 +131,7 @@ class game {
 			}
 			//need to ensure first guy gets his pointer set
 			if(gameTable.numseats==2) {
-				this.setNextPlayer(gameTable.seats[seat]);
+				this.setNextPlayer(player);
 
 				//find person before them and set it to the new guy
 				this.getPreviousPlayer(player).nextPlayer=player;
@@ -117,6 +142,7 @@ class game {
 						gameTable.seats[i].nextPlayer = player;
 						gameTable.seats[i].previousPlayer = player;
 					}
+				this.printEveryonesNextPlayer();
 				//console.log (player.nextPlayer.seat + " the other guy is now pointing at me " + player.nextPlayer.nextPlayer )
 			}
 			if(gameTable.numseats>2) {
@@ -124,6 +150,7 @@ class game {
 
 				//find person before them and set it to the new guy
 				this.getPreviousPlayer(player).nextPlayer=player;
+				this.printEveryonesNextPlayer();
 			}
 		}
 	}

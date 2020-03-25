@@ -32,7 +32,17 @@ else {
 	}
 }
 
-
+function nextHand(){
+	game1.goToNextHand();
+	game1.setDealer(dealer.nextPlayer);
+	dealer=dealer.nextPlayer;
+	game1.postBlinds();
+	sendDataToAllPlayers(game1);
+	game1.printSeats();
+	game1.getNextAction();
+	sendDataToAllPlayers(game1);
+}
+	
 
 
 function addNewPlayerToGame (gameHash,userid,cookie,balance,status,seat,sessionid) {

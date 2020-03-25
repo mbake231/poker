@@ -55,7 +55,7 @@ io.on('connection', function(socket){
 			gameController.incomingAction(data.game,data.userhash,data.action,data.amt);
 			});
 
-		socket.on('newGame', function (data) {
+		socket.on('nextHand', function (data) {
 			gameController.newGame();
 			});
 		
