@@ -147,7 +147,7 @@ $(window).on('load', function(){
 
 			
 			//add pot
-			$('#statusArea').html("Pot $"+gameData.currentPot+"<br>Line $"+gameData.bettingRound.totalOnLine);
+			$('#statusArea').html("Pot $"+gameData.currentPot.total+"<br>Line $"+gameData.bettingRound.totalOnLine);
 
 
 		}
@@ -173,20 +173,34 @@ $(window).on('load', function(){
 		}
 
 
-		if(gameData.winner.hand==null) {
-				$('.winner').css('visibility','hidden');
-		}
-		if(gameData.winner.hand!=null) {
+		
+		/*if(gameData.currentPot.winners!=null) {
 			$('.winner').css('visibility','visible');
 			$.each(gameData.winner.players, function (index) {
 				$('#winner').html(gameData.winner.players[index].userid+" won $"+gameData.winner.winningPot+"with a "+gameData.winner.hand+"!");
 				
 			})
 			
-		}
+		}*/
 
+		if(gameData.isSettled=='no') {
+				$('.winner').css('visibility','hidden');
+				$('#winner').html('')
+
+		}
+		if(gameData.isSettled=='yes') {
+			$('.winner').css('visibility','visible');
+			$.each(gameData.bettingRound.pots, function (index) {
+				$('#winner').append("Pot "+index+" winner(s) are ");
+					$.each(gameData.bettingRound.pots[index].winners, function (i) {
+						$('#winner').append(gameData.bettingRound.pots[index].winners[i].winner.userid+" ");
+						$('#winner').append("with "+gameData.bettingRound.pots[index].winners[i].winningHand);
+						})
+						
+				});
+			}
+		
 	}
-	
 
 	socket.on('publicSeatList', function(publicData) {
 		//console.log("incoming update " + privateData);
