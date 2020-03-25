@@ -29,8 +29,8 @@ function register () {
 	function sit (seat) {
 		var register = {
 			gameHash: 'train',
-			userid: "My Name",
-			balance: "100",
+			userid: $('#player'+seat).find('.nameInput').val(),
+			balance: $('#player'+seat).find('.balanceInput').val(),
 			status: 'playing',
 			seat: seat
 		}
@@ -44,7 +44,10 @@ function register () {
 	}
 
 	function startGame() {
-		socket.emit('startGame', gameid);
+		if(gameData.numseats>1)
+			socket.emit('startGame', gameid);
+		else
+			console.log("need more than 1 person");
 	}
 
 	function check() {
@@ -142,15 +145,13 @@ $(window).on('load', function(){
 				$('#actionBar').css('display','none');
 			}
 
-			$('#board').html("");
-			$.each(gameData.board, function(index) {
-				$('#board').append('<img id="theImg" src="img/cards/'+gameData.board[index]+'.svg" width="40%"/>');
-		});
+			
 			//add pot
 			$('#statusArea').html("Pot $"+gameData.currentPot+"<br>Line $"+gameData.bettingRound.totalOnLine);
 
 
 		}
+		
 		//iff actionon is null
 		else {
 			$('#actionBar').find('#raise').css('display','none');
@@ -160,6 +161,18 @@ $(window).on('load', function(){
 			$('#actionBar').find('#fold').css('display','none');
 			$('#actionBar').css('display','none');
 		}
+
+		if(gameData.board[0]!=null){
+			$('#board').html("");
+			$.each(gameData.board, function(index) {
+				$('#board').append('<img id="theImg" src="img/cards/'+gameData.board[index]+'.svg" width="40%"/>');
+			});
+		}
+		if(gameData.board[0]==null){
+			$('#board').html("");
+		}
+
+
 		if(gameData.winner.hand==null) {
 				$('.winner').css('visibility','hidden');
 		}
@@ -180,6 +193,7 @@ $(window).on('load', function(){
 		gameData = JSON.parse(publicData);
 		seats = gameData.seats;
 		updateGameData(gameData);
+		console.log(gameData);
 
 	});
 

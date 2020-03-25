@@ -59,7 +59,7 @@ class game {
 		//clear cards
 		for(var i=0;i<gameTable.game_size;i++)
 		{
-			if(gameTable.seats[i].status=='inhand'||gameTable.seats[i].status=='folded'){
+			if(gameTable.seats[i].status=='inhand'||gameTable.seats[i].status=='folded'||gameTable.seats[i].status=='allin'){
 				gameTable.seats[i].card1=null;
 				gameTable.seats[i].card2=null;
 				}
@@ -68,7 +68,7 @@ class game {
 		//set to waiting to play
 		for (var i=0;i<gameTable.game_size;i++)
 		{
-			if(gameTable.seats[i].status=='inhand' || gameTable.seats[i].status=='folded' )
+			if(gameTable.seats[i].status=='inhand' || gameTable.seats[i].status=='folded'|| gameTable.seats[i].status=='allin' )
 				gameTable.seats[i].status='playing';
 				console.log(gameTable.seats[i].seat+" is now set to "+gameTable.seats[i].status);
 		}
@@ -212,6 +212,15 @@ class game {
 
 	}
 
+	getNumberPlayersAllIn () {
+		let counter=0;
+		for (var i=0;i<gameTable.game_size;i++) {
+			if(gameTable.seats[i].status=="allin")
+				counter++;
+		}
+		return counter;
+	}
+
 	//pass me who is the dealer
 	setDealer(player) {
 		gameTable.dealer=player;
@@ -331,7 +340,7 @@ class game {
 	
 
 		for (var i=0;i<gameTable.game_size;i++)
-			if(gameTable.seats[i].status=='inhand')
+			if(gameTable.seats[i].status=='inhand'||gameTable.seats[i].status=='folded'||gameTable.seats[i].status=='allin')
 				gameTable.seats[i].clearMoneyOnLine();
 	}
 
@@ -381,7 +390,7 @@ class game {
 
 	settleTheHand() {
 		console.log("SETTLING UP");
-		if(this.getNumberPlayersInHand()>1) {
+		if(this.getNumberPlayersInHand()+this.getNumberPlayersAllIn()>1) {
 			gameTable.bettingRound.round=4;
 			var packageCards = {
 				boardCards:[],
@@ -392,7 +401,7 @@ class game {
 
 
 			for(var i=0;i<gameTable.game_size;i++) {
-				if(gameTable.seats[i].status=='inhand'){
+				if(gameTable.seats[i].status=='inhand' || gameTable.seats[i].status=='allin'){
 					playerCardHolder = {playerId:gameTable.seats[i].hash,
 										cards:[gameTable.seats[i].card1,gameTable.seats[i].card2]
 						};
@@ -439,18 +448,72 @@ class game {
 				}
 			}
 		}
-}
+	}
 
+	putPlayerAllIn(player){
+		player.status="allin";
+		this.getPreviousPlayer(player).nextPlayer=this.getNextPlayer(player);
+		//player.nextPlayer = "folded";
+
+
+	}
+
+	isOnlyOnePlayerNotAllIn() {
+		var counter=0;
+		for(var i=0;i<gameTable.game_size;i++) {
+			if(gameTable.seats[i].status=='inhand')
+				counter++;
+		}
+
+		if(counter==1){
+			return true;
+		}
+		return false;
+	}
 	getNextAction () {
+
+
+		//if someone is all in and only one person left
+	//	if(this.isOnlyOnePlayerNotAllIn()==true && gameTable.bettingRound.lastBet==='raise') {
+	//		gameTable.bettingRound.nextActionsAvailable = ['call','fold']; 
+	//	}
+	/*	console.log('my status is '+gameTable.bettingRound.actionOn.status
+			+" and num all in is "+this.getNumberPlayersAllIn()
+			+" my seat is: "+gameTable.bettingRound.actionOn.seat
+			+" and next person to go is seat "+gameTable.bettingRound.actionOn.nextPlayer.seat
+			);
+		//so if someone is all in, and im not, i can call
+		 if(this.getNumberPlayersAllIn()>0 && gameTable.bettingRound.actionOn.status=='inhand' && gameTable.bettingRound.lastBet=='raise'){
+				gameTable.bettingRound.nextActionsAvailable = ['call','fold']; 
+				
+		}
+
+
+		//if someone is all in, and i am last person in hand (pointing to myself)
+		else if(this.getNumberPlayersAllIn()>0 && gameTable.bettingRound.actionOn.nextPlayer.hash===gameTable.bettingRound.actionOn.hash) {
+			this.doAShowDown();
+			this.settleTheHand();
+			
+		}*/
+
+
+		//check to see if this call was the last call to another players all in and no one is left
+		//else if(this.isOnlyOnePlayerNotAllIn()==true && gameTable.bettingRound.lastBet==='call' && gameTable.bettingRound.actionOn.status=='allin'){
+		//		gameTable.bettingRound.nextActionsAvailable = ['call','fold']; 
+				
+		//}
+
+	//	else if(this.isOnlyOnePlayerNotAllIn()==true && gameTable.bettingRound.lastBet==='call' && gameTable.bettingRound.actionOn.status=='inhand'){
+	//			this.doAShowDown();
+	//			this.settleTheHand();
+				
+	//	}
 
 		//BIG BLIND CAN ACT AT END OF PRE-FLOP BETTING
 		//IF ACTION IS TO BIGBLIND + AND NO ONE RAISED AKA LAST BET IS CALL AND THE CALL IS SAME AS BIG BLIND
 		//THEN BIG BLIND AND 
-
-
-
-		console.log("ROUND "+gameTable.bettingRound.round);
-		if(this.getActionOnPlayer().hash === this.getBigBlindPlayer().hash
+		//console.log("ROUND "+gameTable.bettingRound.round);
+		 if(this.getActionOnPlayer().hash === this.getBigBlindPlayer().hash
 			&& gameTable.bettingRound.currentRaiseToCall == gameTable.bigBlind
 			&& gameTable.bettingRound.lastBet==='call'
 			&& gameTable.bettingRound.round==0) {
@@ -572,9 +635,17 @@ class game {
 						player.addMoneyToLine(amtToCall);
 						gameTable.bettingRound.totalOnLine+=amtToCall;
 						gameTable.bettingRound.lastBet='call';
+
+						
+
 						this.advanceToNextPlayer();
 						console.log(player.userid+" has called "+gameTable.bettingRound.currentRaiseToCall);
 
+						//check to see if this call sets player all in all in
+						if(player.balance==0)
+							this.putPlayerAllIn(player);
+
+						
 					}
 					else
 						console.log("amount doesnt have enough for call");
@@ -593,6 +664,8 @@ class game {
 						gameTable.bettingRound.currentRaiseToCall+=amt;
 						this.advanceToNextPlayer();
 						console.log(player.userid+" has raised to "+gameTable.bettingRound.currentRaiseToCall);
+						if(player.balance==0)
+							this.putPlayerAllIn(player);
 					}
 					else
 						console.log("amount doesnt have enough for raise");
@@ -606,7 +679,39 @@ class game {
 			console.log("this player is not up");
 		}
 	}
+	doAShowDown() {
+		if(gameTable.bettingRound.round==3) {
+			gameTable.currentPot+=gameTable.bettingRound.totalOnLine;
+			gameTable.bettingRound.round=4;	
+			this.clearRoundData();
+		}
+		else if (gameTable.bettingRound.round==2){
+			gameTable.currentPot+=gameTable.bettingRound.totalOnLine;
+			this.dealRiver();
+			gameTable.bettingRound.round=4;
+			this.clearRoundData();
+			//this.settleTheHand();
+		}
+		else if (gameTable.bettingRound.round==1){
+			gameTable.currentPot+=gameTable.bettingRound.totalOnLine;
+			this.dealTurn();
+			this.dealRiver();
+			gameTable.bettingRound.round=4;
+			this.clearRoundData();
+			//this.settleTheHand();
+		}
+		else if (gameTable.bettingRound.round==0){
+			gameTable.currentPot+=gameTable.bettingRound.totalOnLine;
+			this.dealFlop();
+			this.dealTurn();
+			this.dealRiver();
+			gameTable.bettingRound.round=4;
+			this.clearRoundData();
+		//	this.settleTheHand();
 
+		}
+		
+	}
 
 	//so we can send data to everyone
     getAllPlayerSessionIDs () {

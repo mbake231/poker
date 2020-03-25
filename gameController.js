@@ -31,8 +31,8 @@ function incomingAction(game,user,action,amt){
 			console.log("FINALLY OVER");
 		}
 	}
-else {
-
+	else {
+		sendDataToAllPlayers(game1);
 	
 	}
 }
@@ -51,7 +51,6 @@ function nextHand(){
 
 function sendSeatList(gameid,sessionid) {
 	server.io.to(sessionid).emit('publicSeatList',game1.getPublicSeatList());
-	console.log(game1.getPublicSeatList());
 }
 
 

@@ -10,7 +10,10 @@ main
         td
         td.player.player0
          div.empty.player#player0
-          button#join(onclick="sit(0);") Sit
+          div#join
+            input.nameInput(type="text" name="name" placeholder="name" size="12")
+            input.balanceInput(type="text" name="balance" placeholder="balance" size="8")
+            button(onclick="sit(0);") Sit
           div.userid
           div.balance
           div.cards
@@ -19,7 +22,10 @@ main
         td
         td.player.player1
          div.empty.player#player1
-          button#join(onclick="sit(1);") Sit
+          div#join
+            input.nameInput(type="text" name="name" placeholder="name" size="12")
+            input.balanceInput(type="text" name="balance" placeholder="balance" size="8")
+            button(onclick="sit(1);") Sit
           div.userid
           div.balance
           div.cards
@@ -29,7 +35,10 @@ main
       tr
         td.player.player8
           div.empty.player#player8
-           button#join(onclick="sit(8);") Sit
+           div#join
+            input.nameInput(type="text" name="name" placeholder="name" size="12")
+            input.balanceInput(type="text" name="balance" placeholder="balance" size="8")
+            button(onclick="sit(8);") Sit
            div.userid
            div.balance
            div.cards
@@ -37,12 +46,15 @@ main
             div.card2
         td#board
         td
-          div#winner.winner Ass
+          div#winner.winner
           button.winner(type='raise' onclick="nextHand();") Next Hand
         td#statusArea
         td.player.player2
           div.empty.player#player2
-           button#join(onclick="sit(2);") Sit
+           div#join
+            input.nameInput(type="text" name="name" placeholder="name" size="12")
+            input.balanceInput(type="text" name="balance" placeholder="balance" size="8")
+            button(onclick="sit(2);") Sit
            div.userid
            div.balance
            div.cards
@@ -51,7 +63,10 @@ main
       tr
         td.player.player7
           div.empty.player#player7
-           button#join(onclick="sit(7);") Sit
+           div#join
+            input.nameInput(type="text" name="name" placeholder="name" size="12")
+            input.balanceInput(type="text" name="balance" placeholder="balance" size="8")
+            button(onclick="sit(7);") Sit
            div.userid
            div.balance
            div.cards
@@ -62,7 +77,10 @@ main
         td
         td.player.player3
           div.empty.player#player3
-           button#join(onclick="sit(3);") Sit
+           div#join
+            input.nameInput(type="text" name="name" placeholder="name" size="12")
+            input.balanceInput(type="text" name="balance" placeholder="balance" size="8")
+            button(onclick="sit(3);") Sit
            div.userid
            div.balance
            div.cards
@@ -72,7 +90,10 @@ main
         td
         td.player.player6
           div.empty.player#player6
-           button#join(onclick="sit(6);") Sit
+           div#join
+            input.nameInput(type="text" name="name" placeholder="name" size="12")
+            input.balanceInput(type="text" name="balance" placeholder="balance" size="8")
+            button(onclick="sit(6);") Sit
            div.userid
            div.balance
            div.cards
@@ -80,7 +101,10 @@ main
             div.card2
         td.player.player5
           div.empty.player#player5
-           button#join(onclick="sit(5);") Sit
+           div#join
+            input.nameInput(type="text" name="name" placeholder="name" size="12")
+            input.balanceInput(type="text" name="balance" placeholder="balance" size="8")
+            button(onclick="sit(5);") Sit
            div.userid
            div.balance
            div.cards
@@ -88,7 +112,10 @@ main
             div.card2
         td.player.player4
           div.empty.player#player4
-           button#join(onclick="sit(4);") Sit
+           div#join
+            input.nameInput(type="text" name="name" placeholder="name" size="12")
+            input.balanceInput(type="text" name="balance" placeholder="balance" size="8")
+            button(onclick="sit(4);") Sit
            div.userid
            div.balance
            div.cards
