@@ -4,23 +4,13 @@ script(src='socket.io.js')
 link(rel='stylesheet', href='PokerTable.css')
 script(src='clientJQ.js')
 main
-  div#overlay
-   div.form-group
-     label(for='userid') UserID:
-     input#userid.form-control(type='userid', placeholder='userid' name='userid')
-   div.form-group
-     label(for='userid') Seat:
-     input#seat.form-control(type='seat', placeholder='seat' name='seat')
-   div.form-group
-    label(for='balance') Balance:
-    input#balance.form-control(type='balance', value='100' name='balance')          
-   button.btn.btn-primary(onClick='register();') Go
   .div#table
     table.pokerTable
       tr
         td
         td.player.player0
-         div.player#player0
+         div.empty.player#player0
+          button#join(onclick="sit(0);") Sit
           div.userid
           div.balance
           div.cards
@@ -28,7 +18,8 @@ main
            div.card2
         td
         td.player.player1
-         div.player#player1
+         div.empty.player#player1
+          button#join(onclick="sit(1);") Sit
           div.userid
           div.balance
           div.cards
@@ -37,65 +28,72 @@ main
         td
       tr
         td.player.player8
-          div.player#player8
-            div.userid
-            div.balance
-            div.cards
-             div.card1
-             div.card2
+          div.empty.player#player8
+           button#join(onclick="sit(8);") Sit
+           div.userid
+           div.balance
+           div.cards
+            div.card1
+            div.card2
         td#board
         td
           div#winner.winner Ass
           button.winner(type='raise' onclick="nextHand();") Next Hand
         td#statusArea
         td.player.player2
-          div.player#player2
-            div.userid
-            div.balance
-            div.cards
-             div.card1
-             div.card2
+          div.empty.player#player2
+           button#join(onclick="sit(2);") Sit
+           div.userid
+           div.balance
+           div.cards
+            div.card1
+            div.card2
       tr
         td.player.player7
-          div.player#player7
-            div.userid
-            div.balance
-            div.cards
-             div.card1
-             div.card2
+          div.empty.player#player7
+           button#join(onclick="sit(7);") Sit
+           div.userid
+           div.balance
+           div.cards
+            div.card1
+            div.card2
         td
         td
         td
         td.player.player3
-          div.player#player3
-            div.userid
-            div.balance
-            div.cards
-             div.card1
-             div.card2
+          div.empty.player#player3
+           button#join(onclick="sit(3);") Sit
+           div.userid
+           div.balance
+           div.cards
+            div.card1
+            div.card2
       tr
         td
         td.player.player6
-          div.player#player6
-            div.userid
-            div.balance
-            div.cards
-             div.card1
-             div.card2
+          div.empty.player#player6
+           button#join(onclick="sit(6);") Sit
+           div.userid
+           div.balance
+           div.cards
+            div.card1
+            div.card2
         td.player.player5
-          div.player#player5
-            div.userid
-            div.balance
-            div.cards
-             div.card1
-             div.card2
+          div.empty.player#player5
+           button#join(onclick="sit(5);") Sit
+           div.userid
+           div.balance
+           div.cards
+            div.card1
+            div.card2
         td.player.player4
-          div.player#player4
-            div.userid
-            div.balance
-            div.cards
-             div.card1
-             div.card2
+          div.empty.player#player4
+           button#join(onclick="sit(4);") Sit
+           div.userid
+           div.balance
+           div.cards
+            div.card1
+            div.card2
         td
   div#actionBar
    div#raise

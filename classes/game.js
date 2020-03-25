@@ -619,6 +619,17 @@ class game {
     	}
     	return allPlayers;
     }
+
+    //so we can send data to everyone
+    findPlayerBySessionID (findThisSessionid) {
+    	for (var i=0;i<gameTable.game_size;i++){
+    		console.log(gameTable.seats[i].sessionid +' vs '+findThisSessionid);
+
+    		if(gameTable.seats[i].sessionid===findThisSessionid) 
+	    		return gameTable.seats[i];
+    	}		 
+    	return false;
+    }
     //so we can package the data to send to everyone
 	generatePrivatePlayerData (thisSessionId) {
 		var privateGameTable =  JSON.stringify(gameTable,function( key, value) {
@@ -645,6 +656,31 @@ class game {
 			}
 		}
 		return JSON.stringify(privateGameTable);
+	}
+
+	getPublicSeatList() {
+		var publicSeatList =  JSON.stringify(gameTable,function( key, value) {
+ 			if(key == 'nextPlayer') { 
+    			return "removedForStringify";
+  			} 
+  			if(key == 'previousPlayer') { 
+    			return "removedForStringify";
+  			} 
+  			else {
+    			return value;
+  			};
+		});
+
+		publicSeatList = JSON.parse(publicSeatList);
+
+		for(var i=0; i<gameTable.game_size;i++){
+			if(publicSeatList.seats[i] != 'empty') {
+					publicSeatList.seats[i].card1 = "private";
+					publicSeatList.seats[i].card2 = "private";
+
+			}
+		}
+		return JSON.stringify(publicSeatList);
 	}
 }
 

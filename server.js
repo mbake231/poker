@@ -35,6 +35,12 @@ app.use(express.static(__dirname + '/public'));
 //SOCKETS
 io.on('connection', function(socket){
 	var hash;
+
+
+		socket.on('seatList', function (gameid) {
+			gameController.sendSeatList(gameid,socket.id);
+		});
+
 		socket.on('register', function (regDetails) {
 			hash=gameController.addNewPlayerToGame(regDetails.gameHash,
 									regDetails.userid,
@@ -43,7 +49,7 @@ io.on('connection', function(socket){
 									regDetails.status,
 									regDetails.seat,
 									socket.id);
-			})
+			});
 		
 
 		//listen for start game
@@ -58,6 +64,8 @@ io.on('connection', function(socket){
 		socket.on('nextHand', function (data) {
 			gameController.nextHand();
 			});
+
+	
 		
 		
 });

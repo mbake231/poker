@@ -48,28 +48,34 @@ function nextHand(){
 	game1.getNextAction();
 	sendDataToAllPlayers(game1);
 }
-	
+
+function sendSeatList(gameid,sessionid) {
+	server.io.to(sessionid).emit('publicSeatList',game1.getPublicSeatList());
+	console.log(game1.getPublicSeatList());
+}
 
 
 function addNewPlayerToGame (gameHash,userid,cookie,balance,status,seat,sessionid) {
 	
-	//constructor(userid,cookie,balance,status,sessionid) {
-	var newPlayer = new player(userid,cookie,Number(balance),status,sessionid);
-	
-	//some point will need to look up game by hash and add that way
-	game1.addPlayer(newPlayer,seat);
-	game1.printSeats();
+	//did they already join?
+	if(game1.findPlayerBySessionID(sessionid) == false) {
+		//constructor(userid,cookie,balance,status,sessionid) {
+		var newPlayer = new player(userid,cookie,Number(balance),status,sessionid);
+		
+		//some point will need to look up game by hash and add that way
+		game1.addPlayer(newPlayer,seat);
+		game1.printSeats();
 
 
-	server.io.to(sessionid).emit('yourHash',newPlayer.hash);
+		server.io.to(sessionid).emit('yourHash',newPlayer.hash);
 
 
 
-	sendDataToAllPlayers(game1);
-
-
-	
-
+		sendDataToAllPlayers(game1);
+	}
+	else {
+		console.log("this session is already sitting");
+	}
 
 }
 
@@ -133,6 +139,6 @@ function sendDataToAllPlayers(thisGame) {
 exports.addNewPlayerToGame = addNewPlayerToGame;
 exports.runGame = runGame;
 exports.incomingAction = incomingAction;
-
+exports.sendSeatList=sendSeatList;
 exports.nextHand = nextHand;
 

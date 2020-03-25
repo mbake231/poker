@@ -24,10 +24,21 @@ function register () {
 		$('#overlay').css('display','none');
 
 		socket.emit('register', register);
-
-		
-
 	}
+
+	function sit (seat) {
+		var register = {
+			gameHash: 'train',
+			userid: "My Name",
+			balance: "100",
+			status: 'playing',
+			seat: seat
+		}
+		//$('#overlay').css('display','none');
+
+		socket.emit('register', register);
+	}
+
 	function nextHand() {
 		socket.emit('nextHand', gameid);
 	}
@@ -64,7 +75,8 @@ $(window).on('load', function(){
 
 	//updateGameData();
 
-	
+	socket.emit('seatList', gameid);
+
 
 
 	function updateGameData(gameData){
@@ -72,14 +84,17 @@ $(window).on('load', function(){
 		$.each(seats,function(index) {
 			if(seats[index].hash === myid){
 				mySeatData = seats[index];
-				console.log("MY SEAT "+mySeatData.seat);
+				//console.log("MY SEAT "+mySeatData.seat);
 			}
 		})
 		$.each(seats, function(index) {
 			if (seats[index]!='empty') {
 				$.each(seats[index], function (k,v) {
+					$('#player'+index).removeClass('empty');
+					$('#player'+index).addClass('seatfull');
 					$('#player'+index).removeClass('actionOn');
-						//console.log("spinning on "+seats[index] );
+					$('#player'+index).find('#join').css('display','none');
+					//console.log("spinning on "+seats[index] );
 					if(k=='userid')
 						$('#player'+index).find('.userid').html(v);
 					else if(k=='balance')
@@ -158,6 +173,15 @@ $(window).on('load', function(){
 		}
 
 	}
+	
+
+	socket.on('publicSeatList', function(publicData) {
+		//console.log("incoming update " + privateData);
+		gameData = JSON.parse(publicData);
+		seats = gameData.seats;
+		updateGameData(gameData);
+
+	});
 
 	socket.on('update', function(privateData) {
 	//console.log("incoming update " + privateData);
