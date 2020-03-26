@@ -36,7 +36,16 @@ class player {
 		this.nextPlayer=null;
 		this.hash=this.makeid(16);
 		this.sessionid=sessionid;
+		this.sitoutnexthand=false;
 		//return player;
+	}
+
+	toggleSitOut(){
+		if(this.sitoutnexthand==false)
+			this.sitoutnexthand=true;
+
+		else if(this.sitoutnexthand==true)
+			this.sitoutnexthand=false;
 	}
 
 	givePot(amt) {
@@ -44,6 +53,7 @@ class player {
 	}
 
 	updateSessionId(newSessionid) {
+		console.log(this.sessionid +" IS NOW "+newSessionid);
 		this.sessionid=newSessionid;
 	}
 

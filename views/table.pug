@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 body
 script(src='https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js')
 script(src='socket.io.js')
@@ -122,11 +123,15 @@ main
             div.card1
             div.card2
         td
-  div#actionBar
+  div#sitOutBar
+   p Sit out next hand
+   input.sitoutcheckbox(type="checkbox" name="sitoutcheckbox" placeholder="" onclick="toggleSitOut()") 
+   button.dealMeInButton(onclick="leaveTable();") Leave table
+  div#actionBar.container
    div#raise
-    button.raiseButton(type='raise' onclick="raise(5);") Raise
+    button.raiseButton.actionButtons(type='raise' onclick="raise(5);") Raise
     input.raiseInput(type="text" name="raise" placeholder="")
-   button#call(type='call' onclick="call();") Call
-   button#check(type='check' onclick="check();") Check
-   button#fold(type='fold' onclick="fold();") Fold
-  button#start(type='raise' onclick="startGame();") Start Game
+   button#call.actionButtons(type='call' onclick="call();") Call
+   button#check.actionButtons(type='check' onclick="check();") Check
+   button#fold.actionButtons(type='fold' onclick="fold();") Fold
+  button#start.actionButtons(type='raise' onclick="startGame();") Start Game

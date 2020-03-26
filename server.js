@@ -41,6 +41,7 @@ io.on('connection', function(socket){
 
 		socket.on('seatList', function (gameid) {
 			gameController.sendSeatList(gameid,socket.id);
+			gameController.sendDataToAllPlayers();
 		});
 
 		socket.on('register', function (regDetails) {
@@ -60,6 +61,15 @@ io.on('connection', function(socket){
 			gameController.runGame();
 			});
 
+		socket.on('toggleSitOut', function (data) {
+			gameController.toggleSitOut(data.gameid,data.hash);
+
+			});
+
+		socket.on('leaveTable', function (data) {
+				//placeholder
+			});
+
 		socket.on('incomingAction', function (data) {
 			gameController.incomingAction(data.game,data.userhash,data.action,data.amt);
 			});
@@ -71,6 +81,7 @@ io.on('connection', function(socket){
 		socket.on('reconnectionAttempt', function (data) {
 			console.log('reconnect initiated');
 			gameController.reconnect(data.gameid,data.storedCookie,socket.id);
+			console.log(socket.id);
 			});
 
 	

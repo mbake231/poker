@@ -1,3 +1,4 @@
+ul { padding:0 }
 
 #player0 {
 	
@@ -60,8 +61,14 @@
 	background-color: lightblue !important;
 }
 
+.sittingOut {
+	background-color: grey !important;
+}
+
 #actionBar {
 	display:none;
+	text-align: center;
+
 }
 
 #raise {
@@ -111,3 +118,35 @@
   z-index: 2; /* Specify a stack order in case you're using a different order for other elements */
   cursor: pointer; /* Add a pointer on hover */
 }
+
+button.btn.actionButtons{
+ display:inline-block;
+ padding:0.3em 1.2em;
+ margin:0 0.3em 0.3em 0;
+ border-radius:2em;
+ box-sizing: border-box;
+ text-decoration:none;
+ font-family:'Roboto',sans-serif;
+ font-weight:300;
+ color:#FFFFFF;
+ background-color:#4eb5f1;
+ text-align:center;
+ transition: all 0.2s;
+}
+button.btn.actionButtons:hover{
+ background-color:#4095c6;
+}
+@media all and (max-width:30em){
+ button.button.btn.actionButtons{
+  display:block;
+  margin:0.2em auto;
+ }
+}
+
+.container {
+  display: flex;
+}
+.container > div {
+  flex: 1; /*grow*/
+}
+

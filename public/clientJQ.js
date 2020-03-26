@@ -18,6 +18,10 @@ var storedCookie = ('; ' + document.cookie)
 .split(';')
 .shift();
 
+function leaveTable () {
+	socket.emit('leaveTable', gameid);
+}
+
 function cookieIsset(name)
 {
     var cookies = document.cookie.split(";");
@@ -96,6 +100,10 @@ function register () {
 		socket.emit('reconnectionAttempt', {gameid:gameid,storedCookie:storedCookie,hash:myid});
 	}
 
+	function toggleSitOut() {
+		socket.emit('toggleSitOut', {gameid:gameid,hash:myid});
+	}
+
 	function raise() {
 		var inputedAmt = $("#raise").find('.raiseInput').val();
 		if(Number(inputedAmt)<=Number(mySeatData.balance)) {
@@ -132,13 +140,24 @@ $(window).on('load', function(){
 				//console.log("MY SEAT "+mySeatData.seat);
 			}
 		})
+		
 		$.each(seats, function(index) {
+			if (seats[index]=='empty') {
+				$('#player'+index).removeClass('actionOn');
+				$('#player'+index).removeClass('sittingOut');
+				$('#player'+index).addClass('empty');
+			}
 			if (seats[index]!='empty') {
 				$.each(seats[index], function (k,v) {
-					$('#player'+index).removeClass('empty');
 					$('#player'+index).addClass('seatfull');
-					$('#player'+index).removeClass('actionOn');
+					$('#player'+index).removeClass('sittingOut');
 					$('#player'+index).find('#join').css('display','none');
+					if(seats[index].status=='sittingout') {
+						$('#player'+index).removeClass('empty');
+						$('#player'+index).addClass('sittingOut');
+						$('#player'+index).find('.card1').html("");
+						$('#player'+index).find('.card2').html("");
+					}
 					//console.log("spinning on "+seats[index] );
 					if(k=='userid')
 						$('#player'+index).find('.userid').html(v);
@@ -259,10 +278,10 @@ $(window).on('load', function(){
 
 	socket.on('update', function(privateData) {
 	//console.log("incoming update " + privateData);
-	gameData = JSON.parse(privateData);
-	seats = gameData.seats;
-	console.log(gameData);
-	updateGameData(gameData);
+		gameData = JSON.parse(privateData);
+		seats = gameData.seats;
+		console.log(gameData);
+		updateGameData(gameData);
 
 	});
 

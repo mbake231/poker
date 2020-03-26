@@ -82,12 +82,22 @@ class game {
 				}
 					
 			}
+		//set sitting out
+		for (var i=0;i<gameTable.game_size;i++) {
+			if(gameTable.seats[i].sitoutnexthand==true) {
+				gameTable.seats[i].status='sittingout';
+			}
+
+		}
+
 		//set to waiting to play
 		for (var i=0;i<gameTable.game_size;i++)
 		{
-			if(gameTable.seats[i].status=='inhand' || gameTable.seats[i].status=='folded'|| gameTable.seats[i].status=='allin' )
+			//if(gameTable.seats[i].status=='inhand' || gameTable.seats[i].status=='folded'|| gameTable.seats[i].status=='allin' )
+			if(gameTable.seats[i].sitoutnexthand==false){
 				gameTable.seats[i].status='playing';
 				console.log(gameTable.seats[i].seat+" is now set to "+gameTable.seats[i].status);
+			}
 		}
 
 		//restore pointers
@@ -125,13 +135,13 @@ class game {
 
 	getNextPlayer(player) {
 		for (var i=Number(player.seat)+1;i<gameTable.game_size;i++){
-			if(gameTable.seats[i]!="empty") {
+			if(gameTable.seats[i]!="empty" && gameTable.seats[i].status!='sittingout') {
 				//console.log(player.seat+" YOUR NEXT PERSON IS NOW TOP "+i+".   f"+ gameTable.seats[i]);
 				return gameTable.seats[i];
 			}
 		}
 		for (var i=0;i<player.seat;i++){
-			if(gameTable.seats[i]!="empty") {
+			if(gameTable.seats[i]!="empty" && gameTable.seats[i].status!='sittingout') {
 				//console.log(player.seat+" YOUR NEXT PERSON IS NOW "+ gameTable.seats[i]);
 				return gameTable.seats[i];
 			}
@@ -248,7 +258,22 @@ class game {
 
 	//pass me who is the dealer
 	setDealer(player) {
-		gameTable.dealer=player;
+		//check to make sure theyre not sitting out, if so next guy gets it
+		for(var i=player.seat;i<gameTable.game_size;i++) {
+			if(gameTable.seats[i].status=='playing') {
+				gameTable.dealer=gameTable.seats[i];
+				return gameTable.seats[i];
+			}
+		}
+
+		for(var i=0;i<gameTable.game_size;i++) {
+			if(gameTable.seats[i].status=='playing') {
+				gameTable.dealer=gameTable.seats[i];
+				return gameTable.seats[i];
+			}
+		}
+
+		return false;
 		//console.log("the dealer is now "+player.userid +" at seat" +player.seat+" "+gameTable.dealer.seat);
 	}
 	dealHands() {
@@ -261,14 +286,14 @@ class game {
 		
 		//deal card 1
 		var cardGetter = gameTable.seats[gameTable.dealer.seat].nextPlayer;
-			while (cardGetter.card1==null)
+			while (cardGetter.card1==null && cardGetter.status=='inhand')
 			{
 				console.log("dealing to seeat "+cardGetter.seat);
 				cardGetter.card1=gameTable.deck.dealCard();
 				cardGetter = gameTable.seats[cardGetter.seat].nextPlayer;
 			}
 			//deal card 1
-			while (cardGetter.card2==null)
+			while (cardGetter.card2==null && cardGetter.status=='inhand')
 			{
 				cardGetter.card2=gameTable.deck.dealCard();
 				cardGetter = gameTable.seats[cardGetter.seat].nextPlayer;
@@ -1038,11 +1063,13 @@ class game {
     	for (var i=0;i<gameTable.game_size;i++){
     		if(gameTable.seats[i]!="empty") {
     			allPlayers.push({sessionid:gameTable.seats[i].sessionid,
-    							userhash:gameTable.seats[i].hash});
+    							hash:gameTable.seats[i].hash});
     		}
     	}
+    	console.log(JSON.stringify(allPlayers));
     	return allPlayers;
     }
+
 
     //so we can send data to everyone
     findPlayerBySessionID (findThisSessionid) {
@@ -1055,7 +1082,7 @@ class game {
     	return false;
     }
     //so we can package the data to send to everyone
-	generatePrivatePlayerData (thisSessionId) {
+	generatePrivatePlayerData (thisHash) {
 		var privateGameTable =  JSON.stringify(gameTable,function( key, value) {
  			if(key == 'nextPlayer') { 
     			return "removedForStringify";
@@ -1073,12 +1100,13 @@ class game {
 		for(var i=0; i<gameTable.game_size;i++){
 			if(privateGameTable.seats[i] != 'empty' 
 				&&  privateGameTable.seats[i].card1!=null
-				&&  !(privateGameTable.seats[i].sessionid===thisSessionId)) {
+				&&  privateGameTable.seats[i].hash!=thisHash) {
 					privateGameTable.seats[i].card1 = "private";
 					privateGameTable.seats[i].card2 = "private";
 
 			}
 		}
+		//console.log(privateGameTable.seats[i].hash+" vs "+thisHash);
 		return JSON.stringify(privateGameTable);
 	}
 

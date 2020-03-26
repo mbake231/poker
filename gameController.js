@@ -43,8 +43,9 @@ function incomingAction(game,user,action,amt){
 
 function nextHand(){
 	game1.goToNextHand();
-	game1.setDealer(dealer.nextPlayer);
-	dealer=dealer.nextPlayer;
+	
+	//try to set deal to next guy but wll return who gets it (if guy you try to set to is sitting out)
+	dealer=game1.setDealer(dealer.nextPlayer);
 	game1.postBlinds();
 	game1.dealHands();
 	sendDataToAllPlayers(game1);
@@ -113,16 +114,20 @@ function startSocketConnetion () {
 
 function sendDataToAllPlayers(thisGame) {
 	//console.log(game1.generatePrivatePlayerData());
+
+	//THIS IS A PROBLEM LOL
+	thisGame=game1;
 	var sendList = thisGame.getAllPlayerSessionIDs();
-
-
 	var sessionidToSend;
 	//var userHashToSend;
 	for (var i=0; i<sendList.length;i++)
 	{
 			sessionidToSend=sendList[i].sessionid;
 			//userHashToSend=sendList[i].userhash;
-			server.io.to(sessionidToSend).emit('update',thisGame.generatePrivatePlayerData(sessionidToSend));
+			//console.log('HERE IS THE SEND LIST SESSION ID '+ sessionidToSend+"  " +sendList[i].hash+ "    "+
+			//	thisGame.generatePrivatePlayerData(sendList[i].hash));
+			if(sendList[i]!=null)
+				server.io.to(sessionidToSend).emit('update',thisGame.generatePrivatePlayerData(sendList[i].hash));
 //			server.io.on('connection', function(socket){
 
 //				console.log(sessionidToSend+" is (emitting) user "+userHashToSend);
@@ -135,6 +140,10 @@ function sendDataToAllPlayers(thisGame) {
 	//game.getPlayers
 	//server.io(PlayerList.getPlayer(player).sessionid).emit('update', payload);
 
+}
+
+function toggleSitOut(gameid,hash) {
+	game1.getPlayerByHash(hash).toggleSitOut();
 }
 
 function reconnect(gameid,cookie,newSessionId) {
@@ -159,5 +168,6 @@ exports.incomingAction = incomingAction;
 exports.sendSeatList=sendSeatList;
 exports.nextHand = nextHand;
 exports.reconnect = reconnect;
-
+exports.toggleSitOut=toggleSitOut;
+exports.sendDataToAllPlayers=sendDataToAllPlayers;
 
