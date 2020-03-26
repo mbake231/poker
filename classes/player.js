@@ -57,7 +57,7 @@ class player {
 	}
 
 	hasEnough(amt) {
-		console.log(Number(this.balance)+" vs " +Number(amt));
+		//console.log(Number(this.balance)+" vs " +Number(amt));
 		if ( Number(this.balance)>=Number(amt) )
 			return true;
 		return false;

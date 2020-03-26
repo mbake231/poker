@@ -105,12 +105,12 @@ class game {
 	getPreviousPlayer (player) {
 		for(var i=player.seat-1;i>=0;i--)
 			{
-				if(gameTable.seats[i]!="empty")
+				if(gameTable.seats[i]!="empty" && gameTable.seats[i].status!='allin')
 					return gameTable.seats[i];
 			}
 		for(var i=8;i>player.seat;i--)
 			{
-				if(gameTable.seats[i]!="empty")
+				if(gameTable.seats[i]!="empty" && gameTable.seats[i].status!='allin')
 					return gameTable.seats[i];
 			}
 	}
@@ -130,17 +130,17 @@ class game {
 		}
 	}
 
-	printEveryonesNextPlayer() {
+/*	printEveryonesNextPlayer() {
 		for (var i=0;i<gameTable.game_size;i++) {
 			if(gameTable.seats[i]!='empty')
 				console.log("Seat 1's next is"+gameTable.seats[i].nextPlayer.seat+ "and previos us is");
 		}
-	}
+	}*/
 
 	setNextPlayer (player) {
 		player.nextPlayer = this.getNextPlayer(player);
 
-		console.log(player.nextPlayer.seat+" then goes"+player.seat);
+		//console.log(player.nextPlayer.seat+" then goes"+player.seat);
 	}
 
 	getPlayerByHash(myhash) {
@@ -176,7 +176,7 @@ class game {
 						gameTable.seats[i].nextPlayer = player;
 						gameTable.seats[i].previousPlayer = player;
 					}
-				this.printEveryonesNextPlayer();
+				//this.printEveryonesNextPlayer();
 				//console.log (player.nextPlayer.seat + " the other guy is now pointing at me " + player.nextPlayer.nextPlayer )
 			}
 			if(gameTable.numseats>2) {
@@ -184,7 +184,7 @@ class game {
 
 				//find person before them and set it to the new guy
 				this.getPreviousPlayer(player).nextPlayer=player;
-				this.printEveryonesNextPlayer();
+			//	this.printEveryonesNextPlayer();
 			}
 		}
 	}
@@ -199,16 +199,24 @@ class game {
 	printSeats () {
 		for(var i=0;i<gameTable.game_size;i++) {
 
-			if(gameTable.seats[i]!="empty")
+			if(gameTable.seats[i]!="empty"){
 				console.log("Seat "+i+": "+gameTable.seats[i].userid+
 					" Balance:"+gameTable.seats[i].balance+
 					" Status: "+gameTable.seats[i].status+
 				//	" Next up :"+gameTable.seats[i].nextPlayer.userid+
 					" Hand: "+ gameTable.seats[i].card1+" "+gameTable.seats[i].card2+
-					" $ in: "+ gameTable.seats[i].moneyOnLine);
+					" $ in: "+ gameTable.seats[i].moneyOnLine
+					);
+			}
 			else
 				console.log("Seat "+i+": Empty");
 		}
+		for (var i=0;i<gameTable.board.length;i++)
+				console.log(gameTable.board[i]+" ");
+			
+		
+			
+		
 	}
 
 	getNumberPlayersInHand () {
@@ -369,6 +377,8 @@ class game {
 			this.addMoneyLineToPot();
 			this.clearRoundData();
 			this.settleTheHand();
+			//console.log("ROUND "+gameTable.bettingRound.round+" STARTER "+this.whoShouldStartRound().userid+" RIGHT?" +this.getActionOnPlayer().userid);
+
 		}
 		if (gameTable.bettingRound.round==2) {
 			gameTable.bettingRound.round++;
@@ -377,7 +387,9 @@ class game {
 			this.dealRiver();
 			this.clearRoundData();
 			//set action to small blind
-			this.setActionOn(gameTable.dealer.nextPlayer);
+			this.setActionOn(this.whoShouldStartRound());
+			console.log("ROUND "+gameTable.bettingRound.round+" STARTER "+this.whoShouldStartRound().userid+" RIGHT?" +this.getActionOnPlayer().userid);
+
 		}
 		if (gameTable.bettingRound.round==1) {
 			gameTable.bettingRound.round++;
@@ -386,8 +398,9 @@ class game {
 			this.dealTurn();
 			this.clearRoundData();
 			//set action to small blind
-			this.setActionOn(gameTable.dealer.nextPlayer);
-			
+			this.setActionOn(this.whoShouldStartRound());
+			console.log("ROUND "+gameTable.bettingRound.round+" STARTER "+this.whoShouldStartRound().userid+" RIGHT?" +this.getActionOnPlayer().userid);
+
 
 		}
 		if (gameTable.bettingRound.round==0) {
@@ -397,12 +410,26 @@ class game {
 			this.dealFlop();
 			this.clearRoundData();
 			//set action to small blind
-			this.setActionOn(gameTable.dealer.nextPlayer);
-			
+			this.setActionOn(this.whoShouldStartRound());
+			console.log("ROUND "+gameTable.bettingRound.round+" STARTER "+this.whoShouldStartRound().userid+" RIGHT?" +this.getActionOnPlayer().userid);
+
 		}
 		
 		
 	}
+
+	whoShouldStartRound() {
+
+		for (var i=gameTable.dealer.seat;i<gameTable.game_size;i++){
+			if(gameTable.seats[i].status=='inhand')
+				return gameTable.seats[i];
+		}
+		for (var i=0;i<gameTable.game_size;i++){
+			if(gameTable.seats[i].status=='inhand')
+				return gameTable.seats[i];
+		}
+	}
+
 
 	isSameAmountOnEveryonesMoneyLine() {
 		var last = 0;
@@ -437,7 +464,7 @@ class game {
 
 	isPlayerMemberofCurrentPot (player) {
 		for (var i=0; i<gameTable.currentPot.members.length;i++)
-			if(gameTable.currentPot.members[i].hash===player.hash)
+			if(gameTable.currentPot.isMemberByHash(player.hash)==true)
 				return true;
 		return false;
 
@@ -446,31 +473,40 @@ class game {
 	deductMoneyLineAndAddToPot (amt){
 		//deduct that amount from everyone and add them as a member
 		for(var i = 0;i<gameTable.game_size;i++){
-				if(gameTable.seats[i].status=='inhand' && gameTable.seats[i].moneyOnLine>0){
+				if((gameTable.seats[i].status=='inhand' || gameTable.seats[i].status=='allin') && gameTable.seats[i].moneyOnLine>0){
 						gameTable.seats[i].moneyOnLine-=amt;
 						gameTable.currentPot.total+=amt;
 						//already a member or not?
 						if(this.isPlayerMemberofCurrentPot(gameTable.seats[i])==false){
 							gameTable.currentPot.addMember(gameTable.seats[i]);
-							console.log(gameTable.seats[i].seat+" IS NOW A MEMBER OF POT LOOK HERE: "+gameTable.currentPot.getMemberByHash(gameTable.seats[i].hash).seat);
+							//console.log(gameTable.seats[i].seat+" IS NOW A MEMBER OF POT LOOK HERE: "+gameTable.currentPot.getMemberByHash(gameTable.seats[i].hash).seat);
 						}
 				}
 			}
 	}
 
+	printGamePots() {
+		for(var i=0;i<gameTable.bettingRound.pots.length;i++)
+			console.log(gameTable.bettingRound.pots[i].printPot());
+	}
 
 	addMoneyLineToPot(){
 
+		for (var i=0;i<gameTable.game_size;i++)
+			console.log(gameTable.seats[i].userid+" "+gameTable.seats[i].moneyOnLine);
+
 		//find lowest money on line, if its the same for everyone it will be the common denom
-		var lowest = 999999999;
+		let lowest = 999999999;
 			for(var i = 0;i<gameTable.game_size;i++){
-				if(gameTable.seats[i].status=='inhand'){
-					if(gameTable.seats[i].moneyOnLine<lowest)
+				if((gameTable.seats[i].status==='inhand' || gameTable.seats[i].status==='allin') && gameTable.seats[i].moneyOnLine>0){
+					if(gameTable.seats[i].moneyOnLine<lowest) {
 						lowest=gameTable.seats[i].moneyOnLine;
+					}
 				}
 			}
 		this.deductMoneyLineAndAddToPot(lowest);
-
+		//reset counter
+		lowest=9999999;
 		if(this.areMoneyLinesZero() == true) {
 			//were done!
 			return false;
@@ -508,11 +544,11 @@ class game {
 				//1 package the hands of the members to check them
 				var playerCardHolder;
 				selectedPot = gameTable.bettingRound.pots[i];
-				selectedPot.printPotMembers();
+				selectedPot.printPot();
 
 				for(var a=0;a<selectedPot.members.length;a++) {
 
-					if(selectedPot.members[a].status=='inhand') {
+					if(selectedPot.members[a].status=='inhand' || selectedPot.members[a].status=='allin') {
 
 						packageCards.playerCards.push(
 							{playerId:selectedPot.members[a].hash,
@@ -603,7 +639,13 @@ class game {
 */
 	putPlayerAllIn(player){
 		player.status="allin";
-		this.getPreviousPlayer(player).nextPlayer=this.getNextPlayer(player);
+		var myPreviousPlayer = this.getPreviousPlayer(player);
+		//console.log(myPreviousPlayer+myPreviousPlayer+myPreviousPlayer+myPreviousPlayer);
+		var myNextPlayer = this.getNextPlayer(player);
+
+		myPreviousPlayer.nextPlayer = myNextPlayer;
+
+		console.log(myPreviousPlayer.userid + " NOW GOES TO "+myNextPlayer.userid);
 		//player.nextPlayer = "folded";
 
 
@@ -659,6 +701,8 @@ class game {
 	//			this.settleTheHand();
 				
 	//	}
+				console.log(this.getActionOnPlayer().user+" vs "+this.whoShouldStartRound().userid);
+
 
 		//BIG BLIND CAN ACT AT END OF PRE-FLOP BETTING
 		//IF ACTION IS TO BIGBLIND + AND NO ONE RAISED AKA LAST BET IS CALL AND THE CALL IS SAME AS BIG BLIND
@@ -679,10 +723,9 @@ class game {
 			this.goToNextRound();
 		}
 
-		//ROUND OVER IF LAST BET WAS CHECK AND SMALL IS UP
+		//ROUND OVER IF LAST BET WAS CHECK AND first guy up
 
-	//	console.log(this.getActionOnPlayer().hash +" vs "+this.getSmallBlindPlayer().hash);
-		else if(gameTable.bettingRound.lastBet==='check' && this.getActionOnPlayer().hash===this.getSmallBlindPlayer().hash){
+		else if(gameTable.bettingRound.lastBet==='check' && this.getActionOnPlayer().hash===this.whoShouldStartRound().hash){
 			//console.log(this.getActionOnPlayer().hash +" vs "+this.getSmallBlindPlayer().hash);
 			console.log("round over everyone checked");
 			if(gameTable.bettingRound.round<4)
@@ -780,7 +823,7 @@ class game {
 				}
 				else if (action=="call") {
 						var amtToCall = gameTable.bettingRound.currentRaiseToCall-player.moneyOnLine;
-						console.log('amt to call '+amtToCall+" hasEnough?"+player.hasEnough(gameTable.bettingRound.currentRaiseToCall));
+					//	console.log('amt to call '+amtToCall+" hasEnough?"+player.hasEnough(gameTable.bettingRound.currentRaiseToCall));
 					if(player.hasEnough(amtToCall)) {
 						//need to get diff of what player has in vs whats to call
 						player.addMoneyToLine(amtToCall);
@@ -794,8 +837,10 @@ class game {
 
 						//check to see if this call sets player all in all in
 						//will need to allow a call if it puts someone all in
-						//if(player.balance==0)
-							//this.putPlayerAllIn(player);
+						if(player.balance==0){
+							this.putPlayerAllIn(player);
+							console.log("ALL IN");
+						}
 
 						
 					}
@@ -806,7 +851,7 @@ class game {
 				else if (action=='raise') {
 					//when you raise you need to call current pot and then raise further
 					var amtToRaise = (gameTable.bettingRound.currentRaiseToCall-player.moneyOnLine) + amt;
-					console.log("is this 12?"+amtToRaise);
+					//console.log("is this 12?"+amtToRaise);
 					if(player.hasEnough(amtToRaise)) {
 						player.addMoneyToLine(amtToRaise);
 						gameTable.bettingRound.totalOnLine+=amtToRaise;
@@ -885,7 +930,7 @@ class game {
     //so we can send data to everyone
     findPlayerBySessionID (findThisSessionid) {
     	for (var i=0;i<gameTable.game_size;i++){
-    		console.log(gameTable.seats[i].sessionid +' vs '+findThisSessionid);
+    		//console.log(gameTable.seats[i].sessionid +' vs '+findThisSessionid);
 
     		if(gameTable.seats[i].sessionid===findThisSessionid) 
 	    		return gameTable.seats[i];

@@ -59,13 +59,22 @@ class pot {
 		for(var i=0;i<this.members.length;i++)
 			if(this.members[i].hash===hash)
 				return this.members[i];
-		return true;
+		return false;
 	}
 
-	printPotMembers() {
+	isMemberByHash(hash){
+		for(var i=0;i<this.members.length;i++)
+			if(this.members[i].hash===hash)
+				return true;
+		return false;
+	}
+
+	printPot() {
+		console.log("Total = $"+this.total);
 		for(var i=0;i<this.members.length;i++){
 			console.log("MEMBER "+i+"IS SEAT"+this.members[i].seat);
 		}
+
 	}
 }
 exports.pot = pot;

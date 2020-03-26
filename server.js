@@ -30,6 +30,8 @@ app.use(bodyParser.json())
 app.use(express.static(__dirname + '/public'));
 
 
+//player(userid,cookie,Number(balance),status,sessionid);
+
 
 
 //SOCKETS

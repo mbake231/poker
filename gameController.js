@@ -14,8 +14,100 @@ var gameCount = 0;
 
 var firstDealer;
 var dealer;
+/*
+var mike = new player("mike",'cookie',300,'playing','sid');
+var kim = new player("kim",'cookie',400,'playing','sid');
+var shane = new player("shane",'cookie',1000,'playing','sid');
+var kev = new player("kev",'cookie',100,'playing','sid');
+var clint = new player("clint",'cookie',1000,'playing','sid');
+var bob = new player("bob",'cookie',200,'playing','sid');
+
+game1.addPlayer(mike,0);
+game1.addPlayer(kim,1);
+game1.addPlayer(shane,2);
+game1.addPlayer(kev,3);
+game1.addPlayer(clint,4);
+game1.addPlayer(bob,8);
+
+game1.setDealer(mike);
+
+//game1.foldPlayer(bob);
+//game1.foldPlayer(clint);
+//game1.firstRound();
+
+game1.postBlinds();
+game1.dealHands();
+game1.printSeats();
+game1.getNextAction();
+game1.doAction(kev,'raise',98);
+game1.printSeats();
+game1.getNextAction();
+game1.doAction(clint,'call');
+game1.getNextAction();
+game1.printSeats();
+game1.doAction(bob,'raise',100);
+game1.getNextAction();
+game1.printSeats();
+game1.doAction(mike,'call');
+game1.getNextAction();
+game1.printSeats();
+game1.doAction(kim,'raise',100);
+game1.getNextAction();
+game1.printSeats();
+game1.doAction(shane,'call');
+game1.getNextAction();
+game1.printSeats();
+game1.doAction(clint,'call');
+game1.getNextAction();
+game1.printSeats();
+game1.doAction(mike,'call');
+game1.printSeats();
+game1.printGamePots();
+game1.getNextAction();
+game1.printSeats();
+game1.doAction(kim,'check',100);
+game1.getNextAction();
+
+game1.doAction(shane,'check',100);
+game1.getNextAction();
+
+game1.doAction(clint,'check',100);
+game1.getNextAction();
+
+game1.printSeats();
 
 
+game1.doAction(kim,'check',100);
+game1.getNextAction();
+
+game1.doAction(shane,'check',100);
+game1.getNextAction();
+
+game1.doAction(clint,'check',100);
+game1.getNextAction();
+
+game1.doAction(kim,'check',100);
+game1.getNextAction();
+
+game1.doAction(shane,'check',100);
+game1.getNextAction();
+
+game1.doAction(clint,'check',100);
+game1.getNextAction();
+
+game1.doAction(kim,'check',100);
+game1.getNextAction();
+
+game1.doAction(shane,'check',100);
+game1.getNextAction();
+
+game1.doAction(clint,'check',100);
+game1.getNextAction();
+
+game1.getNextAction();
+game1.printSeats();
+
+*/
 
 function incomingAction(game,user,action,amt){
 
