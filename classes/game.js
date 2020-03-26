@@ -378,6 +378,13 @@ class game {
 
 	goToNextRound() {
 
+		if(this.isOnlyOnePlayerNotAllIn()==true) {
+			gameTable.bettingRound.round=4;
+			this.addMoneyLineToPot();
+			this.clearRoundData();
+			this.settleTheHand();
+		}
+
 		if (gameTable.bettingRound.round==3) {
 			gameTable.bettingRound.round++;
 
@@ -400,6 +407,7 @@ class game {
 
 		}
 		if (gameTable.bettingRound.round==1) {
+
 			gameTable.bettingRound.round++;
 			//gameTable.currentPot+=gameTable.bettingRound.totalOnLine;
 			this.addMoneyLineToPot();
@@ -498,8 +506,8 @@ class game {
 				for(var a=0;a<gameTable.bettingRound.pots[i].members.length;a++)
 					if(gameTable.bettingRound.pots[i].members[a]!=null)
 						if (gameTable.bettingRound.pots[i].members[a].status=='folded') {
-							//console.log('REMOVED FOLDER'+gameTable.bettingRound.pots[i].members[a].userid);
-							gameTable.bettingRound.pots[i].removeMember(gameTable.bettingRound.pots[i].members[a]);
+							//console.log('POT '+i+' REMOVED FOLDER NUM '+ a+' NAMED '+gameTable.bettingRound.pots[i].members[a].userid);
+							a = gameTable.bettingRound.pots[i].removeMember(gameTable.bettingRound.pots[i].members[a])-1;
 				}
 	}
 
@@ -525,9 +533,25 @@ class game {
 		this.deductMoneyLineAndAddToPot(lowest);
 		//reset counter
 		lowest=9999999;
+
 		if(this.areMoneyLinesZero() == true) {
+						//		console.log("%%%%%%%%%%%%%%%%%ONE%%%%%%%%%%%%%%%%%%%%%");
+
+			//check to see if members of current pot are all in. if so we need a new one, cuz if i called the 
+			//last bet to end the round and it put me all in then we have to make a new pot for next round
+			for(var i=0;i<gameTable.currentPot.members.length;i++) {
+				if(gameTable.currentPot.members[i].status=='allin') {
+					let newPot = new pot(0);
+					//console.log("%%%%%%%%%%%%%%%%%%%TWO%%%%%%%%%%%%%%%%%%%");
+					gameTable.bettingRound.pots.push(newPot);
+					gameTable.currentPot=newPot;
+				}
+
+			}
 			//were done!
 			return false;
+
+			//what is failed to do is make a new pot after settlining someone all in perfectly in to the last one
 		}
 		else {
 			//we are not done!
@@ -551,7 +575,7 @@ class game {
 				NumberofAllInPlayers++;
 
 		//if we have all ins, and the game was folded dead, we may need to put more cards out
-		if (NumberofAllInPlayers>0 && gameTable.bettingRound.endByFold==true) {
+		if (NumberofAllInPlayers>0 && (gameTable.bettingRound.endByFold==true || this.isOnlyOnePlayerNotAllIn()==true)) {
 					//do a show down
 			for(var i=0;i<gameTable.board.length;i++){
 				if(gameTable.board[i]==null) {
@@ -559,12 +583,12 @@ class game {
 					}
 				}
 			}
+	
 		console.log(gameTable.board);
 		var packageCards = {
 			boardCards:gameTable.board,
 			playerCards:[]
 			};
-
 		/*here i am going to looks at all the pots and divide them up amongst winning hands of the members
 		
 		
@@ -572,7 +596,7 @@ class game {
 		*/
 		//check to see if someone didnt win by fold
 		if(gameTable.bettingRound.endByFold==false || NumberofAllInPlayers>0) {
-			console.log("HOW MANY POTS DO I GOT "+gameTable.bettingRound.pots.length);
+			//console.log("HOW MANY POTS DO I GOT "+gameTable.bettingRound.pots.length);
 
 			var selectedPot;
 			for(var i=0;i<gameTable.bettingRound.pots.length;i++) {
@@ -599,7 +623,7 @@ class game {
 					}
 					//2 send the package to get winner
 					var winner = pokerCalc.getHoldemWinner(packageCards,{ compactCards: true});
-					console.log("API RESPONSE:  "+winner);
+				//	console.log("API RESPONSE:  "+JSON.stringify(winner));
 					//3 PAY WINNERS
 					for (var b=0;b<winner.length;b++) {
 						var amtToPay = selectedPot.total/winner.length;
@@ -621,8 +645,11 @@ class game {
 
 
 				
-
-						
+				//reset card package
+				packageCards = {
+					boardCards:gameTable.board,
+					playerCards:[]
+				};
 				}
 				
 			}
@@ -899,15 +926,29 @@ class game {
 				else if (action=="call") {
 						var amtToCall = gameTable.bettingRound.currentRaiseToCall-player.moneyOnLine;
 					//	console.log('amt to call '+amtToCall+" hasEnough?"+player.hasEnough(gameTable.bettingRound.currentRaiseToCall));
-					if(player.hasEnough(amtToCall)) {
+					
+					//either they have enough to cover or theyre all in
+					if(player.hasEnough(amtToCall)||player.balance<amtToCall) {
+
+						//are they all in?
+						if(player.balance<amtToCall) {
+							this.putPlayerAllIn(player);
+							player.addMoneyToLine(player.balance);
+							gameTable.bettingRound.totalOnLine+=player.balance;
+						}
+						else {
+							player.addMoneyToLine(amtToCall);
+							gameTable.bettingRound.totalOnLine+=amtToCall;
+						}
+
 						//need to get diff of what player has in vs whats to call
-						player.addMoneyToLine(amtToCall);
-						gameTable.bettingRound.totalOnLine+=amtToCall;
+						
 						gameTable.bettingRound.lastBet='call';
 
 						
-
+						
 						this.advanceToNextPlayer();
+
 						console.log(player.userid+" has called "+gameTable.bettingRound.currentRaiseToCall);
 
 						//check to see if this call sets player all in all in

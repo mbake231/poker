@@ -17,9 +17,9 @@ var dealer;
 
 //TESTS########
 
-var mike = new player("mike",'cookie',300,'playing','sid');
+var mike = new player("mike",'cookie',290,'playing','sid');
 var kim = new player("kim",'cookie',400,'playing','sid');
-var shane = new player("shane",'cookie',1000,'playing','sid');
+var shane = new player("shane",'cookie',10000,'playing','sid');
 var kev = new player("kev",'cookie',100,'playing','sid');
 var clint = new player("clint",'cookie',1000,'playing','sid');
 var bob = new player("bob",'cookie',200,'playing','sid');
@@ -56,7 +56,7 @@ game1.printSeats();
 game1.doAction(kim,'raise',100);
 game1.getNextAction();
 game1.printSeats();
-game1.doAction(shane,'call');
+game1.doAction(shane,'raise',5000);
 game1.getNextAction();
 game1.printSeats();
 game1.doAction(clint,'call');
@@ -67,16 +67,12 @@ game1.printSeats();
 game1.printGamePots();
 game1.getNextAction();
 game1.printSeats();
-game1.doAction(kim,'raise',10);
+game1.doAction(kim,'call');
 game1.getNextAction();
-
-game1.doAction(shane,'fold',100);
-game1.getNextAction();
-
-game1.doAction(clint,'fold',100);
-
+//7290
+//game1.printGamePots();
 game1.printSeats();
-game1.printGamePots();
+
 //TESTS##########
 
 function incomingAction(game,user,action,amt){

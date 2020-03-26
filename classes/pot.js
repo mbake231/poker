@@ -53,6 +53,7 @@ class pot {
 	addMember(player) {
 		this.members.push(player);
 		numMembers++;
+		//console.log("ADDED "+player.userid);
 	}
 
 	removeMember(player) {
@@ -63,8 +64,10 @@ class pot {
 		}
 		if(indexToRemove!=999) {
 			this.members.splice(indexToRemove,1);
-			console.log("REMOVED "+player.userid);
+			//console.log("REMOVED "+player.userid);
 		}
+		numMembers--;
+		return indexToRemove;
 	}
 
 	getMemberByHash(hash){
@@ -84,10 +87,10 @@ class pot {
 	printPot() {
 		console.log("Total = $"+this.total);
 		for(var i=0;i<this.members.length;i++){
-			console.log("MEMBER "+i+"IS SEAT"+this.members[i].seat);
+			console.log("MEMBER "+i+" IS SEAT "+this.members[i].seat);
 		}
 		for(var i=0;i<this.winners.length;i++){
-			console.log("WINNER "+i+"IS SEAT"+this.winners[i].winner.seat);
+			console.log("WINNER "+i+" IS SEAT "+this.winners[i].winner.seat);
 		}
 
 	}
