@@ -14,7 +14,9 @@ var gameCount = 0;
 
 var firstDealer;
 var dealer;
-/*
+
+//TESTS########
+
 var mike = new player("mike",'cookie',300,'playing','sid');
 var kim = new player("kim",'cookie',400,'playing','sid');
 var shane = new player("shane",'cookie',1000,'playing','sid');
@@ -65,49 +67,17 @@ game1.printSeats();
 game1.printGamePots();
 game1.getNextAction();
 game1.printSeats();
-game1.doAction(kim,'check',100);
+game1.doAction(kim,'raise',10);
 game1.getNextAction();
 
-game1.doAction(shane,'check',100);
+game1.doAction(shane,'fold',100);
 game1.getNextAction();
 
-game1.doAction(clint,'check',100);
-game1.getNextAction();
+game1.doAction(clint,'fold',100);
 
 game1.printSeats();
-
-
-game1.doAction(kim,'check',100);
-game1.getNextAction();
-
-game1.doAction(shane,'check',100);
-game1.getNextAction();
-
-game1.doAction(clint,'check',100);
-game1.getNextAction();
-
-game1.doAction(kim,'check',100);
-game1.getNextAction();
-
-game1.doAction(shane,'check',100);
-game1.getNextAction();
-
-game1.doAction(clint,'check',100);
-game1.getNextAction();
-
-game1.doAction(kim,'check',100);
-game1.getNextAction();
-
-game1.doAction(shane,'check',100);
-game1.getNextAction();
-
-game1.doAction(clint,'check',100);
-game1.getNextAction();
-
-game1.getNextAction();
-game1.printSeats();
-
-*/
+game1.printGamePots();
+//TESTS##########
 
 function incomingAction(game,user,action,amt){
 
