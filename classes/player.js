@@ -43,6 +43,10 @@ class player {
 		this.balance+=Number(amt);
 	}
 
+	updateSessionId(newSessionid) {
+		this.sessionid=newSessionid;
+	}
+
 	setSeat(seat) {
 		this.seat=seat;
 	}

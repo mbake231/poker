@@ -640,7 +640,8 @@ class game {
 					//4 store winner of each pot with beautified hand
 						
 						selectedPot.winners.push({winner:winningPlayer,
-											winningHand:winningHand});
+											winningHand:winningHand,
+											winningCards:[winningPlayer.card1,winningPlayer.card2]});
 					}
 
 
@@ -1107,7 +1108,13 @@ class game {
 	}
 
 	
-
+	getPlayerByCookie(cookie) {
+		for(var i=0;i<gameTable.game_size;i++) {
+			if(gameTable.seats[i].cookie===cookie)
+				return gameTable.seats[i];
+		}
+		return false;
+	}
 
 }
 

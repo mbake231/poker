@@ -44,9 +44,10 @@ io.on('connection', function(socket){
 		});
 
 		socket.on('register', function (regDetails) {
+			console.log("ON SIT COOKIE "+regDetails.storedCookie);
 			hash=gameController.addNewPlayerToGame(regDetails.gameHash,
 									regDetails.userid,
-									"cookie",
+									regDetails.storedCookie,
 									regDetails.balance,
 									regDetails.status,
 									regDetails.seat,
@@ -65,6 +66,11 @@ io.on('connection', function(socket){
 
 		socket.on('nextHand', function (data) {
 			gameController.nextHand();
+			});
+
+		socket.on('reconnectionAttempt', function (data) {
+			console.log('reconnect initiated');
+			gameController.reconnect(data.gameid,data.storedCookie,socket.id);
 			});
 
 	
