@@ -92,6 +92,7 @@ class game {
 			for (var i=0;i<gameTable.game_size;i++) {
 				if(gameTable.seats[i].leavenexthand==true) {
 					gameTable.seats[i]='empty';
+					gameTable.numseats--;
 					this.deletePlayer(gameTable.seats[i]);
 				}
 			}
@@ -970,8 +971,10 @@ class game {
 		//SEE IF BIG BLIND CHECKED
 		else if(gameTable.bettingRound.lastBet=='check' && gameTable.bettingRound.currentRaiseToCall == gameTable.bigBlind && gameTable.bettingRound.round==0){
 			console.log("round over the big blind checked");
+			
 			if(gameTable.isTimerGame==true)
 				this.actionOnTimer();
+			this.goToNextRound();
 		}
 
 		//if someone is all in, and i am last person in hand (pointing to myself)

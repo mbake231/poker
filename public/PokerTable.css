@@ -1,4 +1,6 @@
-ul { padding:0 }
+@import "bulma.css";
+ul { 
+	margin: 0;padding:0; }
 
 #player0 {
 	
@@ -8,7 +10,6 @@ ul { padding:0 }
 
 }
 
-
 .hidden {
 	display: block;
 }
@@ -17,17 +18,17 @@ ul { padding:0 }
 		background-color: lightgreen;
 }
 .player {
-	
-	width:125px;
-	height:125px;
-	font-color: blue;
+
+
+	width:150px;
+	height:150px;
+
 }
 
-
 .pokerTable {
-	background-image: 'table.png';
-	padding-left: 25%;
-	text-align: center;
+	display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .table {
@@ -39,12 +40,9 @@ ul { padding:0 }
 	height:100px;
 }
 
-
 .card1 {
 	width:50%;
-	float:left;
-
-	
+	float:left;	
 }
 
 .card2 {
@@ -53,8 +51,12 @@ ul { padding:0 }
 }
 
 #board {
-	width:50%;
-	float:left;
+	margin-left: 40px;
+	margin-top: 75px;
+	width:50px;
+	display: flex;
+  	align-items: center;
+  	justify-content: center;
 }
 
 .actionOn {
@@ -71,9 +73,16 @@ ul { padding:0 }
 
 }
 
+.sitOutBar {
+	display: inline-block;
+}
+
+#gameBar {
+	width:140px;
+}
+
 #raise {
 	display:none;
-
 }
 
 .empty {
@@ -81,6 +90,7 @@ ul { padding:0 }
 	border-width: thin !important;
 	border-color: black !important;
 }
+
 #raiseInput {
 	display: none;
 }
@@ -98,46 +108,78 @@ ul { padding:0 }
 
 .userid {
 	font-size: 22px;
-	font-style: bold;
+}
+
+#chipsbottom {
+	visibility: hidden;
+	position: absolute;
+	margin-left: 50px;
+	top:420px;
+	width:150px;
+
+}
+
+#chipstop {
+	visibility: hidden;
+	position: absolute;
+	margin-left: 60px;
+	top:155px;
+	width:150px;
+
+}
+
+#chipsright {
+	visibility: hidden;
+	position: absolute;
+	left: 745px;
+	margin-top:60px;
+	width:150px;
+display: flex;
+  	align-items: center;
+  	justify-content: center;
+}
+
+#chipsleft {
+		display: flex;
+  	align-items: center;
+  	justify-content: center;
+
+	visibility: hidden;
+	position: absolute;
+	left:365px;
+	margin-top: 60px;
+	width:150px;
+
 }
 
 .winner {
 	 visibility:hidden;
+	 display: flex;
+  	align-items: right;
+  	justify-content: right;
+  	position: absolute;
+  	font-size: 10px;
 	}
 
-#overlay {
-  position: fixed; /* Sit on top of the page content */
-  display: block; /* Hidden by default */
-  width: 100%; /* Full width (cover the whole page) */
-  height: 100%; /* Full height (cover the whole page) */
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(255,255,255,1.0); /* Black background with opacity */
-  z-index: 2; /* Specify a stack order in case you're using a different order for other elements */
-  cursor: pointer; /* Add a pointer on hover */
+.actionButtons {
+ 	 display: inline-block;
+	 padding:0.3em 1.2em;
+	 margin:0 0.3em 0.3em 0;
+	 border-radius:2em;
+	 box-sizing: border-box;
+	 text-decoration:none;
+	 font-family:'Roboto',sans-serif;
+	 font-weight:300;
+	 color:#FFFFFF;
+	 background-color:#4eb5f1;
+	 text-align:center;
+	 transition: all 0.2s;
 }
-
-button.btn.actionButtons{
- display:inline-block;
- padding:0.3em 1.2em;
- margin:0 0.3em 0.3em 0;
- border-radius:2em;
- box-sizing: border-box;
- text-decoration:none;
- font-family:'Roboto',sans-serif;
- font-weight:300;
- color:#FFFFFF;
- background-color:#4eb5f1;
- text-align:center;
- transition: all 0.2s;
-}
-button.btn.actionButtons:hover{
+.actionButtons:hover {
  background-color:#4095c6;
 }
 @media all and (max-width:30em){
- button.button.btn.actionButtons{
+ .actionButtons{
   display:block;
   margin:0.2em auto;
  }

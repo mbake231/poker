@@ -11,6 +11,9 @@ main
         td
         td.player.player0
          div.empty.player#player0
+          div#chipstop
+           img(src='img/chips.jpg' width="20%")
+           div#moneyOnLine
           div#join
             input.nameInput(type="text" name="name" placeholder="name" size="12")
             input.balanceInput(type="text" name="balance" placeholder="balance" size="8")
@@ -23,6 +26,9 @@ main
         td
         td.player.player1
          div.empty.player#player1
+          div#chipstop
+           img(src='img/chips.jpg' width="20%")
+           div#moneyOnLine
           div#join
             input.nameInput(type="text" name="name" placeholder="name" size="12")
             input.balanceInput(type="text" name="balance" placeholder="balance" size="8")
@@ -36,6 +42,9 @@ main
       tr
         td.player.player8
           div.empty.player#player8
+           div#chipsleft
+            img(src='img/chips.jpg' width="20%")
+            div#moneyOnLine
            div#join
             input.nameInput(type="text" name="name" placeholder="name" size="12")
             input.balanceInput(type="text" name="balance" placeholder="balance" size="8")
@@ -45,13 +54,15 @@ main
            div.cards
             div.card1
             div.card2
+        td
         td#board
         td
-          div#winner.winner
-          button.winner(type='raise' onclick="nextHand();") Next Hand
-        td#statusArea
+         button.winner(type='raise' onclick="nextHand();") Next Hand
         td.player.player2
           div.empty.player#player2
+           div#chipsright
+            div#moneyOnLine
+            img(src='img/chips.jpg' width="20%")
            div#join
             input.nameInput(type="text" name="name" placeholder="name" size="12")
             input.balanceInput(type="text" name="balance" placeholder="balance" size="8")
@@ -64,6 +75,9 @@ main
       tr
         td.player.player7
           div.empty.player#player7
+           div#chipsleft
+             img(src='img/chips.jpg' width="20%")
+             div#moneyOnLine
            div#join
             input.nameInput(type="text" name="name" placeholder="name" size="12")
             input.balanceInput(type="text" name="balance" placeholder="balance" size="8")
@@ -74,10 +88,13 @@ main
             div.card1
             div.card2
         td
-        td
+        td#statusArea
         td
         td.player.player3
           div.empty.player#player3
+           div#chipsright
+            div#moneyOnLine
+            img(src='img/chips.jpg' width="20%")
            div#join
             input.nameInput(type="text" name="name" placeholder="name" size="12")
             input.balanceInput(type="text" name="balance" placeholder="balance" size="8")
@@ -91,6 +108,9 @@ main
         td
         td.player.player6
           div.empty.player#player6
+           div#chipsbottom
+             img(src='img/chips.jpg' width="20%")
+             div#moneyOnLine
            div#join
             input.nameInput(type="text" name="name" placeholder="name" size="12")
             input.balanceInput(type="text" name="balance" placeholder="balance" size="8")
@@ -102,6 +122,9 @@ main
             div.card2
         td.player.player5
           div.empty.player#player5
+           div#chipsbottom
+             img(src='img/chips.jpg' width="20%")
+             div#moneyOnLine
            div#join
             input.nameInput(type="text" name="name" placeholder="name" size="12")
             input.balanceInput(type="text" name="balance" placeholder="balance" size="8")
@@ -113,6 +136,9 @@ main
             div.card2
         td.player.player4
           div.empty.player#player4
+           div#chipsbottom
+             img(src='img/chips.jpg' width="20%")
+             div#moneyOnLine
            div#join
             input.nameInput(type="text" name="name" placeholder="name" size="12")
             input.balanceInput(type="text" name="balance" placeholder="balance" size="8")
@@ -123,17 +149,19 @@ main
             div.card1
             div.card2
         td
-  div#sitOutBar
-   p Sit out next hand
-   input.sitoutcheckbox(type="checkbox" name="sitoutcheckbox" placeholder="" onclick="toggleSitOut()") 
-   button#leaveTable(onclick="leaveTable();") Leave table
   div#actionBar.container
    div#raise
-    button.raiseButton.actionButtons(type='raise' onclick="raise(5);") Raise
-    input.raiseInput(type="text" name="raise" placeholder="")
-   button#call.actionButtons(type='call' onclick="call();") Call
-   button#check.actionButtons(type='check' onclick="check();") Check
-   button#fold.actionButtons(type='fold' onclick="fold();") Fold
-  button#start.actionButtons(type='raise' onclick="startGame();") Start Game
-  button#start.actionButtons(type='raise' onclick="callClock();") Call clock
+    button.button.is-info(type='raise' onclick="raise(5);") Raise
+    input.raiseInput.input(type="text" name="raise" placeholder="" size="1")
+   button#call.button.is-success(type='call' onclick="call();") Call
+   button#check.button.is-warning(type='check' onclick="check();") Check
+   button#fold.button.is-danger(type='fold' onclick="fold();") Fold
+  div#gameBar
+   button#start.button.is-primary(type='raise' onclick="startGame();") Start Game
+   button#clock.button.is-primary(type='raise' onclick="callClock();") Call clock
+   div.sitOutBar
+    input.sitoutcheckbox(type="checkbox" name="sitoutcheckbox" placeholder="" onclick="toggleSitOut()") 
+    label Sit out next hand
+   button#leaveTable.button.is-warning(onclick="leaveTable();") Leave table
+  div#winner.winner
 

@@ -146,6 +146,7 @@ $(window).on('load', function(){
 		var id = makeid(16);
 		document.cookie = "clientID="+id;
 		storedCookie = id;
+		//console.log('neww cook');
 	}
 	else {
 		reconnect();
@@ -193,6 +194,21 @@ $(window).on('load', function(){
 						$('#player'+index).find('.card2').html("");
 					}
 
+					if(seats[index].moneyOnLine>0) {
+					  $('#player'+index).find('#chipsleft').css('visibility','visible');
+					  $('#player'+index).find('#chipstop').css('visibility','visible');
+					  $('#player'+index).find('#chipsbottom').css('visibility','visible');
+					  $('#player'+index).find('#chipsright').css('visibility','visible');
+					  $('#player'+index).find('#moneyOnLine').html("$"+seats[index].moneyOnLine);
+					}
+					else {
+					  $('#player'+index).find('#chipsleft').css('visibility','hidden');
+					  $('#player'+index).find('#chipstop').css('visibility','hidden');
+					  $('#player'+index).find('#chipsbottom').css('visibility','hidden');
+					  $('#player'+index).find('#chipsright').css('visibility','hidden');
+					}
+
+
 					//console.log("spinning on "+seats[index] );
 					if(k=='userid')
 						$('#player'+index).find('.userid').html(v);
@@ -218,6 +234,8 @@ $(window).on('load', function(){
 
 		});
 		//clear actionOn
+		if(gameData.numseats<2)
+			$('#start').css('display','block');
 
 		if(gameData.bettingRound.actionOn!=null){
 			$('#start').css('display','none');
@@ -232,12 +250,11 @@ $(window).on('load', function(){
 			 })
 			$('#player'+gameData.bettingRound.actionOn.seat).removeClass('empty');
 			
-			//timer change
 
 			if(gameData.bettingRound.actionOn.hash===myid && gameData.bettingRound.round!=null) {
 				//SHOW MY BAR
 				$.each(gameData.bettingRound.nextActionsAvailable, function(index) {
-					$('#actionBar').find('#'+gameData.bettingRound.nextActionsAvailable[index]).css('display','block');
+					$('#actionBar').find('#'+gameData.bettingRound.nextActionsAvailable[index]).css('display','inline-block');
 				})
 
 				$('#actionBar').css('display','block');
@@ -272,7 +289,7 @@ $(window).on('load', function(){
 		if(gameData.board[0]!=null){
 			$('#board').html("");
 			$.each(gameData.board, function(index) {
-				$('#board').append('<img id="theImg" src="img/cards/'+gameData.board[index]+'.svg" width="40%"/>');
+				$('#board').append('<img id="theImg" src="img/cards/'+gameData.board[index]+'.svg" width="100%"/>');
 			});
 		}
 		if(gameData.board[0]==null){
