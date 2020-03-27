@@ -19,7 +19,16 @@ var dealer;
 
 
 
+
 //TESTS##########
+
+function leaveTableNextHand (game,hash) {
+
+	game1.leaveTableNextHand(hash);
+	sendSeatList();
+	sendDataToAllPlayers(game1);
+
+}
 
 function incomingAction(game,user,action,amt){
 
@@ -170,4 +179,4 @@ exports.nextHand = nextHand;
 exports.reconnect = reconnect;
 exports.toggleSitOut=toggleSitOut;
 exports.sendDataToAllPlayers=sendDataToAllPlayers;
-
+exports.leaveTableNextHand=leaveTableNextHand;

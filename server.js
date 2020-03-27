@@ -45,7 +45,6 @@ io.on('connection', function(socket){
 		});
 
 		socket.on('register', function (regDetails) {
-			console.log("ON SIT COOKIE "+regDetails.storedCookie);
 			hash=gameController.addNewPlayerToGame(regDetails.gameHash,
 									regDetails.userid,
 									regDetails.storedCookie,
@@ -67,7 +66,7 @@ io.on('connection', function(socket){
 			});
 
 		socket.on('leaveTable', function (data) {
-				//placeholder
+				gameController.leaveTableNextHand(data.gameid,data.hash);
 			});
 
 		socket.on('incomingAction', function (data) {
@@ -79,10 +78,9 @@ io.on('connection', function(socket){
 			});
 
 		socket.on('reconnectionAttempt', function (data) {
-			console.log('reconnect initiated');
 			gameController.reconnect(data.gameid,data.storedCookie,socket.id);
-			console.log(socket.id);
 			});
+
 
 	
 		

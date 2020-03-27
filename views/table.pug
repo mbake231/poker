@@ -126,7 +126,7 @@ main
   div#sitOutBar
    p Sit out next hand
    input.sitoutcheckbox(type="checkbox" name="sitoutcheckbox" placeholder="" onclick="toggleSitOut()") 
-   button.dealMeInButton(onclick="leaveTable();") Leave table
+   button#leaveTable(onclick="leaveTable();") Leave table
   div#actionBar.container
    div#raise
     button.raiseButton.actionButtons(type='raise' onclick="raise(5);") Raise

@@ -19,7 +19,16 @@ var storedCookie = ('; ' + document.cookie)
 .shift();
 
 function leaveTable () {
-	socket.emit('leaveTable', gameid);
+	if(myid!=null) {
+		socket.emit('leaveTable', {gameid:gameid,hash:myid});
+
+		location.reload(true)
+
+}
+}
+
+function startTimer() {
+
 }
 
 function cookieIsset(name)
@@ -58,18 +67,31 @@ function register () {
 	}
 
 	function sit (seat) {
-		console.log("ON SIT " +storedCookie);
+
+		if($('#player'+seat).find('.nameInput').val().length!=0 &&  $('#player'+seat).find('.balanceInput').val().length!=0) {
 		var register = {
 			gameHash: 'train',
 			storedCookie: storedCookie,
 			userid: $('#player'+seat).find('.nameInput').val(),
 			balance: $('#player'+seat).find('.balanceInput').val(),
 			status: 'playing',
-			seat: seat
+			seat: seat}
+			$('#player'+seat).find('.balanceInput').css('border','1px solid black;');
+			$('#player'+seat).find('.balanceInput').css('border','1px solid black;');
+			socket.emit('register', register);
 		}
+		if ($('#player'+seat).find('.balanceInput').val().length===0) {
+			console.log('fart');
+			$('#player'+seat).find('.nameInput').css('border','1px solid red;')
+		}
+		if ($('#player'+seat).find('.nameInput').val().length===0 )
+			$('#player'+seat).find('.balanceInput').css('border','1px solid red;')
+
+
+
 		//$('#overlay').css('display','none');
 
-		socket.emit('register', register);
+		
 	}
 
 	function nextHand() {
@@ -133,6 +155,7 @@ $(window).on('load', function(){
 
 
 	function updateGameData(gameData){
+		
 		//store MY data
 		$.each(seats,function(index) {
 			if(seats[index].hash === myid){
@@ -140,9 +163,18 @@ $(window).on('load', function(){
 				//console.log("MY SEAT "+mySeatData.seat);
 			}
 		})
+
+		if(mySeatData.leavenexthand==true) {
+			$('#leaveTable').html('LEAVING NEXT HAND');
+		}
+		else if (mySeatData.leavenexthand==false)
+			$('#leaveTable').html('Leave table');
 		
 		$.each(seats, function(index) {
 			if (seats[index]=='empty') {
+				$('#player'+index).find('.userid').html('');
+				$('#player'+index).find('.balance').html('');
+				$('#player'+index).find('#join').css('display','block');
 				$('#player'+index).removeClass('actionOn');
 				$('#player'+index).removeClass('sittingOut');
 				$('#player'+index).addClass('empty');
@@ -151,6 +183,7 @@ $(window).on('load', function(){
 				$.each(seats[index], function (k,v) {
 					$('#player'+index).addClass('seatfull');
 					$('#player'+index).removeClass('sittingOut');
+					$('#player'+index).removeClass('empty');
 					$('#player'+index).find('#join').css('display','none');
 					if(seats[index].status=='sittingout') {
 						$('#player'+index).removeClass('empty');
@@ -158,6 +191,7 @@ $(window).on('load', function(){
 						$('#player'+index).find('.card1').html("");
 						$('#player'+index).find('.card2').html("");
 					}
+
 					//console.log("spinning on "+seats[index] );
 					if(k=='userid')
 						$('#player'+index).find('.userid').html(v);
@@ -187,7 +221,10 @@ $(window).on('load', function(){
 		if(gameData.bettingRound.actionOn!=null){
 			$('#start').css('display','none');
 			//console.log("on me? "+gameData.bettingRound.actionOn.hash+" vs "+myid);
+			$('#player'+gameData.bettingRound.actionOn.seat).removeClass('empty');
 			$('#player'+gameData.bettingRound.actionOn.seat).addClass('actionOn');
+			//timer change
+
 			if(gameData.bettingRound.actionOn.hash===myid && gameData.bettingRound.round!=null) {
 				//SHOW MY BAR
 				$.each(gameData.bettingRound.nextActionsAvailable, function(index) {
@@ -208,7 +245,7 @@ $(window).on('load', function(){
 
 			
 			//add pot
-			$('#statusArea').html("Pot $"+gameData.currentPot.total+"<br>Line $"+gameData.bettingRound.totalOnLine);
+			$('#statusArea').html("Pot $"+gameData.bettingRound.potsTotal+"<br>Line $"+gameData.bettingRound.totalOnLine);
 
 
 		}

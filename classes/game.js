@@ -23,8 +23,11 @@ var gameTable = {
 	bigBlind:2,
 	bettingRound: {
 		lastRaiser:null,
+		potsTotal:0,
 		pots:[],
 		actionOn:null,
+		actionOnTimer:null,
+		actionOnTimeLimit:300000,
 		nextActionsAvailable:[],
 		round:0,
 		totalOnLine:0,
@@ -51,63 +54,80 @@ class game {
 
 
 	goToNextHand () {
-		gameTable.deck = new deck();
-		gameTable.dealer=gameTable.dealer.nextPlayer;
-		gameTable.winner.players=null;
-		gameTable.winner.hand=null;
-		gameTable.winner.winningPot=null;
-		gameTable.board=[];
-		gameTable.currentPot=0;
-		gameTable.bettingRound.lastRaiser=null;
-		gameTable.bettingRound.nextActionsAvailable=[];
-		gameTable.bettingRound.round=0;
-		gameTable.bettingRound.totalOnLine=0;
-		gameTable.bettingRound.currentRaiseToCall=0;
-		gameTable.bettingRound.currentRaiseToCall=null;
-		gameTable.isSettled='no';
-		gameTable.bettingRound.endByFold=false;
+	if(gameTable.numseats>1){
+			gameTable.deck = new deck();
+			gameTable.dealer=gameTable.dealer.nextPlayer;
+			gameTable.winner.players=null;
+			gameTable.winner.hand=null;
+			gameTable.winner.winningPot=null;
+			gameTable.board=[];
+			gameTable.currentPot=0;
+			gameTable.bettingRound.lastRaiser=null;
+			gameTable.bettingRound.nextActionsAvailable=[];
+			gameTable.bettingRound.round=0;
+			gameTable.bettingRound.totalOnLine=0;
+			gameTable.bettingRound.currentRaiseToCall=0;
+			gameTable.bettingRound.currentRaiseToCall=null;
+			gameTable.isSettled='no';
+			gameTable.bettingRound.endByFold=false;
 
-		//new pots
-		gameTable.bettingRound.pots=[];
-		gameTable.bettingRound.pots[0] = new pot(0);
-		gameTable.currentPot=gameTable.bettingRound.pots[0];
+			//new pots
+			gameTable.bettingRound.pots=[];
+			gameTable.bettingRound.pots[0] = new pot(0);
+			gameTable.currentPot=gameTable.bettingRound.pots[0];
 
 
-		//clear cards
-		for(var i=0;i<gameTable.game_size;i++)
-		{
-			if(gameTable.seats[i].status=='inhand'||gameTable.seats[i].status=='folded'||gameTable.seats[i].status=='allin'){
-				gameTable.seats[i].card1=null;
-				gameTable.seats[i].card2=null;
+			//clear cards
+			for(var i=0;i<gameTable.game_size;i++)
+			{
+				if(gameTable.seats[i].status=='inhand'||gameTable.seats[i].status=='folded'||gameTable.seats[i].status=='allin'){
+					gameTable.seats[i].card1=null;
+					gameTable.seats[i].card2=null;
+					}
+						
 				}
-					
+
+			//remove those who were set to leave
+			for (var i=0;i<gameTable.game_size;i++) {
+				if(gameTable.seats[i].leavenexthand==true) {
+					gameTable.seats[i]='empty';
+					this.deletePlayer(gameTable.seats[i]);
+				}
 			}
-		//set sitting out
-		for (var i=0;i<gameTable.game_size;i++) {
-			if(gameTable.seats[i].sitoutnexthand==true) {
-				gameTable.seats[i].status='sittingout';
+			//set sitting out
+			for (var i=0;i<gameTable.game_size;i++) {
+				if(gameTable.seats[i].sitoutnexthand==true) {
+					gameTable.seats[i].status='sittingout';
+				}
+
+			}
+
+			//set to waiting to play
+			for (var i=0;i<gameTable.game_size;i++)
+			{
+				//if(gameTable.seats[i].status=='inhand' || gameTable.seats[i].status=='folded'|| gameTable.seats[i].status=='allin' )
+				if(gameTable.seats[i].sitoutnexthand==false){
+					gameTable.seats[i].status='playing';
+					console.log(gameTable.seats[i].seat+" is now set to "+gameTable.seats[i].status);
+				}
+			}
+
+			//restore pointers
+			for (var i=0;i<gameTable.game_size;i++) {
+				if(gameTable.seats[i].status=='playing' ) {
+					this.setNextPlayer(gameTable.seats[i]);
+				}
 			}
 
 		}
+	//if you dont have more than one person
+	else
+		console.log('need more than one person');
+	}
 
-		//set to waiting to play
-		for (var i=0;i<gameTable.game_size;i++)
-		{
-			//if(gameTable.seats[i].status=='inhand' || gameTable.seats[i].status=='folded'|| gameTable.seats[i].status=='allin' )
-			if(gameTable.seats[i].sitoutnexthand==false){
-				gameTable.seats[i].status='playing';
-				console.log(gameTable.seats[i].seat+" is now set to "+gameTable.seats[i].status);
-			}
-		}
-
-		//restore pointers
-		for (var i=0;i<gameTable.game_size;i++) {
-			if(gameTable.seats[i].status=='playing' ) {
-				this.setNextPlayer(gameTable.seats[i]);
-			}
-		}
-
-
+	deletePlayer(player) {
+		gameTable.seats[player.seat]="empty";
+		gameTable.numseats--;
 	}
 
 	makeid(length) {
@@ -330,8 +350,8 @@ class game {
 	}
 
 	getBigBlindPlayer() {
-		var smallBlindPayer = gameTable.seats[gameTable.dealer.seat].nextPlayer;
-		var bigBlindPayer = gameTable.seats[smallBlindPayer.seat].nextPlayer;
+		//var smallBlindPayer = gameTable.seats[gameTable.dealer.seat].nextPlayer;
+		var bigBlindPayer = gameTable.seats[this.getSmallBlindPlayer().seat].nextPlayer;
 		//console.log("Big Blind on Seat: "+bigBlindPayer.seat);
 		return bigBlindPayer;
 	}
@@ -356,6 +376,7 @@ class game {
 
 		//set the person under the gun to be next
 		this.setActionOn(this.getUnderTheGunPlayer());
+		this.actionOnTimer();
 		gameTable.bettingRound.lastBet='blinds';
 		gameTable.bettingRound.round=0;
 		gameTable.bettingRound.currentRaiseToCall = gameTable.bigBlind;
@@ -490,6 +511,28 @@ class game {
 		return true;
 	}
 
+	leaveTableNextHand (hash) {
+		var playerToLeave = this.getPlayerByHash(hash);
+		//make sure i pass dealer to the next player if i am dealer
+		if(gameTable.dealer!=null){
+			if(gameTable.dealer.hash===playerToLeave.hash)
+				gameTable.dealer = playerToLeave.nextPlayer;
+		}
+
+
+
+		//leave
+	
+		if(playerToLeave.status=='sittingout' || playerToLeave.status=='folded' || playerToLeave.status=='playing') {
+			this.deletePlayer(playerToLeave);
+
+		}
+		else
+			playerToLeave.leavenexthand = true;		
+
+		
+	}
+
 	areMoneyLinesZero() {
 	
 
@@ -514,12 +557,13 @@ class game {
 	deductMoneyLineAndAddToPot (amt){
 		//deduct that amount from everyone and add them as a member
 		for(var i = 0;i<gameTable.game_size;i++){
-				if((gameTable.seats[i].status=='fold'|| gameTable.seats[i].status=='inhand' 
+				if((gameTable.seats[i].status=='folded'|| gameTable.seats[i].status=='inhand' 
 					|| gameTable.seats[i].status=='allin') && gameTable.seats[i].moneyOnLine>0){
 						gameTable.seats[i].moneyOnLine-=amt;
 						gameTable.currentPot.total+=amt;
+						gameTable.bettingRound.potsTotal+=amt;
 						//already a member or not?
-						if(this.isPlayerMemberofCurrentPot(gameTable.seats[i])==false && gameTable.seats[i].status!='fold'){
+						if(this.isPlayerMemberofCurrentPot(gameTable.seats[i])==false && gameTable.seats[i].status!='folded'){
 							gameTable.currentPot.addMember(gameTable.seats[i]);
 							//console.log(gameTable.seats[i].seat+" IS NOW A MEMBER OF POT LOOK HERE: "+gameTable.currentPot.getMemberByHash(gameTable.seats[i].hash).seat);
 						}
@@ -543,53 +587,75 @@ class game {
 
 	addMoneyLineToPot(){
 
-	//	for (var i=0;i<gameTable.game_size;i++)
-	//		console.log(gameTable.seats[i].userid+" "+gameTable.seats[i].moneyOnLine);
+		//if everyone folded and no one is all in then just jam the lines in and pay it out
+		var NumberofAllInPlayers=0;
+		for (var i=0;i<gameTable.seats.length;i++)
+			if(gameTable.seats[i].status==='allin')
+				NumberofAllInPlayers++;
 
-		//find lowest money on line, if its the same for everyone it will be the common denom
-		let lowest = 999999999;
-			for(var i = 0;i<gameTable.game_size;i++){
-				if((gameTable.seats[i].status==='inhand' || gameTable.seats[i].status==='allin') && gameTable.seats[i].moneyOnLine>0){
-					if(gameTable.seats[i].moneyOnLine<lowest) {
-						lowest=gameTable.seats[i].moneyOnLine;
+		if(NumberofAllInPlayers==0 && gameTable.bettingRound.endByFold==true) {
+			for (var i=0;i<gameTable.game_size;i++) {
+					if(gameTable.seats[i].status === 'inhand' || gameTable.seats[i].status === 'folded') {
+						gameTable.currentPot.total+=gameTable.seats[i].moneyOnLine;
+						gameTable.bettingRound.potsTotal+=gameTable.seats[i].moneyOnLine;
+						gameTable.seats[i].moneyOnLine-=gameTable.seats[i].moneyOnLine;
+						//gameTable.seats[i].moneyOnLine=0;
 					}
 				}
-			}
-		this.deductMoneyLineAndAddToPot(lowest);
-		//reset counter
-		lowest=9999999;
-
-		if(this.areMoneyLinesZero() == true) {
-						//		console.log("%%%%%%%%%%%%%%%%%ONE%%%%%%%%%%%%%%%%%%%%%");
-
-			//check to see if members of current pot are all in. if so we need a new one, cuz if i called the 
-			//last bet to end the round and it put me all in then we have to make a new pot for next round
-			for(var i=0;i<gameTable.currentPot.members.length;i++) {
-				if(gameTable.currentPot.members[i].status=='allin') {
-					let newPot = new pot(0);
-					//console.log("%%%%%%%%%%%%%%%%%%%TWO%%%%%%%%%%%%%%%%%%%");
-					gameTable.bettingRound.pots.push(newPot);
-					gameTable.currentPot=newPot;
-				}
-
-			}
-			//were done!
-			return false;
-
-			//what is failed to do is make a new pot after settlining someone all in perfectly in to the last one
 		}
+
 		else {
-			//we are not done!
-			let newPot = new pot(0);
-			gameTable.bettingRound.pots.push(newPot);
-			gameTable.currentPot=newPot;
-			this.addMoneyLineToPot();
-		}
 
+			//	for (var i=0;i<gameTable.game_size;i++)
+		//		console.log(gameTable.seats[i].userid+" "+gameTable.seats[i].moneyOnLine);
+
+			//find lowest money on line, if its the same for everyone it will be the common denom
+			let lowest = 999999999;
+				for(var i = 0;i<gameTable.game_size;i++){
+					if((gameTable.seats[i].status==='inhand' || gameTable.seats[i].status==='allin') && gameTable.seats[i].moneyOnLine>0){
+						if(gameTable.seats[i].moneyOnLine<lowest) {
+							lowest=gameTable.seats[i].moneyOnLine;
+						}
+					}
+				}
+			this.deductMoneyLineAndAddToPot(lowest);
+			//reset counter
+			lowest=9999999;
+
+			if(this.areMoneyLinesZero() == true) {
+							//		console.log("%%%%%%%%%%%%%%%%%ONE%%%%%%%%%%%%%%%%%%%%%");
+
+				//check to see if members of current pot are all in. if so we need a new one, cuz if i called the 
+				//last bet to end the round and it put me all in then we have to make a new pot for next round
+				for(var i=0;i<gameTable.currentPot.members.length;i++) {
+					if(gameTable.currentPot.members[i].status=='allin') {
+						let newPot = new pot(0);
+						//console.log("%%%%%%%%%%%%%%%%%%%TWO%%%%%%%%%%%%%%%%%%%");
+						gameTable.bettingRound.pots.push(newPot);
+						gameTable.currentPot=newPot;
+					}
+
+				}
+				gameTable.bettingRound.totalOnLine=0;
+				//were done!
+				return false;
+
+				//what is failed to do is make a new pot after settlining someone all in perfectly in to the last one
+			}
+			else {
+				//we are not done!
+				let newPot = new pot(0);
+				gameTable.bettingRound.pots.push(newPot);
+				gameTable.currentPot=newPot;
+				this.addMoneyLineToPot();
+			}
+		}
 	}
 
 	settleTheHand() {
 		console.log("SETTLING UP");
+		//stop the timer
+		clearTimeout(gameTable.bettingRound.actionOnTimer);
 		//first lets add the board to the check package cuz its same for all
 
 
@@ -680,34 +746,42 @@ class game {
 				
 			}
 			//everyone folded and no one was all in
-			else if (gameTable.bettingRound.endByFold==true) {
+			else if (gameTable.bettingRound.endByFold==true && NumberofAllInPlayers==0) {
+				/*clear the line and shove it into the pot without making new pots
+				for (var i=0;i<gameTable.game_size;i++) {
+					if(gameTable.seats[i].status === 'inhand' || gameTable.seats[i].status === 'folded') {
+						gameTable.currentPot.total+=gameTable.seats[i].moneyOnLine;
+						gameTable.seats[i].moneyOnLine-=gameTable.seats[i].moneyOnLine;
+						//gameTable.seats[i].moneyOnLine=0;
+					}
+				}*/
+
+
+
+				this.addMoneyLineToPot();
+				var amtToPay=0;
 				//find winner
 				var numAllIn=0;
 				var lastManStanding;
 				for (var i=0;i<gameTable.seats.length;i++){
 					if(gameTable.seats[i].status==='inhand')
 						lastManStanding=gameTable.seats[i];
-					else if (gameTable.seats[i].status==='allin')
-						numAllIn++;
+					
 				}
-				if(numAllIn==0) {
-					gameTable.bettingRound.pots[0].winners.push({winner:lastManStanding,
+				//set all pots winner to last man standing and add amount to pay
+				for(var i=0;i<gameTable.bettingRound.pots.length;i++) {
+					//set winner
+					gameTable.bettingRound.pots[i].winners.push({winner:lastManStanding,
 											winningHand:"everyone folding."});
-				
+					//total winning
+					amtToPay=+gameTable.bettingRound.pots[i].total;
 
-				console.log("FOLDED POT TOTAL="+gameTable.bettingRound.pots[0].total
-							+" AND IT PAID "+ this.getPlayerByHash(gameTable.bettingRound.pots[0].winners[0].playerId).userid +" $"
+					console.log("POT "+i+" FOLDED POT TOTAL="+gameTable.bettingRound.pots[i].total
+							+" AND IT PAID "+ gameTable.bettingRound.pots[i].winners[0].winner.userid +" $"
 							+amtToPay);
 				}
-				else if (numAllIn>0) {
-					//do a show down
-					for(var i=0;i<gameTable.board.length;i++){
-						if(gameTable.board[i]==null) {
-							gameTable.board[i]=deck.dealCard();
-						}
-					}
-
-				}
+				//pay the man his money
+				lastManStanding.givePot(amtToPay);
 			}
 
 			gameTable.isSettled="yes";
@@ -762,6 +836,10 @@ class game {
 		}
 	}
 */
+
+	
+
+	
 	putPlayerAllIn(player){
 		player.status="allin";
 		var myPreviousPlayer = this.getPreviousPlayer(player);
@@ -788,6 +866,42 @@ class game {
 		}
 		return false;
 	}
+
+	actionOnTimer() {
+		var scope = this;
+		clearTimeout(gameTable.bettingRound.actionOnTimer);
+		//here im gunnan set a timer session id and store it globally, the next person should change the global variable
+		gameTable.bettingRound.actionOnTimer=setTimeout(
+
+			function (){
+				scope.doAction(gameTable.bettingRound.actionOn,'fold');
+				gameTable.bettingRound.actionOn.sitoutnexthand=true;
+				scope.getNextAction();
+
+			}
+
+			, 1000*gameTable.bettingRound.actionOnTimeLimit);
+
+		
+
+
+
+
+		/*var personToTime=gameTable.bettingRound.actionOn;
+		var timerLengthSeconds = gameTable.bettingRound.actionOnTimer;
+		var thisTimerSession = this.makeid(16);
+		gameTable.bettingRound.actionOnTimerSession = thisTimerSession;
+
+		
+		setTimeout(function(){ 
+			if(thisTimerSession===gameTable.bettingRound.actionOnTimerSession)
+				this.doAction(gameTable.bettingRound.actionOn,'fold');
+
+		 }, 1000*timerLengthSeconds);
+		*/
+		
+	}
+
 	getNextAction () {
 
 
@@ -835,6 +949,7 @@ class game {
 			&& gameTable.bettingRound.lastBet==='call'
 			&& gameTable.bettingRound.round==0) {
 			gameTable.bettingRound.nextActionsAvailable = ['raise','check']; 
+			this.actionOnTimer();
 		}
 
 		//else if(gameTable.bettingRound.lastBet=='check' && )
@@ -874,19 +989,38 @@ class game {
 		else if(gameTable.bettingRound.lastBet=='check') {
 			gameTable.bettingRound.nextActionsAvailable = ['raise','check'];
 			console.log("action: "+gameTable.seats[gameTable.bettingRound.actionOn.seat].userid +" "+gameTable.bettingRound.nextActionsAvailable);
-
+			this.actionOnTimer();
 		}
 
 		else if(gameTable.bettingRound.lastBet=='call') {
+			//if this call puts them all in
+			if(this.getActionOnPlayer().balance<=(gameTable.currentRaiseToCall-this.getActionOnPlayer().moneyOnLine)){
+				gameTable.bettingRound.nextActionsAvailable = ['call','fold'];
+				console.log("action: "+gameTable.seats[gameTable.bettingRound.actionOn.seat].userid +" "+gameTable.bettingRound.nextActionsAvailable);
+				this.actionOnTimer();
+			}
+			//if it doesnt put them all in
+			else {
 				gameTable.bettingRound.nextActionsAvailable = ['raise','call','fold'];
 				console.log("action: "+gameTable.seats[gameTable.bettingRound.actionOn.seat].userid +" "+gameTable.bettingRound.nextActionsAvailable);
+				this.actionOnTimer();
+			}
 
 
 		}
 		//raise
 		else if(gameTable.bettingRound.lastBet=='raise') {
+			if(this.getActionOnPlayer().balance<=(gameTable.currentRaiseToCall-this.getActionOnPlayer().moneyOnLine)){
+				gameTable.bettingRound.nextActionsAvailable = ['call','fold'];
+				console.log("action: "+gameTable.seats[gameTable.bettingRound.actionOn.seat].userid +" "+gameTable.bettingRound.nextActionsAvailable);
+				this.actionOnTimer();
+			}
+			//if it doesnt put them all in
+			else {
 				gameTable.bettingRound.nextActionsAvailable = ['raise','call','fold'];
 				console.log("action: "+gameTable.seats[gameTable.bettingRound.actionOn.seat].userid +" "+gameTable.bettingRound.nextActionsAvailable);
+				this.actionOnTimer();
+			}
 
 
 		}
@@ -915,7 +1049,7 @@ class game {
 	doAction(player,action,amt) {
 		var foldCounter=0;
 		//check to see we have right player
-		if(player.userid == gameTable.seats[gameTable.bettingRound.actionOn.seat].userid) {
+		if(player.hash == gameTable.seats[gameTable.bettingRound.actionOn.seat].hash) {
 			//check to see we have valid option
 			if(gameTable.bettingRound.nextActionsAvailable.includes(action)){
 
@@ -938,6 +1072,8 @@ class game {
 					if(foldCounter==1){
 						gameTable.bettingRound.endByFold=true;
 						gameTable.bettingRound.round=4;
+						//we actually add the money line in the settling logi in this case, because we dont want
+						//to make new pots if someone folded and didnt call with different MOL sizes
 						this.addMoneyLineToPot();
 						this.settleTheHand();
 					}
@@ -1084,10 +1220,14 @@ class game {
     //so we can package the data to send to everyone
 	generatePrivatePlayerData (thisHash) {
 		var privateGameTable =  JSON.stringify(gameTable,function( key, value) {
+			//remove circular stuff
  			if(key == 'nextPlayer') { 
     			return "removedForStringify";
   			} 
   			if(key == 'previousPlayer') { 
+    			return "removedForStringify";
+  			} 
+  			if(key == 'actionOnTimer') { 
     			return "removedForStringify";
   			} 
   			else {
@@ -1116,6 +1256,9 @@ class game {
     			return "removedForStringify";
   			} 
   			if(key == 'previousPlayer') { 
+    			return "removedForStringify";
+  			} 
+  			if(key == 'actionOnTimer') { 
     			return "removedForStringify";
   			} 
   			else {

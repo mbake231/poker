@@ -37,6 +37,7 @@ class player {
 		this.hash=this.makeid(16);
 		this.sessionid=sessionid;
 		this.sitoutnexthand=false;
+		this.leavenexthand=false;
 		//return player;
 	}
 
