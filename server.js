@@ -60,6 +60,10 @@ io.on('connection', function(socket){
 			gameController.runGame();
 			});
 
+		socket.on('callClock', function (data) {
+			gameController.callClock(data.gameid);
+			});
+
 		socket.on('toggleSitOut', function (data) {
 			gameController.toggleSitOut(data.gameid,data.hash);
 

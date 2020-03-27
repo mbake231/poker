@@ -27,8 +27,9 @@ function leaveTable () {
 }
 }
 
-function startTimer() {
-
+function callClock() {
+	if(gameData.bettingRound.actionOn!=null)
+		socket.emit('callClock', {gameid:gameid});
 }
 
 function cookieIsset(name)
@@ -220,9 +221,17 @@ $(window).on('load', function(){
 
 		if(gameData.bettingRound.actionOn!=null){
 			$('#start').css('display','none');
-			//console.log("on me? "+gameData.bettingRound.actionOn.hash+" vs "+myid);
+		
+			//set action on color
+			$.each(seats,function(index) {
+				if(seats[index].hash===gameData.bettingRound.actionOn.hash)
+					$('#player'+index).addClass('actionOn');
+				else
+					$('#player'+index).removeClass('actionOn');
+
+			 })
 			$('#player'+gameData.bettingRound.actionOn.seat).removeClass('empty');
-			$('#player'+gameData.bettingRound.actionOn.seat).addClass('actionOn');
+			
 			//timer change
 
 			if(gameData.bettingRound.actionOn.hash===myid && gameData.bettingRound.round!=null) {

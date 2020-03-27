@@ -63,6 +63,18 @@ function nextHand(){
 	sendDataToAllPlayers(game1);
 }
 
+function callClock (gameid) {
+	game1.callClock();
+	var scope = this;
+	//have to send new data after clock expires
+	var timer = setTimeout(
+			function (){
+				scope.sendDataToAllPlayers(game1);
+				console.log('times up');
+			}
+			, 1000*(game1.getTimerLength()+2))
+}
+
 function sendSeatList(gameid,sessionid) {
 	server.io.to(sessionid).emit('publicSeatList',game1.getPublicSeatList());
 }
@@ -180,3 +192,4 @@ exports.reconnect = reconnect;
 exports.toggleSitOut=toggleSitOut;
 exports.sendDataToAllPlayers=sendDataToAllPlayers;
 exports.leaveTableNextHand=leaveTableNextHand;
+exports.callClock=callClock;

@@ -14,6 +14,7 @@ var gameTable = {
 	deck:[],
 	board:[null,null,null,null,null],
 	dealer:null,
+	isTimerGame:false,
 	winner:{
 		players:[],
 		hand:null,
@@ -27,7 +28,7 @@ var gameTable = {
 		pots:[],
 		actionOn:null,
 		actionOnTimer:null,
-		actionOnTimeLimit:300000,
+		actionOnTimeLimit:5,
 		nextActionsAvailable:[],
 		round:0,
 		totalOnLine:0,
@@ -85,7 +86,7 @@ class game {
 					gameTable.seats[i].card2=null;
 					}
 						
-				}
+			}
 
 			//remove those who were set to leave
 			for (var i=0;i<gameTable.game_size;i++) {
@@ -98,6 +99,7 @@ class game {
 			for (var i=0;i<gameTable.game_size;i++) {
 				if(gameTable.seats[i].sitoutnexthand==true) {
 					gameTable.seats[i].status='sittingout';
+					gameTable.numseats--;
 				}
 
 			}
@@ -376,7 +378,8 @@ class game {
 
 		//set the person under the gun to be next
 		this.setActionOn(this.getUnderTheGunPlayer());
-		this.actionOnTimer();
+		if(gameTable.isTimerGame==true)
+			this.actionOnTimer();
 		gameTable.bettingRound.lastBet='blinds';
 		gameTable.bettingRound.round=0;
 		gameTable.bettingRound.currentRaiseToCall = gameTable.bigBlind;
@@ -867,6 +870,14 @@ class game {
 		return false;
 	}
 
+	callClock() {
+			this.actionOnTimer();
+	}
+
+	getTimerLength () {
+		return gameTable.bettingRound.actionOnTimeLimit;
+	}
+
 	actionOnTimer() {
 		var scope = this;
 		clearTimeout(gameTable.bettingRound.actionOnTimer);
@@ -876,6 +887,7 @@ class game {
 			function (){
 				scope.doAction(gameTable.bettingRound.actionOn,'fold');
 				gameTable.bettingRound.actionOn.sitoutnexthand=true;
+				//gameController.sendDataToAllPlayers();
 				scope.getNextAction();
 
 			}
@@ -949,7 +961,8 @@ class game {
 			&& gameTable.bettingRound.lastBet==='call'
 			&& gameTable.bettingRound.round==0) {
 			gameTable.bettingRound.nextActionsAvailable = ['raise','check']; 
-			this.actionOnTimer();
+			if(gameTable.isTimerGame==true)
+				this.actionOnTimer();
 		}
 
 		//else if(gameTable.bettingRound.lastBet=='check' && )
@@ -957,7 +970,8 @@ class game {
 		//SEE IF BIG BLIND CHECKED
 		else if(gameTable.bettingRound.lastBet=='check' && gameTable.bettingRound.currentRaiseToCall == gameTable.bigBlind && gameTable.bettingRound.round==0){
 			console.log("round over the big blind checked");
-			this.goToNextRound();
+			if(gameTable.isTimerGame==true)
+				this.actionOnTimer();
 		}
 
 		//if someone is all in, and i am last person in hand (pointing to myself)
@@ -989,7 +1003,8 @@ class game {
 		else if(gameTable.bettingRound.lastBet=='check') {
 			gameTable.bettingRound.nextActionsAvailable = ['raise','check'];
 			console.log("action: "+gameTable.seats[gameTable.bettingRound.actionOn.seat].userid +" "+gameTable.bettingRound.nextActionsAvailable);
-			this.actionOnTimer();
+			if(gameTable.isTimerGame==true)
+				this.actionOnTimer();
 		}
 
 		else if(gameTable.bettingRound.lastBet=='call') {
@@ -997,13 +1012,15 @@ class game {
 			if(this.getActionOnPlayer().balance<=(gameTable.currentRaiseToCall-this.getActionOnPlayer().moneyOnLine)){
 				gameTable.bettingRound.nextActionsAvailable = ['call','fold'];
 				console.log("action: "+gameTable.seats[gameTable.bettingRound.actionOn.seat].userid +" "+gameTable.bettingRound.nextActionsAvailable);
-				this.actionOnTimer();
+				if(gameTable.isTimerGame==true)
+					this.actionOnTimer();
 			}
 			//if it doesnt put them all in
 			else {
 				gameTable.bettingRound.nextActionsAvailable = ['raise','call','fold'];
 				console.log("action: "+gameTable.seats[gameTable.bettingRound.actionOn.seat].userid +" "+gameTable.bettingRound.nextActionsAvailable);
-				this.actionOnTimer();
+				if(gameTable.isTimerGame==true)
+					this.actionOnTimer();
 			}
 
 
@@ -1013,13 +1030,15 @@ class game {
 			if(this.getActionOnPlayer().balance<=(gameTable.currentRaiseToCall-this.getActionOnPlayer().moneyOnLine)){
 				gameTable.bettingRound.nextActionsAvailable = ['call','fold'];
 				console.log("action: "+gameTable.seats[gameTable.bettingRound.actionOn.seat].userid +" "+gameTable.bettingRound.nextActionsAvailable);
-				this.actionOnTimer();
+				if(gameTable.isTimerGame==true)
+					this.actionOnTimer();
 			}
 			//if it doesnt put them all in
 			else {
 				gameTable.bettingRound.nextActionsAvailable = ['raise','call','fold'];
 				console.log("action: "+gameTable.seats[gameTable.bettingRound.actionOn.seat].userid +" "+gameTable.bettingRound.nextActionsAvailable);
-				this.actionOnTimer();
+				if(gameTable.isTimerGame==true)
+					this.actionOnTimer();
 			}
 
 
@@ -1032,7 +1051,8 @@ class game {
 			gameTable.bettingRound.nextActionsAvailable = ['raise','call','fold']; 
 			
 			console.log("action: "+gameTable.seats[gameTable.bettingRound.actionOn.seat].userid +" "+gameTable.bettingRound.nextActionsAvailable);
-
+			if(gameTable.isTimerGame==true)
+				this.actionOnTimer();
 			//var result = {'actionOn':gameTable.seats[gameTable.bettingRound.actionOn.seat,
 			//		'options':availableOptions
 			//		};
@@ -1047,6 +1067,7 @@ class game {
 	}
 
 	doAction(player,action,amt) {
+		clearTimeout(gameTable.bettingRound.actionOnTimer);
 		var foldCounter=0;
 		//check to see we have right player
 		if(player.hash == gameTable.seats[gameTable.bettingRound.actionOn.seat].hash) {
