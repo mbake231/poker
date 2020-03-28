@@ -17,6 +17,7 @@ var dealer;
 var handLogSentIndex=0;
 
 //TESTS########
+/*
 var mike = new player("mike",'cookie',290,'playing','sid');
 var kim = new player("kim",'cookie',400,'playing','sid');
 var shane = new player("shane",'cookie',1000,'playing','sid');
@@ -82,6 +83,7 @@ game1.getNextAction();
 game1.doAction(clint,'fold');
 game1.getNextAction();
 game1.printSeats();
+*/
 //TESTS##########
 
 function leaveTableNextHand (game,hash) {
