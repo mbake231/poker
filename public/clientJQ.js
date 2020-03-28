@@ -12,6 +12,13 @@ var myid;
 var mySeatData;
 var gameid='train';
 
+
+
+function format () {
+  return Array.prototype.slice.call(arguments).join(' ')
+}
+
+
 //SOUNDS
 var callAudio = document.createElement('audio');
 callAudio.setAttribute('src', './audio/raise.wav');
@@ -402,8 +409,8 @@ $(window).on('load', function(){
 	});
 
 	socket.on('logEvent', function(handlog) {
-		$('#messages').append($('<li>').text(handlog));
-
+		$('#messages').prepend($('<li>').text(handlog));
+		
 	});
 
 	socket.on('yourHash', function(myNewid) {

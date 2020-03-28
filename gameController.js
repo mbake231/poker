@@ -4,6 +4,7 @@ var db = require('./db');
 var server = require('./server');
 var player = require('./classes/player.js').player;
 var game = require('./classes/game.js').game;
+var Promise = require("bluebird");
 
 //create a game
 
@@ -45,6 +46,15 @@ game1.printSeats();
 */
 
 //TESTS##########
+
+function checkToStartNextHand() {
+  if(game1.isSettled()==true)
+    nextHand();
+  else {
+  	//console.log("ping");
+  	return Promise.delay(3000).then(() => checkToStartNextHand());
+  }
+}
 
 function leaveTableNextHand (game,hash) {
 
@@ -95,48 +105,9 @@ function addNewPlayerToGame (gameHash,userid,cookie,balance,status,seat,sessioni
 
 }
 
-function incomingAction(game,user,action,amt){
-
-	var userActing = game1.getPlayerByHash(user);
-	if(game1.getRound()<4) {
-		game1.doAction(userActing, action, amt);
-		if(game1.getRound()<4){
-			game1.getNextAction();
-			sendDataToAllPlayers(game1);
-			game1.printSeats();
-		}
-		else {
-			sendDataToAllPlayers(game1);
-			console.log("FINALLY OVER");
-		}
-	}
-	else {
-		sendDataToAllPlayers(game1);
-	
-	}
-}
-
-
-
-function nextHand(){
-	game1.goToNextHand();
-	sendDataToAllPlayers(game1);
-	//try to set deal to next guy but wll return who gets it (if guy you try to set to is sitting out)
-	if(game1.canIDeal()==true) {
-		dealer=game1.setDealer(dealer.nextPlayer);
-		game1.postBlinds();
-		game1.dealHands();
-		sendDataToAllPlayers(game1);
-		game1.printSeats();
-		game1.getNextAction();
-		sendDataToAllPlayers(game1);
-	}
-	else
-		console.log("need more than one player!");
-}
-
 function runGame() {
 
+	checkToStartNextHand();
 	if(gameCount==0)
 	{
 		console.log("this is the first game");
@@ -156,6 +127,45 @@ function runGame() {
 
 }
 
+function incomingAction(game,user,action,amt){
+
+	var userActing = game1.getPlayerByHash(user);
+	if(game1.getRound()<4) {
+		game1.doAction(userActing, action, amt);
+		if(game1.getRound()<4){
+			game1.getNextAction();
+			sendDataToAllPlayers(game1);
+			game1.printSeats();
+		}
+		else {
+			sendDataToAllPlayers(game1);
+			console.log("FINALLY OVER1");
+		}
+	}
+	else {
+		sendDataToAllPlayers(game1);
+		console.log("FINALLY OVER2");
+	}
+}
+
+function nextHand(){
+
+	game1.goToNextHand();
+	checkToStartNextHand();
+	sendDataToAllPlayers(game1);
+	//try to set deal to next guy but wll return who gets it (if guy you try to set to is sitting out)
+	if(game1.canIDeal()==true) {
+		dealer=game1.setDealer(dealer.nextPlayer);
+		game1.postBlinds();
+		game1.dealHands();
+		sendDataToAllPlayers(game1);
+		game1.printSeats();
+		game1.getNextAction();
+		sendDataToAllPlayers(game1);
+	}
+	else
+		console.log("need more than one player!");
+}
 
 function sendDataToAllPlayers(thisGame) {
 	//THIS IS A PROBLEM LOL

@@ -159,6 +159,8 @@ ul {
 	float:right;
     overflow: scroll;
     overflow-x: hidden;
+    display: flex;
+  flex-direction: column-reverse;
 }
 
 #gameBar {

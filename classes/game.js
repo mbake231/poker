@@ -77,6 +77,13 @@ class game {
 			return true;
 	}
 
+	isSettled() {
+		if(gameTable.isSettled==='yes')
+			return true;
+		return false;
+
+	}
+
 
 	goToNextHand () {
 			gameTable.deck = new deck();
@@ -814,6 +821,8 @@ class game {
 			}
 
 			gameTable.isSettled="yes";
+
+
 		}
 
 
@@ -910,13 +919,13 @@ class game {
 
 	actionOnTimer() {
 		var scope = this;
+		this.updateHandLog("The clock has been called.");
+		console.log("The clock has been called.");
 		clearTimeout(gameTable.bettingRound.actionOnTimer);
 		//here im gunnan set a timer session id and store it globally, the next person should change the global variable
 		gameTable.bettingRound.actionOnTimer=setTimeout(
 
 			function (){
-				console.log("SITOUT"+gameTable.bettingRound.actionOn.userid+gameTable.bettingRound.actionOn.sitoutnexthand);
-
 				scope.sitActionOnPlayerOut();
 				scope.doAction(gameTable.bettingRound.actionOn,'fold-clock');
 				//gameController.sendDataToAllPlayers();
@@ -1090,7 +1099,7 @@ class game {
 					for(var i=0;i<gameTable.game_size;i++){
 						if(gameTable.seats[i].status==='inhand')
 							foldCounter++;
-					console.log('FOLD COUNTER'+foldCounter);
+					//console.log(''+foldCounter);
 						
 					}
 					if(foldCounter==1){
