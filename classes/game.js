@@ -51,11 +51,15 @@ class game {
 
 
 	}
-
+	canIDeal () {
+		if (gameTable.numseats<2)
+			return false;
+		else
+			return true;
+	}
 
 
 	goToNextHand () {
-	if(gameTable.numseats>1){
 			gameTable.deck = new deck();
 			gameTable.dealer=gameTable.dealer.nextPlayer;
 			gameTable.winner.players=null;
@@ -122,10 +126,9 @@ class game {
 				}
 			}
 
-		}
+		
 	//if you dont have more than one person
-	else
-		console.log('need more than one person');
+
 	}
 
 	deletePlayer(player) {
@@ -767,6 +770,7 @@ class game {
 				//find winner
 				var numAllIn=0;
 				var lastManStanding;
+				this.clearRoundData();
 				for (var i=0;i<gameTable.seats.length;i++){
 					if(gameTable.seats[i].status==='inhand')
 						lastManStanding=gameTable.seats[i];
@@ -780,7 +784,7 @@ class game {
 					//total winning
 					amtToPay=+gameTable.bettingRound.pots[i].total;
 
-					console.log("POT "+i+" FOLDED POT TOTAL="+gameTable.bettingRound.pots[i].total
+					console.log("POT "+i+" FOLDED POT TOTAL="+amtToPay
 							+" AND IT PAID "+ gameTable.bettingRound.pots[i].winners[0].winner.userid +" $"
 							+amtToPay);
 				}
@@ -1073,7 +1077,7 @@ class game {
 		clearTimeout(gameTable.bettingRound.actionOnTimer);
 		var foldCounter=0;
 		//check to see we have right player
-		if(player.hash == gameTable.seats[gameTable.bettingRound.actionOn.seat].hash) {
+		if(player.hash === gameTable.seats[gameTable.bettingRound.actionOn.seat].hash) {
 			//check to see we have valid option
 			if(gameTable.bettingRound.nextActionsAvailable.includes(action)){
 

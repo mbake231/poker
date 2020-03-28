@@ -21,10 +21,8 @@ var storedCookie = ('; ' + document.cookie)
 function leaveTable () {
 	if(myid!=null) {
 		socket.emit('leaveTable', {gameid:gameid,hash:myid});
-
-		location.reload(true)
-
-}
+		location.reload(true);
+	}
 }
 
 function callClock() {
