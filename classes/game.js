@@ -744,7 +744,12 @@ class game {
 
 						winningPlayer.givePot(amtToPay);
 							//ANNOUNCE IT
-						console.log(this.getPlayerByHash(winner[b].playerId).userid+" WINS! The pot total was $"+selectedPot.total
+						console.log(this.getPlayerByHash(winner[b].playerId).userid+" WINS with ["
+							+winningPlayer.card1
+							+","
+							+winningPlayer.card2
+							+'] '+winningHand+"! "
+							+ "The pot total was $"+selectedPot.total
 							+" and it paid "+ this.getPlayerByHash(winner[b].playerId).userid +" $"
 							+amtToPay+".");
 						this.updateHandLog(this.getPlayerByHash(winner[b].playerId).userid+" WINS! The pot total was $"+selectedPot.total
@@ -880,7 +885,7 @@ class game {
 	isOnlyOnePlayerNotAllIn() {
 		var counter=0;
 		for(var i=0;i<gameTable.game_size;i++) {
-			if(gameTable.seats[i].status=='inhand')
+			if(gameTable.seats[i].status==='inhand')
 				counter++;
 		}
 
@@ -1070,17 +1075,19 @@ class game {
 				
 				}
 				else if (action=="fold") {
+					player.status='folded';
 					console.log(player.userid+" has folded");
 					this.updateHandLog(player.userid+" has folded.");
 					
 					//chek to see if only one guy left
 					for(var i=0;i<gameTable.game_size;i++){
-						if(gameTable.seats[i].status=='inhand')
+						if(gameTable.seats[i].status==='inhand')
 							foldCounter++;
+					console.log('FOLD COUNTER'+foldCounter);
 						
 					}
 					if(foldCounter==1){
-						player.status='folded'
+						//player.status='folded';
 						gameTable.bettingRound.endByFold=true;
 						gameTable.bettingRound.round=4;
 						//we actually add the money line in the settling logi in this case, because we dont want

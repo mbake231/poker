@@ -17,23 +17,19 @@ var dealer;
 var handLogSentIndex=0;
 
 //TESTS########
-/*
-var mike = new player("mike",'cookie',100,'playing','sid');
-var kim = new player("kim",'cookie',100,'playing','sid');
-var shane = new player("shane",'cookie',400,'playing','sid');
-var bob = new player("shane",'cookie',400,'playing','sid');
-
-var grg = new player("shane",'cookie',400,'playing','sid');
-var rer = new player("shane",'cookie',400,'playing','sid');
-
+var mike = new player("mike",'cookie',290,'playing','sid');
+var kim = new player("kim",'cookie',400,'playing','sid');
+var shane = new player("shane",'cookie',1000,'playing','sid');
+var kev = new player("kev",'cookie',100,'playing','sid');
+var clint = new player("clint",'cookie',1000,'playing','sid');
+var bob = new player("bob",'cookie',200,'playing','sid');
 
 game1.addPlayer(mike,0);
 game1.addPlayer(kim,1);
-game1.addPlayer(grg,2);
-game1.addPlayer(bob,7);
-game1.addPlayer(rer,8);
-
-
+game1.addPlayer(shane,2);
+game1.addPlayer(kev,3);
+game1.addPlayer(clint,4);
+game1.addPlayer(bob,8);
 
 game1.setDealer(mike);
 
@@ -45,23 +41,47 @@ game1.postBlinds();
 game1.dealHands();
 game1.printSeats();
 game1.getNextAction();
-game1.doAction(mike,'raise',98);
+game1.doAction(kev,'raise',98);
 game1.printSeats();
-
 game1.getNextAction();
-game1.doAction(kim,'call',98);
+game1.doAction(clint,'call');
 game1.getNextAction();
-game1.doAction(grg,'call',98);
-game1.getNextAction();
-game1.doAction(bob,'call',98);
 game1.printSeats();
-
+game1.doAction(bob,'raise',100);
+game1.getNextAction();
+game1.printSeats();
+game1.doAction(mike,'call');
+game1.getNextAction();
+game1.printSeats();
+game1.doAction(kim,'raise',100);
+game1.getNextAction();
+game1.printSeats();
+game1.doAction(shane,'call');
+game1.getNextAction();
+game1.printSeats();
+game1.doAction(clint,'call');
+game1.getNextAction();
+game1.printSeats();
+game1.doAction(mike,'call');
+game1.printSeats();
+game1.printGamePots();
+game1.getNextAction();
+game1.printSeats();
+game1.doAction(kim,'raise',10);
 game1.getNextAction();
 
+game1.doAction(shane,'call');
+game1.getNextAction();
 
-
+game1.doAction(clint,'call');
+game1.getNextAction();
+game1.doAction(kim,'raise',10);
+game1.getNextAction();
+game1.doAction(shane,'fold');
+game1.getNextAction();
+game1.doAction(clint,'fold');
+game1.getNextAction();
 game1.printSeats();
-*/
 //TESTS##########
 
 function leaveTableNextHand (game,hash) {
@@ -72,43 +92,7 @@ function leaveTableNextHand (game,hash) {
 
 }
 
-function incomingAction(game,user,action,amt){
 
-	var userActing = game1.getPlayerByHash(user);
-	if(game1.getRound()<4) {
-		game1.doAction(userActing, action, amt);
-		if(game1.getRound()<4){
-			game1.getNextAction();
-			sendDataToAllPlayers(game1);
-			game1.printSeats();
-		}
-		else {
-			sendDataToAllPlayers(game1);
-			console.log("FINALLY OVER");
-		}
-	}
-	else {
-		sendDataToAllPlayers(game1);
-	
-	}
-}
-
-function nextHand(){
-	game1.goToNextHand();
-	sendDataToAllPlayers(game1);
-	//try to set deal to next guy but wll return who gets it (if guy you try to set to is sitting out)
-	if(game1.canIDeal()==true) {
-		dealer=game1.setDealer(dealer.nextPlayer);
-		game1.postBlinds();
-		game1.dealHands();
-		sendDataToAllPlayers(game1);
-		game1.printSeats();
-		game1.getNextAction();
-		sendDataToAllPlayers(game1);
-	}
-	else
-		console.log("need more than one player!");
-}
 
 function callClock (gameid) {
 	game1.callClock();
@@ -147,6 +131,46 @@ function addNewPlayerToGame (gameHash,userid,cookie,balance,status,seat,sessioni
 		console.log("this session is already sitting");
 	}
 
+}
+
+function incomingAction(game,user,action,amt){
+
+	var userActing = game1.getPlayerByHash(user);
+	if(game1.getRound()<4) {
+		game1.doAction(userActing, action, amt);
+		if(game1.getRound()<4){
+			game1.getNextAction();
+			sendDataToAllPlayers(game1);
+			game1.printSeats();
+		}
+		else {
+			sendDataToAllPlayers(game1);
+			console.log("FINALLY OVER");
+		}
+	}
+	else {
+		sendDataToAllPlayers(game1);
+	
+	}
+}
+
+
+
+function nextHand(){
+	game1.goToNextHand();
+	sendDataToAllPlayers(game1);
+	//try to set deal to next guy but wll return who gets it (if guy you try to set to is sitting out)
+	if(game1.canIDeal()==true) {
+		dealer=game1.setDealer(dealer.nextPlayer);
+		game1.postBlinds();
+		game1.dealHands();
+		sendDataToAllPlayers(game1);
+		game1.printSeats();
+		game1.getNextAction();
+		sendDataToAllPlayers(game1);
+	}
+	else
+		console.log("need more than one player!");
 }
 
 function runGame() {
