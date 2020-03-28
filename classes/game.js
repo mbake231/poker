@@ -915,10 +915,10 @@ class game {
 		gameTable.bettingRound.actionOnTimer=setTimeout(
 
 			function (){
-						console.log("SITOUT"+gameTable.bettingRound.actionOn.userid+gameTable.bettingRound.actionOn.sitoutnexthand);
+				console.log("SITOUT"+gameTable.bettingRound.actionOn.userid+gameTable.bettingRound.actionOn.sitoutnexthand);
 
 				scope.sitActionOnPlayerOut();
-				scope.doAction(gameTable.bettingRound.actionOn,'fold');
+				scope.doAction(gameTable.bettingRound.actionOn,'fold-clock');
 				//gameController.sendDataToAllPlayers();
 				//scope.getNextAction();
 
@@ -1072,7 +1072,7 @@ class game {
 		//check to see we have right player
 		if(player.hash === gameTable.seats[gameTable.bettingRound.actionOn.seat].hash) {
 			//check to see we have valid option
-			if(gameTable.bettingRound.nextActionsAvailable.includes(action)){
+			if(gameTable.bettingRound.nextActionsAvailable.includes(action) || action==='fold-clock'){
 
 				if(action=="check") {
 					gameTable.bettingRound.lastBet='check';
@@ -1081,7 +1081,7 @@ class game {
 					this.updateHandLog(player.userid+" has checked.");
 				
 				}
-				else if (action=="fold") {
+				else if (action==="fold" || action==='fold-clock') {
 					player.status='folded';
 					console.log(player.userid+" has folded");
 					this.updateHandLog(player.userid+" has folded.");
