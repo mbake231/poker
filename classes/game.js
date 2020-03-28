@@ -11,6 +11,7 @@ var gameTable = {
  	seats:[],
 	numseats:0,
 	isSettled: 'no',
+	handLog: [],
 	deck:[],
 	board:[null,null,null,null,null],
 	dealer:null,
@@ -34,7 +35,8 @@ var gameTable = {
 		totalOnLine:0,
 		currentRaiseToCall:0,
 		currentRaiseToCall:null,
-		endByFold:false
+		endByFold:false,
+		lastBet:null
 		}
 };
 
@@ -48,8 +50,25 @@ class game {
 		gameTable.hash = this.makeid(16);
 		gameTable.bettingRound.pots[0] =  new pot(0);
 		gameTable.currentPot=gameTable.bettingRound.pots[0];
+		this.newHandLog();
 
 
+	}
+
+	newHandLog(){
+		var newHandLog = [];
+		newHandLog.push(this.makeid(24));
+		newHandLog.push(Date.now());
+		gameTable.handLog=newHandLog;
+	}
+	getHandLog() {
+
+		return gameTable.handLog;
+	}
+
+	updateHandLog(event) {
+
+		gameTable.handLog.push(event);
 	}
 	canIDeal () {
 		if (gameTable.numseats<2)
@@ -75,7 +94,7 @@ class game {
 			gameTable.bettingRound.currentRaiseToCall=null;
 			gameTable.isSettled='no';
 			gameTable.bettingRound.endByFold=false;
-
+			this.newHandLog();
 			//new pots
 			gameTable.bettingRound.pots=[];
 			gameTable.bettingRound.pots[0] = new pot(0);
@@ -184,6 +203,14 @@ class game {
 		console.log("found no user by that hash");
 	}
 
+	getLastEvent() {
+		return gameTable.lastEvent;
+	}
+
+	setLastEvent(str) {
+		gameTable.lastEvent=str;
+	}
+
 	addPlayer(player,seat) {
 		if(gameTable.seats[seat]!="empty") {
 			console.log("Seat full");
@@ -194,7 +221,8 @@ class game {
 				gameTable.seats[seat] = player;
 				player.setSeat(seat);
 				gameTable.numseats++;
-				console.log(player.userid+" joined game! at seat "+player.seat)
+				console.log(player.userid+" joined game! at seat "+player.seat);
+				this.updateHandLog((this,player.userid+" joined game! at seat "+player.seat));
 			}
 			//need to ensure first guy gets his pointer set
 			if(gameTable.numseats==2) {
@@ -299,7 +327,8 @@ class game {
 		var cardGetter = gameTable.seats[gameTable.dealer.seat].nextPlayer;
 			while (cardGetter.card1==null && cardGetter.status=='inhand')
 			{
-				console.log("dealing to seeat "+cardGetter.seat);
+				console.log("Dealing to seat "+cardGetter.seat+".");
+				this.updateHandLog("Dealing to seat "+cardGetter.seat+".");
 				cardGetter.card1=gameTable.deck.dealCard();
 				cardGetter = gameTable.seats[cardGetter.seat].nextPlayer;
 			}
@@ -645,7 +674,8 @@ class game {
 	}
 
 	settleTheHand() {
-		console.log("SETTLING UP");
+		console.log("Hand over. Settling up.");
+		this.updateHandLog("Hand over. Settling up.");
 		//stop the timer
 		clearTimeout(gameTable.bettingRound.actionOnTimer);
 		//first lets add the board to the check package cuz its same for all
@@ -714,9 +744,12 @@ class game {
 
 						winningPlayer.givePot(amtToPay);
 							//ANNOUNCE IT
-						console.log("POT TOTAL="+selectedPot.total
-							+" AND IT PAID "+ this.getPlayerByHash(winner[b].playerId).userid +" $"
-							+amtToPay);
+						console.log(this.getPlayerByHash(winner[b].playerId).userid+" WINS! The pot total was $"+selectedPot.total
+							+" and it paid "+ this.getPlayerByHash(winner[b].playerId).userid +" $"
+							+amtToPay+".");
+						this.updateHandLog(this.getPlayerByHash(winner[b].playerId).userid+" WINS! The pot total was $"+selectedPot.total
+							+" and it paid "+ this.getPlayerByHash(winner[b].playerId).userid +" $"
+							+amtToPay+".");
 					//4 store winner of each pot with beautified hand
 						
 						selectedPot.winners.push({winner:winningPlayer,
@@ -766,9 +799,9 @@ class game {
 					//total winning
 					amtToPay=+gameTable.bettingRound.pots[i].total;
 
-					console.log("POT "+i+" FOLDED POT TOTAL="+amtToPay
-							+" AND IT PAID "+ gameTable.bettingRound.pots[i].winners[0].winner.userid +" $"
-							+amtToPay);
+					console.log("Everyone folded so "+gameTable.bettingRound.pots[i].winners[0].winner.userid+" wins $"+amtToPay+".");
+					this.updateHandLog("Everyone folded so "+gameTable.bettingRound.pots[i].winners[0].winner.userid+" wins $"+amtToPay+".");
+
 				}
 				//pay the man his money
 				lastManStanding.givePot(amtToPay);
@@ -838,7 +871,7 @@ class game {
 
 		myPreviousPlayer.nextPlayer = myNextPlayer;
 
-		console.log(myPreviousPlayer.userid + " NOW GOES TO "+myNextPlayer.userid);
+		console.log("Pointer update: "+myPreviousPlayer.userid + " now goes to "+myNextPlayer.userid+".");
 		//player.nextPlayer = "folded";
 
 
@@ -919,7 +952,8 @@ class game {
 
 		//SEE IF BIG BLIND CHECKED
 		else if(gameTable.bettingRound.lastBet=='check' && gameTable.bettingRound.currentRaiseToCall == gameTable.bigBlind && gameTable.bettingRound.round==0){
-			console.log("round over the big blind checked");
+			console.log("Betting round over, the big blind checked");
+			this.updateHandLog("Betting round over, the big blind checked");
 			
 			if(gameTable.isTimerGame==true)
 				this.actionOnTimer();
@@ -934,7 +968,8 @@ class game {
 		//ROUND OVER IF LAST BET WAS CHECK AND first guy up
 		else if(gameTable.bettingRound.lastBet==='check' && this.getActionOnPlayer().hash===this.whoShouldStartRound().hash){
 			//console.log(this.getActionOnPlayer().hash +" vs "+this.getSmallBlindPlayer().hash);
-			console.log("round over everyone checked");
+			console.log("Betting round over, everyone checked.");
+			this.updateHandLog("Betting round over, everyone checked.");
 			if(gameTable.bettingRound.round<4)
 				this.goToNextRound();
 			else
@@ -943,7 +978,8 @@ class game {
 
 		//ROUND OVER IF LAST BET WAS CALL AND PLAYER UP HAS MOL = CURRENTRAISE
 		else if(gameTable.bettingRound.lastBet==='call' && this.getActionOnPlayer().moneyOnLine==gameTable.bettingRound.currentRaiseToCall){
-			console.log("round over all bets in");
+			console.log("Betting round over,all bets in");
+			this.updateHandLog("Betting round over,all bets in");
 			if(gameTable.bettingRound.round<4)
 				this.goToNextRound();
 			else
@@ -1029,12 +1065,13 @@ class game {
 				if(action=="check") {
 					gameTable.bettingRound.lastBet='check';
 					this.advanceToNextPlayer();
-					console.log(player.userid+" has checked");
+					console.log(player.userid+" has checked.");
+					this.updateHandLog(player.userid+" has checked.");
 				
 				}
 				else if (action=="fold") {
 					console.log(player.userid+" has folded");
-					
+					this.updateHandLog(player.userid+" has folded.");
 					
 					//chek to see if only one guy left
 					for(var i=0;i<gameTable.game_size;i++){
@@ -1087,12 +1124,14 @@ class game {
 						this.advanceToNextPlayer();
 
 						console.log(player.userid+" has called "+gameTable.bettingRound.currentRaiseToCall);
+						this.updateHandLog(player.userid+" has called $"+gameTable.bettingRound.currentRaiseToCall);
 
 						//check to see if this call sets player all in all in
 						//will need to allow a call if it puts someone all in
 						if(player.balance==0){
 							this.putPlayerAllIn(player);
-							console.log("ALL IN");
+							console.log(player.userid+" is all in!");
+							this.updateHandLog(player.userid+" is all in!");
 						}
 
 						
@@ -1113,20 +1152,21 @@ class game {
 						//so when player had to put more in, the actual raise number only goes up how much he raised it
 						gameTable.bettingRound.currentRaiseToCall+=amt;
 						this.advanceToNextPlayer();
-						console.log(player.userid+" has raised to "+gameTable.bettingRound.currentRaiseToCall);
+						console.log(player.userid+" has raised to $"+gameTable.bettingRound.currentRaiseToCall+".");
+						this.updateHandLog(player.userid+" has raised to $"+gameTable.bettingRound.currentRaiseToCall+".");
 						if(player.balance==0)
 							this.putPlayerAllIn(player);
 					}
 					else
-						console.log("amount doesnt have enough for raise");
+						console.log(player.userid+" doesn't have enough for a raise of"+amt);
 				}
 			}
 			else
-				console.log("this is the right player, but you can't do that action");
+				console.log(player.userid+" is the right player, but they can't "+action);
 		}
 
 		else {
-			console.log("this player is not up");
+			console.log(player.userid+" tried to "+action+", but this player is not up.");
 		}
 	}
 	doAShowDown() {

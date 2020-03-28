@@ -17,11 +17,7 @@ var app = express()
   , http = require('http').createServer(app)
   , io = io.listen(http);
 
-
-
 http.listen(PORT);
-
-
 
 app.set('view engine','pug');
 app.set('view cache', false);

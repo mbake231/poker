@@ -14,15 +14,25 @@ var gameCount = 0;
 
 var firstDealer;
 var dealer;
+var handLogSentIndex=0;
 
 //TESTS########
+/*
 var mike = new player("mike",'cookie',100,'playing','sid');
 var kim = new player("kim",'cookie',100,'playing','sid');
 var shane = new player("shane",'cookie',400,'playing','sid');
+var bob = new player("shane",'cookie',400,'playing','sid');
+
+var grg = new player("shane",'cookie',400,'playing','sid');
+var rer = new player("shane",'cookie',400,'playing','sid');
+
 
 game1.addPlayer(mike,0);
 game1.addPlayer(kim,1);
-game1.addPlayer(shane,2);
+game1.addPlayer(grg,2);
+game1.addPlayer(bob,7);
+game1.addPlayer(rer,8);
+
 
 
 game1.setDealer(mike);
@@ -40,15 +50,18 @@ game1.printSeats();
 
 game1.getNextAction();
 game1.doAction(kim,'call',98);
+game1.getNextAction();
+game1.doAction(grg,'call',98);
+game1.getNextAction();
+game1.doAction(bob,'call',98);
 game1.printSeats();
 
 game1.getNextAction();
 
-game1.doAction(shane,'fold');
 
 
 game1.printSeats();
-
+*/
 //TESTS##########
 
 function leaveTableNextHand (game,hash) {
@@ -163,13 +176,24 @@ function sendDataToAllPlayers(thisGame) {
 	thisGame=game1;
 	var sendList = thisGame.getAllPlayerSessionIDs();
 	var sessionidToSend;
+	var handlogThisSession = (game1.getHandLog().length) - handLogSentIndex;
 	for (var i=0; i<sendList.length;i++)
 	{
 			sessionidToSend=sendList[i].sessionid;
-			if(sendList[i]!=null)
+			if(sendList[i]!=null) {
 				server.io.to(sessionidToSend).emit('update',thisGame.generatePrivatePlayerData(sendList[i].hash));
+
+							for(var b = 0; b <= handlogThisSession;b++) {
+								server.io.to(sessionidToSend).emit('logEvent',game1.getHandLog()[handLogSentIndex+b] );
+							}
+							//reset log 
+							
+				}
 	}
+	handLogSentIndex+=handlogThisSession;
 }
+
+
 
 function toggleSitOut(gameid,hash) {
 	game1.getPlayerByHash(hash).toggleSitOut();

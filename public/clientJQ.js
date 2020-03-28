@@ -12,6 +12,22 @@ var myid;
 var mySeatData;
 var gameid='train';
 
+//SOUNDS
+var callAudio = document.createElement('audio');
+callAudio.setAttribute('src', './audio/raise.wav');
+
+var yourturnAudio = document.createElement('audio');
+yourturnAudio.setAttribute('src', './audio/yourturn.wav');
+
+var shuffleAudio = document.createElement('audio');
+shuffleAudio.setAttribute('src', './audio/shuffle.wav');
+
+var raiseAudio = document.createElement('audio');
+raiseAudio.setAttribute('src', './audio/raise.wav');
+
+var checkAudio = document.createElement('audio');
+checkAudio.setAttribute('src', './audio/check.wav');
+
 var storedCookie = ('; ' + document.cookie)
 .split('; ' + "clientID" + '=')
 .pop()
@@ -33,10 +49,12 @@ function callClock() {
 function cookieIsset(name)
 {
     var cookies = document.cookie.split(";");
+    console.log(cookies);
     for (var i in cookies)
     {
-        if (cookies[i].indexOf(name + "=") == 0)
+        if (cookies[i].indexOf(' clientID' + "=") == 0){
             return true;
+        }
     }
     return false;
 }
@@ -66,7 +84,7 @@ function register () {
 	}
 
 	function sit (seat) {
-
+		checkAudio.play();
 		if($('#player'+seat).find('.nameInput').val().length!=0 &&  $('#player'+seat).find('.balanceInput').val().length!=0) {
 		var register = {
 			gameHash: 'train',
@@ -105,10 +123,12 @@ function register () {
 	}
 
 	function check() {
+		checkAudio.play();
 		socket.emit('incomingAction', {game:gameid,userhash:myid,action:'check'});
 	}
 
 	function call() {
+		callAudio.play();
 		socket.emit('incomingAction', {game:gameid,userhash:myid,action:'call'});
 	}
 
@@ -126,6 +146,7 @@ function register () {
 	}
 
 	function raise() {
+		raiseAudio.play();
 		var inputedAmt = $("#raise").find('.raiseInput').val();
 		if(Number(inputedAmt)<=Number(mySeatData.balance)) {
 			console.log('sending raise of '+inputedAmt);
@@ -138,6 +159,7 @@ function register () {
 	}
 
 $(window).on('load', function(){
+
 
 	//updateGameData();
 	if(cookieIsset('clientID')==false) {
@@ -155,7 +177,8 @@ $(window).on('load', function(){
 
 
 	function updateGameData(gameData){
-		
+
+
 		//store MY data
 		$.each(seats,function(index) {
 			if(seats[index].hash === myid){
@@ -235,9 +258,29 @@ $(window).on('load', function(){
 		if(gameData.numseats<2)
 			$('#start').css('display','block');
 
+		//IF GAME IS GOING
 		if(gameData.bettingRound.actionOn!=null){
 			$('#start').css('display','none');
-		
+			
+
+					//SOUNDS
+			
+				if(gameData.bettingRound.actionOn.hash===myid) {
+					yourturnAudio.play();
+				}
+			
+				if(gameData.bettingRound.actionOn.hash!==myid) {
+					if(gameData.bettingRound.lastBet==='check')
+						checkAudio.play();
+					if(gameData.bettingRound.lastBet==='call')
+						callAudio.play();
+					if(gameData.bettingRound.lastBet==='raise')
+						raiseAudio.play();
+				}
+
+
+
+
 			//set action on color
 			$.each(seats,function(index) {
 				if(seats[index].hash===gameData.bettingRound.actionOn.hash)
@@ -269,7 +312,8 @@ $(window).on('load', function(){
 
 			
 			//add pot
-			$('#statusArea').html("Pot $"+gameData.bettingRound.potsTotal+"<br>Line $"+gameData.bettingRound.totalOnLine);
+			var totalPot = Number(gameData.bettingRound.potsTotal)+Number(gameData.bettingRound.totalOnLine);
+			$('#statusArea').html("Pot $"+totalPot);
 
 
 		}
@@ -343,6 +387,11 @@ $(window).on('load', function(){
 		seats = gameData.seats;
 		console.log(gameData);
 		updateGameData(gameData);
+
+	});
+
+	socket.on('logEvent', function(handlog) {
+		$('#messages').append($('<li>').text(handlog));
 
 	});
 

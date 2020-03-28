@@ -77,9 +77,7 @@ ul {
 	display: inline-block;
 }
 
-#gameBar {
-	width:140px;
-}
+
 
 #raise {
 	display:none;
@@ -115,7 +113,7 @@ ul {
 	position: absolute;
 	margin-left: 50px;
 	top:420px;
-	width:150px;
+	width:250px;
 
 }
 
@@ -131,25 +129,41 @@ ul {
 #chipsright {
 	visibility: hidden;
 	position: absolute;
-	left: 745px;
 	margin-top:60px;
-	width:150px;
-display: flex;
-  	align-items: center;
-  	justify-content: center;
+	margin-left: -40px;
+	width:2000px;
+	display: inline-block;
+
+
 }
 
 #chipsleft {
-		display: flex;
-  	align-items: center;
-  	justify-content: center;
+
 
 	visibility: hidden;
 	position: absolute;
-	left:365px;
 	margin-top: 60px;
+	margin-left: 160px;
 	width:150px;
 
+}
+
+#messages {
+	
+	width:400px;
+	height: 150px;
+	 word-break:break-all;
+	 border-width: 2px;
+	 border-color: black;
+	 border-style: solid;
+	float:right;
+    overflow: scroll;
+    overflow-x: hidden;
+}
+
+#gameBar {
+	width:140px;
+	float: left;
 }
 
 .winner {
@@ -160,6 +174,11 @@ display: flex;
   	position: absolute;
   	font-size: 10px;
 	}
+
+#bottomBar {
+		width: 100%
+
+}
 
 .actionButtons {
  	 display: inline-block;
