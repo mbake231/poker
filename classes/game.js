@@ -201,6 +201,7 @@ class game {
 				return gameTable.seats[i];
 		}
 		console.log("found no user by that hash");
+		return false;
 	}
 
 	getLastEvent() {
@@ -903,6 +904,10 @@ class game {
 		return gameTable.bettingRound.actionOnTimeLimit;
 	}
 
+	sitActionOnPlayerOut(player) {
+		gameTable.bettingRound.actionOn.toggleSitOut();
+	}
+
 	actionOnTimer() {
 		var scope = this;
 		clearTimeout(gameTable.bettingRound.actionOnTimer);
@@ -910,10 +915,12 @@ class game {
 		gameTable.bettingRound.actionOnTimer=setTimeout(
 
 			function (){
+						console.log("SITOUT"+gameTable.bettingRound.actionOn.userid+gameTable.bettingRound.actionOn.sitoutnexthand);
+
+				scope.sitActionOnPlayerOut();
 				scope.doAction(gameTable.bettingRound.actionOn,'fold');
-				gameTable.bettingRound.actionOn.sitoutnexthand=true;
 				//gameController.sendDataToAllPlayers();
-				scope.getNextAction();
+				//scope.getNextAction();
 
 			}
 

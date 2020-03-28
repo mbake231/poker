@@ -111,13 +111,15 @@ function register () {
 		
 	}
 
+
+
 	function nextHand() {
-		socket.emit('nextHand', gameid);
+		socket.emit('nextHand', {gameid:gameid,hash:myid});
 	}
 
 	function startGame() {
 		if(gameData.numseats>1)
-			socket.emit('startGame', gameid);
+			socket.emit('startGame', {gameid:gameid,hash:myid});
 		else
 			console.log("need more than 1 person");
 	}
@@ -146,16 +148,22 @@ function register () {
 	}
 
 	function raise() {
-		raiseAudio.play();
-		var inputedAmt = $("#raise").find('.raiseInput').val();
-		if(Number(inputedAmt)<=Number(mySeatData.balance)) {
-			console.log('sending raise of '+inputedAmt);
-			$('#raise').find('.raiseInput').css('color','black');
-			socket.emit('incomingAction', {game:gameid,userhash:myid,action:'raise',amt:Number(inputedAmt)});
+		if($('.raiseInput').val().length!=0) {
+			raiseAudio.play();
+			var inputedAmt = $("#raise").find('.raiseInput').val();
+			if(Number(inputedAmt)<=Number(mySeatData.balance)) {
+				console.log('sending raise of '+inputedAmt);
+				$('#raise').find('.raiseInput').css('color','black');
+				socket.emit('incomingAction', {game:gameid,userhash:myid,action:'raise',amt:Number(inputedAmt)});
+			}
+			else {
+				$('#raise').find('.raiseInput').css('color','red');
+			}
+
 		}
-		else {
-			$('#raise').find('.raiseInput').css('color','red');
-		}
+		else
+			$('.raiseInput').css('border','1px solid red;')
+
 	}
 
 $(window).on('load', function(){

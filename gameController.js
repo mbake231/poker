@@ -105,7 +105,7 @@ function callClock (gameid) {
 				scope.sendDataToAllPlayers(game1);
 				console.log('times up');
 			}
-			, 1000*(game1.getTimerLength()+2))
+			, 1000*(game1.getTimerLength()+2));
 }
 
 function sendSeatList(gameid,sessionid) {
@@ -225,6 +225,12 @@ function toggleSitOut(gameid,hash) {
 	game1.getPlayerByHash(hash).toggleSitOut();
 }
 
+function checkValidUser(gameid,hash) {
+	if(game1.getPlayerByHash(hash)!=false)
+		return true;
+	return false;
+}
+
 function reconnect(gameid,cookie,newSessionId) {
 	console.log("TRYING TO RECONNECT: "+cookie);
 	if (game1.getPlayerByCookie(cookie) != false) {
@@ -251,3 +257,4 @@ exports.toggleSitOut=toggleSitOut;
 exports.sendDataToAllPlayers=sendDataToAllPlayers;
 exports.leaveTableNextHand=leaveTableNextHand;
 exports.callClock=callClock;
+exports.checkValidUser=checkValidUser;

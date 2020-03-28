@@ -47,29 +47,47 @@ io.on('connection', function(socket){
 		
 
 		//listen for start game
-		socket.on('startGame', function () {
-			gameController.runGame();
+		socket.on('startGame', function (data) {
+			if(gameController.checkValidUser(data.gameid,data.hash)==true)
+				gameController.runGame();
+			else
+				console.log("An user with no id in this game tried to start the game.")
 			});
 
 		socket.on('callClock', function (data) {
-			gameController.callClock(data.gameid);
+			if(gameController.checkValidUser(data.gameid,data.hash)==true)
+				gameController.callClock(data.gameid);
+			else
+				console.log("An user with no id in this game tried to call the clock.")
 			});
 
 		socket.on('toggleSitOut', function (data) {
-			gameController.toggleSitOut(data.gameid,data.hash);
-
+			if(gameController.checkValidUser(data.gameid,data.hash)==true)
+				gameController.toggleSitOut(data.gameid,data.hash);
+			else
+				console.log("An user with no id in this game tried to toggle sit out.")
 			});
 
 		socket.on('leaveTable', function (data) {
-				gameController.leaveTableNextHand(data.gameid,data.hash);
+			if(gameController.checkValidUser(data.gameid,data.hash)==true)
+					gameController.leaveTableNextHand(data.gameid,data.hash);
+			else
+				console.log("An user with no id in this game tried to leave table.")
 			});
 
 		socket.on('incomingAction', function (data) {
-			gameController.incomingAction(data.game,data.userhash,data.action,data.amt);
+			if(gameController.checkValidUser(data.gameid,data.hash)==true)
+					gameController.incomingAction(data.game,data.userhash,data.action,data.amt);
+			else
+				console.log("An user with no id in this game tried to "+data.action+".");
+			
 			});
 
 		socket.on('nextHand', function (data) {
-			gameController.nextHand();
+			if(gameController.checkValidUser(data.gameid,data.hash)==true)
+					gameController.nextHand();
+			else
+				console.log("An user with no id in this game tried to start the next hand.");
 			});
 
 		socket.on('reconnectionAttempt', function (data) {
