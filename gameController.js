@@ -17,20 +17,14 @@ var dealer;
 var handLogSentIndex=0;
 
 //TESTS########
-/*
-var mike = new player("mike",'cookie',290,'playing','sid');
-var kim = new player("kim",'cookie',400,'playing','sid');
-var shane = new player("shane",'cookie',1000,'playing','sid');
-var kev = new player("kev",'cookie',100,'playing','sid');
-var clint = new player("clint",'cookie',1000,'playing','sid');
-var bob = new player("bob",'cookie',200,'playing','sid');
+
+var mike = new player("mike",'cookie',100,'playing','sid');
+var kim = new player("kim",'cookie',100,'playing','sid');
+
 
 game1.addPlayer(mike,0);
 game1.addPlayer(kim,1);
-game1.addPlayer(shane,2);
-game1.addPlayer(kev,3);
-game1.addPlayer(clint,4);
-game1.addPlayer(bob,8);
+
 
 game1.setDealer(mike);
 
@@ -42,48 +36,14 @@ game1.postBlinds();
 game1.dealHands();
 game1.printSeats();
 game1.getNextAction();
-game1.doAction(kev,'raise',98);
+game1.doAction(kim,'raise',98);
 game1.printSeats();
 game1.getNextAction();
-game1.doAction(clint,'call');
-game1.getNextAction();
-game1.printSeats();
-game1.doAction(bob,'raise',100);
-game1.getNextAction();
-game1.printSeats();
 game1.doAction(mike,'call');
-game1.getNextAction();
+//game1.getNextAction();
 game1.printSeats();
-game1.doAction(kim,'raise',100);
-game1.getNextAction();
-game1.printSeats();
-game1.doAction(shane,'call');
-game1.getNextAction();
-game1.printSeats();
-game1.doAction(clint,'call');
-game1.getNextAction();
-game1.printSeats();
-game1.doAction(mike,'call');
-game1.printSeats();
-game1.printGamePots();
-game1.getNextAction();
-game1.printSeats();
-game1.doAction(kim,'raise',10);
-game1.getNextAction();
 
-game1.doAction(shane,'call');
-game1.getNextAction();
 
-game1.doAction(clint,'call');
-game1.getNextAction();
-game1.doAction(kim,'raise',10);
-game1.getNextAction();
-game1.doAction(shane,'fold');
-game1.getNextAction();
-game1.doAction(clint,'fold');
-game1.getNextAction();
-game1.printSeats();
-*/
 //TESTS##########
 
 function leaveTableNextHand (game,hash) {

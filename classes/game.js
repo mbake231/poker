@@ -1143,9 +1143,14 @@ class game {
 						//check to see if this call sets player all in all in
 						//will need to allow a call if it puts someone all in
 						if(player.balance==0){
+							if(this.isOnlyOnePlayerNotAllIn()==true) {
+								this.goToNextRound();
+							}
+							else {
 							this.putPlayerAllIn(player);
 							console.log(player.userid+" is all in!");
 							this.updateHandLog(player.userid+" is all in!");
+							}
 						}
 
 						
