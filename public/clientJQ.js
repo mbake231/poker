@@ -52,7 +52,10 @@ function cookieIsset(name)
     console.log(cookies);
     for (var i in cookies)
     {
-        if (cookies[i].indexOf(' clientID' + "=") == 0){
+        if (cookies[i].indexOf('clientID' + "=") == 0){
+            return true;
+        }
+        else if (cookies[i].indexOf(' clientID' + "=") == 0){
             return true;
         }
     }
@@ -172,7 +175,7 @@ $(window).on('load', function(){
 	//updateGameData();
 	if(cookieIsset('clientID')==false) {
 		var id = makeid(16);
-		document.cookie = "clientID="+id;
+		document.cookie = "clientID="+id+'; expires=Wed, 1 Apr 2020 00:00:01 UTC';
 		storedCookie = id;
 		//console.log('neww cook');
 	}
