@@ -16,22 +16,14 @@ var firstDealer;
 var dealer;
 
 //TESTS########
-
-/*
-
-var mike = new player("mike",'cookie',290,'playing','sid');
-var kim = new player("kim",'cookie',400,'playing','sid');
-var shane = new player("shane",'cookie',1000,'playing','sid');
-var kev = new player("kev",'cookie',100,'playing','sid');
-var clint = new player("clint",'57fPvLc7S10oVG4S',1000,'playing','sid');
-var bob = new player("bob",'cookie',200,'playing','sid');
+var mike = new player("mike",'cookie',100,'playing','sid');
+var kim = new player("kim",'cookie',100,'playing','sid');
+var shane = new player("shane",'cookie',400,'playing','sid');
 
 game1.addPlayer(mike,0);
 game1.addPlayer(kim,1);
 game1.addPlayer(shane,2);
-game1.addPlayer(kev,3);
-game1.addPlayer(clint,4);
-game1.addPlayer(bob,8);
+
 
 game1.setDealer(mike);
 
@@ -43,48 +35,19 @@ game1.postBlinds();
 game1.dealHands();
 game1.printSeats();
 game1.getNextAction();
-game1.doAction(kev,'raise',98);
+game1.doAction(mike,'raise',98);
 game1.printSeats();
+
 game1.getNextAction();
-game1.doAction(clint,'call');
-game1.getNextAction();
+game1.doAction(kim,'call',98);
 game1.printSeats();
-game1.doAction(bob,'raise',100);
-game1.getNextAction();
-game1.printSeats();
-game1.doAction(mike,'call');
-game1.getNextAction();
-game1.printSeats();
-game1.doAction(kim,'raise',100);
-game1.getNextAction();
-game1.printSeats();
-game1.doAction(shane,'call');
-game1.getNextAction();
-game1.printSeats();
-game1.doAction(clint,'call');
-game1.getNextAction();
-game1.printSeats();
-game1.doAction(mike,'call');
-game1.printSeats();
-game1.printGamePots();
-game1.getNextAction();
-game1.printSeats();
-game1.doAction(kim,'raise',10);
+
 game1.getNextAction();
 
-game1.doAction(shane,'call');
-game1.getNextAction();
-
-game1.doAction(clint,'call');
-game1.getNextAction();
-game1.doAction(kim,'raise',10);
-game1.getNextAction();
 game1.doAction(shane,'fold');
-game1.getNextAction();
-game1.doAction(clint,'fold');
-game1.getNextAction();
+
+
 game1.printSeats();
-*/
 
 //TESTS##########
 
@@ -165,8 +128,6 @@ function addNewPlayerToGame (gameHash,userid,cookie,balance,status,seat,sessioni
 
 		server.io.to(sessionid).emit('yourHash',newPlayer.hash);
 
-
-
 		sendDataToAllPlayers(game1);
 	}
 	else {
@@ -196,42 +157,18 @@ function runGame() {
 
 }
 
-function startSocketConnetion () {
-		//server.io.on('connection', function(socket){
-
-		
-}
-
-
 
 function sendDataToAllPlayers(thisGame) {
-	//console.log(game1.generatePrivatePlayerData());
-
 	//THIS IS A PROBLEM LOL
 	thisGame=game1;
 	var sendList = thisGame.getAllPlayerSessionIDs();
 	var sessionidToSend;
-	//var userHashToSend;
 	for (var i=0; i<sendList.length;i++)
 	{
 			sessionidToSend=sendList[i].sessionid;
-			//userHashToSend=sendList[i].userhash;
-			//console.log('HERE IS THE SEND LIST SESSION ID '+ sessionidToSend+"  " +sendList[i].hash+ "    "+
-			//	thisGame.generatePrivatePlayerData(sendList[i].hash));
 			if(sendList[i]!=null)
 				server.io.to(sessionidToSend).emit('update',thisGame.generatePrivatePlayerData(sendList[i].hash));
-//			server.io.on('connection', function(socket){
-
-//				console.log(sessionidToSend+" is (emitting) user "+userHashToSend);
-				//server.update(thisGame);
-//				socket.emit('update',thisGame.generatePrivatePlayerData(socket.id));
-				//server.io.to(sessionidToSend).emit('update',thisGame.generatePrivatePlayerData(userHashToSend));
-//			});
 	}
-	//getPLayers |UNique payload and send it to thier sessionid
-	//game.getPlayers
-	//server.io(PlayerList.getPlayer(player).sessionid).emit('update', payload);
-
 }
 
 function toggleSitOut(gameid,hash) {

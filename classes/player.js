@@ -1,29 +1,3 @@
-/*var player =
-{
-	userid:null,
-	sessionid:null,
-	cookie:null,
-	balance:0,
-	moneyOnLine:0,
-	status:"empty",
-	card1:null,
-	card2:null,
-	seat:null,
-	nextPlayer:null,
-	previousPlayer:null
-};
-
-function player(userid,cookie,balance,status) {
-	this.userid=userid;
-	this.cookie=cookie;
-	this.balance=balance;
-	this.status=status;
-	return player;
-}
-
-exports.player = player;
-
-*/
 class player {
 	constructor(userid,cookie,balance,status,sessionid) {
 		this.userid=userid;

@@ -112,10 +112,8 @@ class game {
 			//set to waiting to play
 			for (var i=0;i<gameTable.game_size;i++)
 			{
-				//if(gameTable.seats[i].status=='inhand' || gameTable.seats[i].status=='folded'|| gameTable.seats[i].status=='allin' )
 				if(gameTable.seats[i].sitoutnexthand==false){
 					gameTable.seats[i].status='playing';
-					console.log(gameTable.seats[i].seat+" is now set to "+gameTable.seats[i].status);
 				}
 			}
 
@@ -162,29 +160,20 @@ class game {
 	getNextPlayer(player) {
 		for (var i=Number(player.seat)+1;i<gameTable.game_size;i++){
 			if(gameTable.seats[i]!="empty" && gameTable.seats[i].status!='sittingout') {
-				//console.log(player.seat+" YOUR NEXT PERSON IS NOW TOP "+i+".   f"+ gameTable.seats[i]);
 				return gameTable.seats[i];
 			}
 		}
 		for (var i=0;i<player.seat;i++){
 			if(gameTable.seats[i]!="empty" && gameTable.seats[i].status!='sittingout') {
-				//console.log(player.seat+" YOUR NEXT PERSON IS NOW "+ gameTable.seats[i]);
 				return gameTable.seats[i];
 			}
 		}
 	}
 
-/*	printEveryonesNextPlayer() {
-		for (var i=0;i<gameTable.game_size;i++) {
-			if(gameTable.seats[i]!='empty')
-				console.log("Seat 1's next is"+gameTable.seats[i].nextPlayer.seat+ "and previos us is");
-		}
-	}*/
 
 	setNextPlayer (player) {
 		player.nextPlayer = this.getNextPlayer(player);
 
-		//console.log(player.nextPlayer.seat+" then goes"+player.seat);
 	}
 
 	getPlayerByHash(myhash) {
@@ -220,15 +209,12 @@ class game {
 						gameTable.seats[i].nextPlayer = player;
 						gameTable.seats[i].previousPlayer = player;
 					}
-				//this.printEveryonesNextPlayer();
-				//console.log (player.nextPlayer.seat + " the other guy is now pointing at me " + player.nextPlayer.nextPlayer )
 			}
 			if(gameTable.numseats>2) {
 				this.setNextPlayer(gameTable.seats[seat]);
 
 				//find person before them and set it to the new guy
 				this.getPreviousPlayer(player).nextPlayer=player;
-			//	this.printEveryonesNextPlayer();
 			}
 		}
 	}
@@ -300,7 +286,6 @@ class game {
 		}
 
 		return false;
-		//console.log("the dealer is now "+player.userid +" at seat" +player.seat+" "+gameTable.dealer.seat);
 	}
 	dealHands() {
 
@@ -356,15 +341,12 @@ class game {
 	}
 
 	getBigBlindPlayer() {
-		//var smallBlindPayer = gameTable.seats[gameTable.dealer.seat].nextPlayer;
 		var bigBlindPayer = gameTable.seats[this.getSmallBlindPlayer().seat].nextPlayer;
-		//console.log("Big Blind on Seat: "+bigBlindPayer.seat);
 		return bigBlindPayer;
 	}
 
 	getSmallBlindPlayer () {
 		var smallBlindPayer = gameTable.seats[gameTable.dealer.seat].nextPlayer;
-		//console.log("Small Blind on Seat: "+smallBlindPayer.seat);
 		return smallBlindPayer;
 	}
 
@@ -445,7 +427,6 @@ class game {
 			this.addMoneyLineToPot();
 			this.clearRoundData();
 			this.settleTheHand();
-			//console.log("ROUND "+gameTable.bettingRound.round+" STARTER "+this.whoShouldStartRound().userid+" RIGHT?" +this.getActionOnPlayer().userid);
 
 		}
 		if (gameTable.bettingRound.round==2) {
@@ -456,7 +437,6 @@ class game {
 			this.clearRoundData();
 			//set action to small blind
 			this.setActionOn(this.whoShouldStartRound());
-		//	console.log("ROUND "+gameTable.bettingRound.round+" STARTER "+this.whoShouldStartRound().userid+" RIGHT?" +this.getActionOnPlayer().userid);
 
 		}
 		if (gameTable.bettingRound.round==1) {
@@ -564,7 +544,7 @@ class game {
 	deductMoneyLineAndAddToPot (amt){
 		//deduct that amount from everyone and add them as a member
 		for(var i = 0;i<gameTable.game_size;i++){
-				if((gameTable.seats[i].status=='folded'|| gameTable.seats[i].status=='inhand' 
+				if(( gameTable.seats[i].status=='inhand' 
 					|| gameTable.seats[i].status=='allin') && gameTable.seats[i].moneyOnLine>0){
 						gameTable.seats[i].moneyOnLine-=amt;
 						gameTable.currentPot.total+=amt;
@@ -572,9 +552,14 @@ class game {
 						//already a member or not?
 						if(this.isPlayerMemberofCurrentPot(gameTable.seats[i])==false && gameTable.seats[i].status!='folded'){
 							gameTable.currentPot.addMember(gameTable.seats[i]);
-							//console.log(gameTable.seats[i].seat+" IS NOW A MEMBER OF POT LOOK HERE: "+gameTable.currentPot.getMemberByHash(gameTable.seats[i].hash).seat);
 						}
+				} 
+				//just shove in folded player $
+				if(gameTable.seats[i].status=='folded'){
+					gameTable.currentPot.total+=gameTable.seats[i].moneyOnLine;
+					gameTable.seats[i].moneyOnLine=0;
 				}
+
 			}
 
 			//remove all folders
@@ -596,7 +581,7 @@ class game {
 
 		//if everyone folded and no one is all in then just jam the lines in and pay it out
 		var NumberofAllInPlayers=0;
-		for (var i=0;i<gameTable.seats.length;i++)
+		for (var i=0;i<gameTable.game_size;i++)
 			if(gameTable.seats[i].status==='allin')
 				NumberofAllInPlayers++;
 
@@ -668,7 +653,7 @@ class game {
 
 		//check to see if we have any in players 
 		var NumberofAllInPlayers=0;
-		for (var i=0;i<gameTable.seats.length;i++)
+		for (var i=0;i<gameTable.game_size;i++)
 			if(gameTable.seats[i].status==='allin')
 				NumberofAllInPlayers++;
 
@@ -694,7 +679,6 @@ class game {
 		*/
 		//check to see if someone didnt win by fold
 		if(gameTable.bettingRound.endByFold==false || NumberofAllInPlayers>0) {
-			//console.log("HOW MANY POTS DO I GOT "+gameTable.bettingRound.pots.length);
 
 			var selectedPot;
 			for(var i=0;i<gameTable.bettingRound.pots.length;i++) {
@@ -714,8 +698,6 @@ class game {
 								{playerId:selectedPot.members[a].hash,
 								cards:[selectedPot.members[a].card1,
 										selectedPot.members[a].card2]});
-					//		console.log(this.getPlayerByHash(selectedPot.members[a].hash).userid,
-						//		selectedPot.members[a].card1,selectedPot.members[a].card2);
 
 						}
 					}
@@ -920,43 +902,6 @@ class game {
 	}
 
 	getNextAction () {
-
-
-		//if someone is all in and only one person left
-	//	if(this.isOnlyOnePlayerNotAllIn()==true && gameTable.bettingRound.lastBet==='raise') {
-	//		gameTable.bettingRound.nextActionsAvailable = ['call','fold']; 
-	//	}
-	/*	console.log('my status is '+gameTable.bettingRound.actionOn.status
-			+" and num all in is "+this.getNumberPlayersAllIn()
-			+" my seat is: "+gameTable.bettingRound.actionOn.seat
-			+" and next person to go is seat "+gameTable.bettingRound.actionOn.nextPlayer.seat
-			);
-		//so if someone is all in, and im not, i can call
-		 if(this.getNumberPlayersAllIn()>0 && gameTable.bettingRound.actionOn.status=='inhand' && gameTable.bettingRound.lastBet=='raise'){
-				gameTable.bettingRound.nextActionsAvailable = ['call','fold']; 
-				
-		}
-
-
-	
-			
-		}*/
-
-
-		//check to see if this call was the last call to another players all in and no one is left
-		//else if(this.isOnlyOnePlayerNotAllIn()==true && gameTable.bettingRound.lastBet==='call' && gameTable.bettingRound.actionOn.status=='allin'){
-		//		gameTable.bettingRound.nextActionsAvailable = ['call','fold']; 
-				
-		//}
-
-	//	else if(this.isOnlyOnePlayerNotAllIn()==true && gameTable.bettingRound.lastBet==='call' && gameTable.bettingRound.actionOn.status=='inhand'){
-	//			this.doAShowDown();
-	//			this.settleTheHand();
-				
-	//	}
-		//		console.log(this.getActionOnPlayer().user+" vs "+this.whoShouldStartRound().userid);
-
-
 		//BIG BLIND CAN ACT AT END OF PRE-FLOP BETTING
 		//IF ACTION IS TO BIGBLIND + AND NO ONE RAISED AKA LAST BET IS CALL AND THE CALL IS SAME AS BIG BLIND
 		//THEN BIG BLIND AND 
@@ -1089,7 +1034,7 @@ class game {
 				}
 				else if (action=="fold") {
 					console.log(player.userid+" has folded");
-					this.foldPlayer(player);
+					
 					
 					//chek to see if only one guy left
 					for(var i=0;i<gameTable.game_size;i++){
@@ -1098,6 +1043,7 @@ class game {
 						
 					}
 					if(foldCounter==1){
+						player.status='folded'
 						gameTable.bettingRound.endByFold=true;
 						gameTable.bettingRound.round=4;
 						//we actually add the money line in the settling logi in this case, because we dont want
@@ -1107,6 +1053,7 @@ class game {
 					}
 					else{
 						//must avance first cuz i unload nextplayer on fold
+						this.foldPlayer(player);
 						this.advanceToNextPlayer();
 						
 					}
