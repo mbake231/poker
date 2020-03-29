@@ -286,7 +286,8 @@ class game {
 					" Status: "+this.gameTable.seats[i].status+
 				//	" Next up :"+this.gameTable.seats[i].nextPlayer.userid+
 					" Hand: "+ this.gameTable.seats[i].card1+" "+this.gameTable.seats[i].card2+
-					" $ in: "+ this.gameTable.seats[i].moneyOnLine
+					" $ in: "+ this.gameTable.seats[i].moneyOnLine+
+					"Raise to call:"+this.gameTable.bettingRound.currentRaiseToCall
 					);
 			}
 			else
@@ -991,11 +992,28 @@ class game {
 			this.goToNextRound();
 		}
 
-		//if someone is all in, and i am last person in hand (pointing to myself)
-	//	else if(this.getNumberPlayersAllIn()>0 && this.gameTable.bettingRound.actionOn.nextPlayer.hash===this.gameTable.bettingRound.actionOn.hash) {
-	//		this.doAShowDown();
-	//		this.settleTheHand();
+		//IM THE ONLY GUY IN THE FUCKING HAND AND I NEED TO DECIDE IF I WANT TO CALL AN ALL IN
+		else if(this.isOnlyOnePlayerNotAllIn(this.getActionOnPlayer())==true && this.getActionOnPlayer().moneyOnLine<this.gameTable.currentRaiseToCall) {
+				this.gameTable.bettingRound.nextActionsAvailable = ['call','fold'];
+				console.log("action: "+this.gameTable.seats[this.gameTable.bettingRound.actionOn.seat].userid +" "+this.gameTable.bettingRound.nextActionsAvailable);
+				if(this.gameTable.isTimerGame==true)
+					this.actionOnTimer();
+		}
 
+		//IM THE ONLY GUY IN THE FUCKING HAND AND I WAS THE LAST RASIER
+		else if(this.isOnlyOnePlayerNotAllIn(this.getActionOnPlayer())==true && this.getActionOnPlayer().hash===this.gameTable.bettingRound.lastRaiser.hash) {
+			console.log('CHECKING $$$$$$');	
+			this.settleTheHand();
+		}
+
+		//IM THE ONLY GUY IN THE FUCKING HAND AND MY MOL IS HIGH OR EQUAL
+		else if(this.isOnlyOnePlayerNotAllIn(this.getActionOnPlayer())==true && this.getActionOnPlayer().moneyOnLine>=this.gameTable.bettingRound.currentRaiseToCall) {
+			console.log('CHECKING $$$$$$');	
+			this.settleTheHand();
+		}
+
+
+		
 		//ROUND OVER IF LAST BET WAS CHECK AND first guy up
 		else if(this.gameTable.bettingRound.lastBet==='check' && this.getActionOnPlayer().hash===this.whoShouldStartRound().hash){
 			//console.log(this.getActionOnPlayer().hash +" vs "+this.getSmallBlindPlayer().hash);
@@ -1098,6 +1116,7 @@ class game {
 					this.advanceToNextPlayer();
 					console.log(player.userid+" has checked.");
 					this.updateHandLog(player.userid+" has checked.");
+					return true;
 				
 				}
 				else if (action==="fold" || action==='fold-clock') {
@@ -1105,12 +1124,14 @@ class game {
 					console.log(player.userid+" has folded");
 					this.updateHandLog(player.userid+" has folded.");
 					
-					//chek to see if only one guy left
+					//chek to see if only one NON-FOLDED guy left, if someone is all in we need another solution
 					for(var i=0;i<this.gameTable.game_size;i++){
-						if(this.gameTable.seats[i].status==='inhand')
+						//if i include allin here then some games wont settle
+						if(this.gameTable.seats[i].status==='inhand' || this.gameTable.seats[i].status==='allin')
 							foldCounter++;
-					//console.log(''+foldCounter);
-						
+					
+					//but if there is only one inhand guys left (everyone else all in, we need to see if he should act or not)
+
 					}
 					if(foldCounter==1){
 						//player.status='folded';
@@ -1127,7 +1148,7 @@ class game {
 						this.advanceToNextPlayer();
 						
 					}
-					
+					return true;
 
 				}
 				else if (action=="call") {
@@ -1174,9 +1195,11 @@ class game {
 
 						
 					}
-					else
+					else {
 						console.log("amount doesnt have enough for call");
-
+						return false;
+					}
+					return true;
 				}
 				else if (action=='raise') {
 					//when you raise you need to call current pot and then raise further
@@ -1194,17 +1217,23 @@ class game {
 						this.updateHandLog(player.userid+" has raised to $"+this.gameTable.bettingRound.currentRaiseToCall+".");
 						if(player.balance==0)
 							this.putPlayerAllIn(player);
+
+						return true;
 					}
-					else
+					else {
 						console.log(player.userid+" doesn't have enough for a raise of"+amt);
+						return false;
+					}
 				}
 			}
 			else
 				console.log(player.userid+" is the right player, but they can't "+action);
+				return false;
 		}
 
 		else {
 			console.log(player.userid+" tried to "+action+", but this player is not up.");
+			return false;
 		}
 	}
 	doAShowDown() {
