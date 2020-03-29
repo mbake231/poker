@@ -579,32 +579,31 @@ class game {
 	}
 
 	deductMoneyLineAndAddToPot (amt){
-		//deduct that amount from everyone and add them as a member
+		//deduct that amount from everyone if they are not folded, and if they still have $ on line, and add them as a member
 		for(var i = 0;i<gameTable.game_size;i++){
-				if(( gameTable.seats[i].status=='inhand' 
-					|| gameTable.seats[i].status=='allin') && gameTable.seats[i].moneyOnLine>0){
+				if((gameTable.seats[i].status=='inhand' || gameTable.seats[i].status=='allin') && gameTable.seats[i].moneyOnLine>0){
 						gameTable.seats[i].moneyOnLine-=amt;
 						gameTable.currentPot.total+=amt;
 						gameTable.bettingRound.potsTotal+=amt;
-						//already a member or not?
+						//if not already a member of this pot add them if they didnt fold
 						if(this.isPlayerMemberofCurrentPot(gameTable.seats[i])==false && gameTable.seats[i].status!='folded'){
 							gameTable.currentPot.addMember(gameTable.seats[i]);
 						}
 				} 
-				//just shove in folded player $
-				if(gameTable.seats[i].status=='folded'){
+				//since a folded player could have money on line before they folded, we just sweep it into the pot
+				if(gameTable.seats[i].status==='folded'){
 					gameTable.currentPot.total+=gameTable.seats[i].moneyOnLine;
+					gameTable.bettingRound.potsTotal+=gameTable.seats[i].moneyOnLine;
 					gameTable.seats[i].moneyOnLine=0;
 				}
 
 			}
 
-			//remove all folders
+			//remove all folders as pot member from all pots as they may have jonined in previous rounds
 			for(var i=0;i<gameTable.bettingRound.pots.length;i++)
 				for(var a=0;a<gameTable.bettingRound.pots[i].members.length;a++)
 					if(gameTable.bettingRound.pots[i].members[a]!=null)
 						if (gameTable.bettingRound.pots[i].members[a].status=='folded') {
-							//console.log('POT '+i+' REMOVED FOLDER NUM '+ a+' NAMED '+gameTable.bettingRound.pots[i].members[a].userid);
 							a = gameTable.bettingRound.pots[i].removeMember(gameTable.bettingRound.pots[i].members[a])-1;
 				}
 	}
@@ -621,7 +620,6 @@ class game {
 		for (var i=0;i<gameTable.game_size;i++)
 			if(gameTable.seats[i].status==='allin')
 				NumberofAllInPlayers++;
-
 		if(NumberofAllInPlayers==0 && gameTable.bettingRound.endByFold==true) {
 			for (var i=0;i<gameTable.game_size;i++) {
 					if(gameTable.seats[i].status === 'inhand' || gameTable.seats[i].status === 'folded') {
@@ -633,12 +631,10 @@ class game {
 				}
 		}
 
+		//Cover other cases when not everyone folded
 		else {
 
-			//	for (var i=0;i<gameTable.game_size;i++)
-		//		console.log(gameTable.seats[i].userid+" "+gameTable.seats[i].moneyOnLine);
-
-			//find lowest money on line, if its the same for everyone it will be the common denom
+			//find lowest money on line, if its the same for everyone it will be the common denom to start with
 			let lowest = 999999999;
 				for(var i = 0;i<gameTable.game_size;i++){
 					if((gameTable.seats[i].status==='inhand' || gameTable.seats[i].status==='allin') && gameTable.seats[i].moneyOnLine>0){
@@ -647,19 +643,18 @@ class game {
 						}
 					}
 				}
+			//shave off the common denom
 			this.deductMoneyLineAndAddToPot(lowest);
-			//reset counter
+			//reset counter so we cna find lowest again
 			lowest=9999999;
-
+			//now we check to see if there is more money to put into the pot
 			if(this.areMoneyLinesZero() == true) {
-							//		console.log("%%%%%%%%%%%%%%%%%ONE%%%%%%%%%%%%%%%%%%%%%");
 
 				//check to see if members of current pot are all in. if so we need a new one, cuz if i called the 
 				//last bet to end the round and it put me all in then we have to make a new pot for next round
 				for(var i=0;i<gameTable.currentPot.members.length;i++) {
-					if(gameTable.currentPot.members[i].status=='allin') {
+					if(gameTable.currentPot.members[i].status==='allin') {
 						let newPot = new pot(0);
-						//console.log("%%%%%%%%%%%%%%%%%%%TWO%%%%%%%%%%%%%%%%%%%");
 						gameTable.bettingRound.pots.push(newPot);
 						gameTable.currentPot=newPot;
 					}
@@ -672,7 +667,7 @@ class game {
 				//what is failed to do is make a new pot after settlining someone all in perfectly in to the last one
 			}
 			else {
-				//we are not done!
+				//we are not done! so create a new pot and do it again
 				let newPot = new pot(0);
 				gameTable.bettingRound.pots.push(newPot);
 				gameTable.currentPot=newPot;
