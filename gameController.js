@@ -18,7 +18,7 @@ var dealer;
 var handLogSentIndex=0;
 
 //TESTS########
-/*
+
 var mike = new player("mike",'cookie',100,'playing','sid');
 var kim = new player("kim",'cookie',100,'playing','sid');
 
@@ -43,7 +43,7 @@ game1.getNextAction();
 game1.doAction(mike,'call');
 //game1.getNextAction();
 game1.printSeats();
-*/
+
 
 //TESTS##########
 
