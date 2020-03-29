@@ -48,9 +48,26 @@ function leaveTable () {
 	}
 }
 
+function clockCalled() {
+	$('#clock').prop('disabled','true');
+	$('#clock').html(gameData.bettingRound.actionOnTimeLimit+' Second clock called');
+	setTimeout(function(){
+			$('#clock').html('Call clock');
+			$('#clock').prop('disabled',null);
+		}, 1000*(gameData.bettingRound.actionOnTimeLimit+3));
+}
+
 function callClock() {
-	if(gameData.bettingRound.actionOn!=null)
+	if(gameData.bettingRound.actionOn!=null) {
 		socket.emit('callClock', {gameid:gameid});
+		$('#clock').prop('disabled','true');
+		$('#clock').html(gameData.bettingRound.actionOnTimeLimit+' Second clock called');
+		setTimeout(function(){
+			$('#clock').html('Call clock');
+			$('#clock').prop('disabled',null);
+		}, 1000*(gameData.bettingRound.actionOnTimeLimit+3));
+	}
+
 }
 
 function cookieIsset(name)
@@ -206,7 +223,7 @@ $(window).on('load', function(){
 		})
 
 		if(mySeatData.leavenexthand==true) {
-			$('#leaveTable').html('LEAVING NEXT HAND');
+			$('#leaveTable').html('Leaving table next hand');
 		}
 		else if (mySeatData.leavenexthand==false)
 			$('#leaveTable').html('Leave table');
@@ -349,7 +366,8 @@ $(window).on('load', function(){
 		if(gameData.board[0]!=null){
 			$('#board').html("");
 			$.each(gameData.board, function(index) {
-				$('#board').append('<img id="theImg" src="img/cards/'+gameData.board[index]+'.svg" width="100%"/>');
+				if(gameData.board[index]!=null)
+					$('#board').append('<img id="theImg" src="img/cards/'+gameData.board[index]+'.svg" width="100%"/>');
 			});
 		}
 		if(gameData.board[0]==null){
@@ -396,6 +414,11 @@ $(window).on('load', function(){
 		seats = gameData.seats;
 		updateGameData(gameData);
 		console.log(gameData);
+
+	});
+
+	socket.on('clockCalled', function(publicData) {
+		clockCalled();
 
 	});
 

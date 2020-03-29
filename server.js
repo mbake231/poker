@@ -55,8 +55,10 @@ io.on('connection', function(socket){
 			});
 
 		socket.on('callClock', function (data) {
-			if(gameController.checkValidUser(data.gameid,data.hash)==true)
+			if(gameController.checkValidUser(data.gameid,data.hash)==true) {
 				gameController.callClock(data.gameid);
+				socket.broadcast.emit('clockCalled',true);
+			}
 			else
 				console.log("An user with no id in this game tried to call the clock.")
 			});
