@@ -43,6 +43,22 @@ var gameTable = {
 class game {
 
 	constructor () {
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+		
 		for (var i=0;i<gameTable.game_size;i++)
 			gameTable.seats[i] = "empty";
 
@@ -635,7 +651,7 @@ class game {
 		else {
 
 			//find lowest money on line, if its the same for everyone it will be the common denom to start with
-			let lowest = 999999999;
+			var lowest = 999999999;
 				for(var i = 0;i<gameTable.game_size;i++){
 					if((gameTable.seats[i].status==='inhand' || gameTable.seats[i].status==='allin') && gameTable.seats[i].moneyOnLine>0){
 						if(gameTable.seats[i].moneyOnLine<lowest) {

@@ -18,54 +18,6 @@ var dealer;
 var handLogSentIndex=0;
 
 //TESTS########
-/*
-var mike = new player("mike",'cookie',100,'playing','sid');
-var kim = new player("kim",'cookie',1000,'playing','sid');
-var shane = new player("shane",'cookie',100,'playing','sid');
-
-
-game1.addPlayer(mike,0);
-game1.addPlayer(kim,1);
-game1.addPlayer(shane,2);
-
-
-game1.setDealer(mike);
-
-//game1.foldPlayer(bob);
-//game1.foldPlayer(clint);
-//game1.firstRound();
-
-game1.postBlinds();
-game1.dealHands();
-game1.printSeats();
-game1.getNextAction();
-game1.doAction(mike,'call');
-game1.getNextAction();
-game1.doAction(kim,'raise',8);
-game1.getNextAction();
-game1.doAction(shane,'call',8);
-game1.printSeats();
-game1.getNextAction();
-game1.doAction(mike,'call');
-game1.getNextAction();
-
-game1.doAction(kim,'raise',51);
-game1.printSeats();
-game1.getNextAction();
-game1.doAction(shane,'call');
-game1.getNextAction();
-game1.doAction(mike,'raise',39);
-game1.getNextAction();
-
-game1.doAction(kim,'call',51);
-game1.getNextAction();
-
-game1.doAction(shane,'call',51);
-game1.getNextAction();
-
-//game1.getNextAction();
-//game1.getNextAction();
-game1.printSeats();*/
 
 
 //TESTS##########
