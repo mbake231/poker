@@ -46,19 +46,6 @@ class game {
 				}
 		};
 
-
-
-
-
-
-
-
-
-
-
-
-
-		
 		for (var i=0;i<this.gameTable.game_size;i++)
 			this.gameTable.seats[i] = "empty";
 
@@ -138,8 +125,11 @@ class game {
 			//remove those who were set to leave
 			for (var i=0;i<this.gameTable.game_size;i++) {
 				if(this.gameTable.seats[i].leavenexthand==true) {
+					console.log(this.gameTable.seats[i].userid+" has left the table.");
+					this.updateHandLog(this.gameTable.seats[i].userid+" has left the table.");
 					this.gameTable.seats[i]='empty';
 					this.deletePlayer(this.gameTable.seats[i]);
+					
 				}
 			}
 			//set sitting out
@@ -147,6 +137,20 @@ class game {
 				if(this.gameTable.seats[i].sitoutnexthand==true) {
 					this.gameTable.seats[i].status='sittingout';
 					this.gameTable.numseats--;
+					console.log(this.gameTable.seats[i].userid+" is now sitting out per their request.");
+					this.updateHandLog(this.gameTable.seats[i].userid+" is now sitting out per their request.");
+				}
+
+			}
+
+			//set sitting out for people who have 0 balance
+			for (var i=0;i<this.gameTable.game_size;i++) {
+				if(this.gameTable.seats[i].balance<=this.gameTable.bigBlind) {
+					this.gameTable.seats[i].status='sittingout';
+					this.gameTable.seats[i].sitoutnexthand=true;
+					this.gameTable.numseats--;
+					console.log(this.gameTable.seats[i].userid+" is now sitting out because their balance is less than the big blind.");
+					this.updateHandLog(this.gameTable.seats[i].userid+"  is now sitting out because their balance is less than the big blind.");
 				}
 
 			}
@@ -154,7 +158,7 @@ class game {
 			//set to waiting to play
 			for (var i=0;i<this.gameTable.game_size;i++)
 			{
-				if(this.gameTable.seats[i].sitoutnexthand==false){
+				if(this.gameTable.seats[i].sitoutnexthand==false && this.gameTable.seats[i].balance>=this.gameTable.bigBlind){
 					this.gameTable.seats[i].status='playing';
 				}
 			}
@@ -772,9 +776,14 @@ class game {
 							+ "The pot total was $"+selectedPot.total
 							+" and it paid "+ this.getPlayerByHash(winner[b].playerId).userid +" $"
 							+amtToPay+".");
-						this.updateHandLog(this.getPlayerByHash(winner[b].playerId).userid+" WINS! The pot total was $"+selectedPot.total
-							+" and it paid "+ this.getPlayerByHash(winner[b].playerId).userid +" $"
-							+amtToPay+".");
+						this.updateHandLog(this.getPlayerByHash(winner[b].playerId).userid+" WINS with ["
+						+winningPlayer.card1
+						+","
+						+winningPlayer.card2
+						+'] '+winningHand+"! "
+						+ "The pot total was $"+selectedPot.total
+						+" and it paid "+ this.getPlayerByHash(winner[b].playerId).userid +" $"
+						+amtToPay+".");
 					//4 store winner of each pot with beautified hand
 						
 						selectedPot.winners.push({winner:winningPlayer,
