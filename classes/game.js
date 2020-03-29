@@ -119,6 +119,7 @@ class game {
 			this.gameTable.bettingRound.endByFold=false;
 			this.newHandLog();
 			//new pots
+			this.gameTable.bettingRound.potsTotal=0;
 			this.gameTable.bettingRound.pots=[];
 			this.gameTable.bettingRound.pots[0] = new pot(0);
 			this.gameTable.currentPot=this.gameTable.bettingRound.pots[0];

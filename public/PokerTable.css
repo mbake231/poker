@@ -110,6 +110,7 @@ ul {
 
 #chipsbottom {
 	visibility: hidden;
+	display: flex;
 	position: absolute;
 	margin-left: 50px;
 	top:420px;

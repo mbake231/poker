@@ -18,6 +18,26 @@ function format () {
   return Array.prototype.slice.call(arguments).join(' ')
 }
 
+//precache images
+function preloadImages(array) {
+    if (!preloadImages.list) {
+        preloadImages.list = [];
+    }
+    var list = preloadImages.list;
+    for (var i = 0; i < array.length; i++) {
+        var img = new Image();
+        img.onload = function() {
+            var index = list.indexOf(this);
+            if (index !== -1) {
+                // remove image from the array once it's loaded
+                // for memory consumption reasons
+                list.splice(index, 1);
+            }
+        }
+        list.push(img);
+        img.src = array[i];
+    }
+}
 
 //SOUNDS
 var callAudio = document.createElement('audio');
@@ -73,7 +93,7 @@ function callClock() {
 function cookieIsset(name)
 {
     var cookies = document.cookie.split(";");
-    console.log(cookies);
+    //console.log(cookies);
     for (var i in cookies)
     {
         if (cookies[i].indexOf('clientID' + "=") == 0){
@@ -194,6 +214,19 @@ function register () {
 	}
 
 $(window).on('load', function(){
+
+	//pre-cache cards
+	var cards = new Array(52);
+	var ranks = new Array("A", "2", "3", "4", "5", "6", "7", "8", "9", "10","J", "Q", "K");
+	var suits = new Array("c", "d", "h", "s");
+	var i, j;
+	for (i = 0; i < suits.length; i++) {
+		for (j = 0; j < ranks.length; j++) {
+			cards[i*ranks.length + j] = 'img/cards/'+ranks[j] + suits[i] + '.svg';
+		   // console.log(ranks[j] + suits[i]);
+			}
+		}
+	preloadImages(cards);
 
 
 	//updateGameData();
