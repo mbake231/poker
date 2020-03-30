@@ -249,8 +249,8 @@ class game {
 				this.gameTable.seats[seat] = player;
 				player.setSeat(seat);
 				this.gameTable.numseats++;
-				console.log(player.userid+" joined game! at seat "+player.seat);
-				this.updateHandLog((this,player.userid+" joined game! at seat "+player.seat));
+				console.log(player.userid+" joined game! at seat "+player.seat+"!");
+				this.updateHandLog((this,player.userid+" joined game at seat "+player.seat+"!"));
 			}
 			//need to ensure first guy gets his pointer set
 			if(this.gameTable.numseats==2) {
@@ -711,7 +711,7 @@ class game {
 			if(this.gameTable.seats[i].status==='allin')
 				NumberofAllInPlayers++;
 
-		//if we have all ins, and the game was folded dead, we may need to put more cards out
+		//if we have all ins, and the game was folded dead , we may need to put more cards out
 		if (NumberofAllInPlayers>0 && (this.gameTable.bettingRound.endByFold==true || this.isOnlyOnePlayerNotAllIn()==true)) {
 					//do a show down
 			for(var i=0;i<this.gameTable.board.length;i++){
@@ -900,6 +900,7 @@ class game {
 
 	
 	putPlayerAllIn(player){
+		if(this.isOnlyOnePlayerNotAllIn()==false ) {
 		player.status="allin";
 		var myPreviousPlayer = this.getPreviousPlayer(player);
 		//console.log(myPreviousPlayer+myPreviousPlayer+myPreviousPlayer+myPreviousPlayer);
@@ -910,7 +911,9 @@ class game {
 		console.log("Pointer update: "+myPreviousPlayer.userid + " now goes to "+myNextPlayer.userid+".");
 		//player.nextPlayer = "folded";
 
-
+		}
+		else
+			this.settleTheHand();
 	}
 
 	isOnlyOnePlayerNotAllIn() {
@@ -1002,7 +1005,7 @@ class game {
 			this.goToNextRound();
 		}
 
-		//IM THE ONLY GUY IN THE FUCKING HAND AND I NEED TO DECIDE IF I WANT TO CALL AN ALL IN
+		//IM THE ONLY GUY IN THE  HAND AND I NEED TO DECIDE IF I WANT TO CALL AN ALL IN
 		else if(this.isOnlyOnePlayerNotAllIn(this.getActionOnPlayer())==true && this.getActionOnPlayer().moneyOnLine<this.gameTable.currentRaiseToCall) {
 				this.gameTable.bettingRound.nextActionsAvailable = ['call','fold'];
 				console.log("action: "+this.gameTable.seats[this.gameTable.bettingRound.actionOn.seat].userid +" "+this.gameTable.bettingRound.nextActionsAvailable);
@@ -1010,13 +1013,13 @@ class game {
 					this.actionOnTimer();
 		}
 
-		//IM THE ONLY GUY IN THE FUCKING HAND AND I WAS THE LAST RASIER
+		//IM THE ONLY GUY IN THE  HAND AND I WAS THE PREVIOUS RASIER
 		else if(this.isOnlyOnePlayerNotAllIn(this.getActionOnPlayer())==true && this.getActionOnPlayer().hash===this.gameTable.bettingRound.lastRaiser.hash) {
 			console.log('CHECKING $$$$$$');	
 			this.settleTheHand();
 		}
 
-		//IM THE ONLY GUY IN THE FUCKING HAND AND MY MOL IS HIGH OR EQUAL
+		//IM THE ONLY GUY IN THE  HAND AND MY MOL IS HIGHer OR EQUAL TO CURRENT RAISE
 		else if(this.isOnlyOnePlayerNotAllIn(this.getActionOnPlayer())==true && this.getActionOnPlayer().moneyOnLine>=this.gameTable.bettingRound.currentRaiseToCall) {
 			console.log('CHECKING $$$$$$');	
 			this.settleTheHand();

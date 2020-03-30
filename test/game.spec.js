@@ -289,4 +289,43 @@ describe('game2', function (){
 		chai.assert.equal(game4.isSettled(),true);
 		done();
 	})
+	it('short stack allin is shoved on top of by a big stack all-iner',function (done){
+
+	let game4 = new game();
+		let mike = new player("mike",'cookie',105,'playing','sid');
+		let kev = new player("kev",'cookie',92,'playing','sid');
+
+
+		game4.addPlayer(mike,0);
+		game4.addPlayer(kev,1);
+
+
+
+		game4.setDealer(mike);
+
+			//game4.foldPlayer(bob);
+			//game4.foldPlayer(clint);
+			//game4.firstRound();
+
+		game4.postBlinds();
+		game4.dealHands();
+		game4.printSeats();
+		game4.getNextAction();
+
+		game4.doAction(kev,'call');
+		game4.getNextAction();
+
+		game4.doAction(mike,'check');
+		game4.getNextAction();
+		game4.printSeats();
+
+		game4.doAction(kev,'raise',98);
+		game4.getNextAction();
+		game4.printSeats();
+
+		game4.doAction(mike,'raise',50);
+		game4.printSeats();
+		chai.assert.equal(game4.isSettled(),true);
+		done();
+	})
 });

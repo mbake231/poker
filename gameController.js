@@ -18,6 +18,8 @@ var dealer;
 var handLogSentIndex=0;
 
 //TESTS########
+
+	
 //TESTS##########
 
 function checkToStartNextHand() {

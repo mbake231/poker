@@ -148,7 +148,12 @@ ul {
 	width:150px;
 
 }
-
+#send {
+	right:0px;
+	width:400px;
+	
+	position: absolute;
+}
 #messages {
 	
 	width:400px;
@@ -214,3 +219,9 @@ ul {
   flex: 1; /*grow*/
 }
 
+@supports (-moz-appearance:none) {
+    #board {
+		width:150px; 
+		margin-left: 0px;
+    }
+}
