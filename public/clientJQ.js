@@ -64,7 +64,7 @@ var storedCookie = ('; ' + document.cookie)
 function leaveTable () {
 	if(myid!=null) {
 		socket.emit('leaveTable', {gameid:gameid,hash:myid});
-		location.reload(true);
+		//location.reload(true);
 	}
 }
 
@@ -165,10 +165,8 @@ function register () {
 	}
 
 	function startGame() {
-		if(gameData.numseats>1)
 			socket.emit('startGame', {gameid:gameid,hash:myid});
-		else
-			console.log("need more than 1 person");
+
 	}
 
 	function check() {
@@ -323,7 +321,7 @@ $(window).on('load', function(){
 
 		});
 		//clear actionOn
-		if(gameData.numseats<2)
+		if(gameData.bettingRound.actionOn==null)
 			$('#start').css('display','block');
 
 		//IF GAME IS GOING

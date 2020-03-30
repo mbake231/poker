@@ -74,10 +74,10 @@ class game {
 		this.gameTable.handLog.push(event);
 	}
 	canIDeal () {
-		if (this.gameTable.numseats<2)
-			return false;
-		else
+		if (this.getNumberPlayersPlaying()>1)
 			return true;
+		else
+			return false;
 	}
 
 	isSettled() {
@@ -136,7 +136,6 @@ class game {
 			for (var i=0;i<this.gameTable.game_size;i++) {
 				if(this.gameTable.seats[i].sitoutnexthand==true) {
 					this.gameTable.seats[i].status='sittingout';
-					this.gameTable.numseats--;
 					console.log(this.gameTable.seats[i].userid+" is now sitting out per their request.");
 					this.updateHandLog(this.gameTable.seats[i].userid+" is now sitting out per their request.");
 				}
@@ -148,7 +147,6 @@ class game {
 				if(this.gameTable.seats[i].balance<=this.gameTable.bigBlind) {
 					this.gameTable.seats[i].status='sittingout';
 					this.gameTable.seats[i].sitoutnexthand=true;
-					this.gameTable.numseats--;
 					console.log(this.gameTable.seats[i].userid+" is now sitting out because their balance is less than the big blind.");
 					this.updateHandLog(this.gameTable.seats[i].userid+"  is now sitting out because their balance is less than the big blind.");
 				}
@@ -177,7 +175,6 @@ class game {
 
 	deletePlayer(player) {
 		this.gameTable.seats[player.seat]="empty";
-		this.gameTable.numseats--;
 	}
 
 	makeid(length) {
@@ -235,6 +232,8 @@ class game {
 		return this.gameTable.lastEvent;
 	}
 
+
+
 	setLastEvent(str) {
 		this.gameTable.lastEvent=str;
 	}
@@ -248,12 +247,11 @@ class game {
 			if(this.gameTable.seats[seat]=="empty") {
 				this.gameTable.seats[seat] = player;
 				player.setSeat(seat);
-				this.gameTable.numseats++;
 				console.log(player.userid+" joined game! at seat "+player.seat+"!");
 				this.updateHandLog((this,player.userid+" joined game at seat "+player.seat+"!"));
 			}
 			//need to ensure first guy gets his pointer set
-			if(this.gameTable.numseats==2) {
+			if(this.getNumberPlayersPlaying()==2) {
 				this.setNextPlayer(player);
 
 				//find person before them and set it to the new guy
@@ -266,7 +264,7 @@ class game {
 						this.gameTable.seats[i].previousPlayer = player;
 					}
 			}
-			if(this.gameTable.numseats>2) {
+			if(this.getNumberPlayersPlaying()>2) {
 				this.setNextPlayer(this.gameTable.seats[seat]);
 
 				//find person before them and set it to the new guy
@@ -304,6 +302,16 @@ class game {
 		
 			
 		
+	}
+
+	getNumberPlayersPlaying () {
+		let counter=0;
+		for (var i=0;i<this.gameTable.game_size;i++) {
+			if(this.gameTable.seats[i].status=="playing")
+				counter++;
+		}
+		return counter;
+
 	}
 
 	getNumberPlayersInHand () {
@@ -847,55 +855,6 @@ class game {
 
 		}
 
-
-
-/*
-		if(this.getNumberPlayersInHand()+this.getNumberPlayersAllIn()>1) {
-			this.gameTable.bettingRound.round=4;
-			
-
-			
-			
-			//get the winner(s)
-			
-			var storeWinners = [];
-
-			for (var i=0;i<winner.length;i++) {
-				winner = winner[i].playerId;
-				winner=(this.getPlayerByHash(winner));
-				storeWinners.push(winner);
-
-			}
-			//i can get hand desc just once cuz if they tie itll be the same
-			var winningHand = [storeWinners[0].card1,storeWinners[0].card2,this.gameTable.board[0],this.gameTable.board[1],this.gameTable.board[2],this.gameTable.board[3],this.gameTable.board[4]];
-			winningHand = Hand.solve(winningHand).descr;
-			
-			this.gameTable.winner.players=storeWinners;
-			this.gameTable.winner.hand=winningHand;
-
-			//save and give the pot
-			this.gameTable.winner.winningPot=(this.gameTable.currentPot/storeWinners.length).toFixed(2);
-			for (var i=0;i<storeWinners.length;i++) {
-				storeWinners[i].givePot((this.gameTable.currentPot/storeWinners.length).toFixed(2));
-
-			}
-
-
-		}//if
-		else {
-			this.clearRoundData();
-			//find last guy and guy pot
-			for(var i=0;i<this.gameTable.game_size;i++){
-				if(this.gameTable.seats[i].status=='inhand'){
-					this.gameTable.winner.players=[this.gameTable.seats[i]];
-					this.gameTable.winner.hand="everyone folded";
-					this.gameTable.winner.winningPot=this.gameTable.currentPot.toFixed(2);
-					this.gameTable.seats[i].givePot(this.gameTable.currentPot.toFixed(2));
-				}
-			}
-		}
-	}
-*/
 
 	
 
