@@ -19,8 +19,8 @@ var handLogSentIndex=0;
 
 //TESTS########
 
-	
-//TESTS##########
+//TESTS########
+
 
 function checkToStartNextHand() {
   if(game1.isSettled()==true)

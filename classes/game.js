@@ -40,7 +40,6 @@ class game {
 				round:0,
 				totalOnLine:0,
 				currentRaiseToCall:0,
-				currentRaiseToCall:null,
 				endByFold:false,
 				lastBet:null
 				}
@@ -928,34 +927,15 @@ class game {
 			function (){
 				scope.sitActionOnPlayerOut();
 				scope.doAction(scope.gameTable.bettingRound.actionOn,'fold-clock');
-				//gameController.sendDataToAllPlayers();
-				//scope.getNextAction();
 
 			}
-
 			, 1000*this.gameTable.bettingRound.actionOnTimeLimit);
-
-		
-
-
-
-
-		/*var personToTime=this.gameTable.bettingRound.actionOn;
-		var timerLengthSeconds = this.gameTable.bettingRound.actionOnTimer;
-		var thisTimerSession = this.makeid(16);
-		this.gameTable.bettingRound.actionOnTimerSession = thisTimerSession;
-
-		
-		setTimeout(function(){ 
-			if(thisTimerSession===this.gameTable.bettingRound.actionOnTimerSession)
-				this.doAction(this.gameTable.bettingRound.actionOn,'fold');
-
-		 }, 1000*timerLengthSeconds);
-		*/
-		
 	}
 
 	getNextAction () {
+
+		
+
 		//BIG BLIND CAN ACT AT END OF PRE-FLOP BETTING
 		//IF ACTION IS TO BIGBLIND + AND NO ONE RAISED AKA LAST BET IS CALL AND THE CALL IS SAME AS BIG BLIND
 		//THEN BIG BLIND AND 
@@ -982,7 +962,7 @@ class game {
 		}
 
 		//IM THE ONLY GUY IN THE  HAND AND I NEED TO DECIDE IF I WANT TO CALL AN ALL IN
-		else if(this.isOnlyOnePlayerNotAllIn(this.getActionOnPlayer())==true && this.getActionOnPlayer().moneyOnLine<this.gameTable.currentRaiseToCall) {
+		else if(this.isOnlyOnePlayerNotAllIn()==true && this.getActionOnPlayer().moneyOnLine<this.gameTable.bettingRound.currentRaiseToCall) {
 				this.gameTable.bettingRound.nextActionsAvailable = ['call','fold'];
 				console.log("action: "+this.gameTable.seats[this.gameTable.bettingRound.actionOn.seat].userid +" "+this.gameTable.bettingRound.nextActionsAvailable);
 				if(this.gameTable.isTimerGame==true)
@@ -990,14 +970,14 @@ class game {
 		}
 
 		//IM THE ONLY GUY IN THE  HAND AND I WAS THE PREVIOUS RASIER
-		else if(this.isOnlyOnePlayerNotAllIn(this.getActionOnPlayer())==true && this.getActionOnPlayer().hash===this.gameTable.bettingRound.lastRaiser.hash) {
+		else if(this.isOnlyOnePlayerNotAllIn()==true && this.getActionOnPlayer().hash===this.gameTable.bettingRound.lastRaiser.hash) {
 			console.log('CHECKING $$$$$$');	
 			this.addMoneyLineToPot();
 			this.settleTheHand();
 		}
 
 		//IM THE ONLY GUY IN THE  HAND AND MY MOL IS HIGHer OR EQUAL TO CURRENT RAISE
-		else if(this.isOnlyOnePlayerNotAllIn(this.getActionOnPlayer())==true && this.getActionOnPlayer().moneyOnLine>=this.gameTable.bettingRound.currentRaiseToCall) {
+		else if(this.isOnlyOnePlayerNotAllIn()==true && this.getActionOnPlayer().moneyOnLine>=this.gameTable.bettingRound.currentRaiseToCall) {
 			console.log('CHECKING $$$$$$');	
 			this.addMoneyLineToPot();
 			this.settleTheHand();
@@ -1092,6 +1072,10 @@ class game {
 
 			//}
 		}
+	}
+
+	getNextActionsAvailable() {
+		return this.gameTable.bettingRound.nextActionsAvailable;
 	}
 
 	advanceToNextPlayer(){

@@ -291,42 +291,43 @@ describe('game2', function (){
 	})
 	it('short stack allin is shoved on top of by a big stack all-iner',function (done){
 
-	let game4 = new game();
-		let mike = new player("mike",'cookie',105,'playing','sid');
-		let kev = new player("kev",'cookie',92,'playing','sid');
+	let game1 = new game();
+	let mike = new player("mike",'cookie',105,'playing','sid');
+	let kev = new player("kev",'cookie',92,'playing','sid');
 
 
-		game4.addPlayer(mike,0);
-		game4.addPlayer(kev,1);
+	game1.addPlayer(mike,0);
+	game1.addPlayer(kev,1);
 
 
 
-		game4.setDealer(mike);
+	game1.setDealer(mike);
 
-			//game4.foldPlayer(bob);
-			//game4.foldPlayer(clint);
-			//game4.firstRound();
+		//game1.foldPlayer(bob);
+		//game1.foldPlayer(clint);
+		//game1.firstRound();
 
-		game4.postBlinds();
-		game4.dealHands();
-		game4.printSeats();
-		game4.getNextAction();
+	game1.postBlinds();
+	game1.dealHands();
+	game1.printSeats();
+	game1.getNextAction();
 
-		game4.doAction(kev,'call');
-		game4.getNextAction();
+	game1.doAction(kev,'call');
+	game1.getNextAction();
 
-		game4.doAction(mike,'check');
-		game4.getNextAction();
-		game4.printSeats();
+	game1.doAction(mike,'check');
+	game1.getNextAction();
+	game1.printSeats();
 
-		game4.doAction(kev,'raise',90);
-		game4.getNextAction();
-		game4.printSeats();
+	game1.doAction(kev,'raise',90);
+	game1.getNextAction();
+	game1.printSeats();
 
-		game4.doAction(mike,'raise',13);
-		game4.printSeats();
+	game1.doAction(mike,'call',13);
+	game1.getNextAction();
+	game1.printSeats();
 		chai.assert.equal(mike.moneyOnLine,0);
-		chai.assert.equal(game4.isSettled(),true);
+		chai.assert.equal(game1.isSettled(),true);
 		done();
 	})
 
@@ -392,4 +393,47 @@ describe('game2', function (){
 		chai.assert.equal(game4.isSettled(),true);
 		done();
 	})
+
+	it('ensure all-in caller can only call or fold', function (done) {
+		
+		let game1 = new game();
+		let mike = new player("mike",'cookie',100,'playing','sid');
+		let kev = new player("kev",'cookie',50,'playing','sid');
+
+
+		game1.addPlayer(mike,0);
+		game1.addPlayer(kev,1);
+
+
+
+		game1.setDealer(mike);
+
+		//game4.foldPlayer(bob);
+		//game4.foldPlayer(clint);
+		//game4.firstRound();
+
+		game1.postBlinds();
+		game1.dealHands();
+		game1.printSeats();
+		game1.getNextAction();
+
+		game1.doAction(kev,'call');
+		game1.getNextAction();
+
+		game1.doAction(mike,'check');
+		game1.getNextAction();
+
+
+		game1.doAction(kev,'raise',48);
+		
+		game1.getNextAction();
+		
+		var call = game1.getNextActionsAvailable()[0];
+		var fold = game1.getNextActionsAvailable()[1];
+
+		chai.assert.equal(call,'call');
+		chai.assert.equal(fold,'fold');
+		done();
+	})
+	
 });
