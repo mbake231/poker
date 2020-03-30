@@ -711,9 +711,10 @@ class game {
 			if(this.gameTable.seats[i].status==='allin')
 				NumberofAllInPlayers++;
 
-		//if we have all ins, and the game was folded dead , we may need to put more cards out
+		//if we have all ins and the game was folded dead or ended before river, we need to put more cards out
+		console.log('NUM ALL IN '+NumberofAllInPlayers);
 		if (NumberofAllInPlayers>0 && (this.gameTable.bettingRound.endByFold==true || this.isOnlyOnePlayerNotAllIn()==true)) {
-					//do a show down
+			console.log('INSIDE');			//do a show down
 			for(var i=0;i<this.gameTable.board.length;i++){
 				if(this.gameTable.board[i]==null) {
 					this.gameTable.board[i]=this.gameTable.deck.dealCard();
@@ -912,8 +913,10 @@ class game {
 		//player.nextPlayer = "folded";
 
 		}
-		else
+		else {
+			this.addMoneyLineToPot();
 			this.settleTheHand();
+		}
 	}
 
 	isOnlyOnePlayerNotAllIn() {
@@ -1016,12 +1019,14 @@ class game {
 		//IM THE ONLY GUY IN THE  HAND AND I WAS THE PREVIOUS RASIER
 		else if(this.isOnlyOnePlayerNotAllIn(this.getActionOnPlayer())==true && this.getActionOnPlayer().hash===this.gameTable.bettingRound.lastRaiser.hash) {
 			console.log('CHECKING $$$$$$');	
+			this.addMoneyLineToPot();
 			this.settleTheHand();
 		}
 
 		//IM THE ONLY GUY IN THE  HAND AND MY MOL IS HIGHer OR EQUAL TO CURRENT RAISE
 		else if(this.isOnlyOnePlayerNotAllIn(this.getActionOnPlayer())==true && this.getActionOnPlayer().moneyOnLine>=this.gameTable.bettingRound.currentRaiseToCall) {
 			console.log('CHECKING $$$$$$');	
+			this.addMoneyLineToPot();
 			this.settleTheHand();
 		}
 
@@ -1034,8 +1039,10 @@ class game {
 			this.updateHandLog("Betting round over, everyone checked.");
 			if(this.gameTable.bettingRound.round<4)
 				this.goToNextRound();
-			else
+			else {
+				this.addMoneyLineToPot();
 				this.settleTheHand();
+			}
 		}
 
 		//ROUND OVER IF LAST BET WAS CALL AND PLAYER UP HAS MOL = CURRENTRAISE
@@ -1044,8 +1051,10 @@ class game {
 			this.updateHandLog("Betting round over,all bets in");
 			if(this.gameTable.bettingRound.round<4)
 				this.goToNextRound();
-			else
+			else {
+				this.addMoneyLineToPot();
 				this.settleTheHand();
+			}
 		}
 
 		

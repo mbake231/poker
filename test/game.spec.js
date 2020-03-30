@@ -319,12 +319,13 @@ describe('game2', function (){
 		game4.getNextAction();
 		game4.printSeats();
 
-		game4.doAction(kev,'raise',98);
+		game4.doAction(kev,'raise',90);
 		game4.getNextAction();
 		game4.printSeats();
 
-		game4.doAction(mike,'raise',50);
+		game4.doAction(mike,'raise',13);
 		game4.printSeats();
+		chai.assert.equal(mike.moneyOnLine,0);
 		chai.assert.equal(game4.isSettled(),true);
 		done();
 	})
