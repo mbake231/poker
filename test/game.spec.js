@@ -329,4 +329,67 @@ describe('game2', function (){
 		chai.assert.equal(game4.isSettled(),true);
 		done();
 	})
+
+	it('boring check game',function (done){
+		let game4 = new game();
+		let mike = new player("mike",'cookie',100,'playing','sid');
+		let kev = new player("kev",'cookie',100,'playing','sid');
+		let sam = new player("sam",'cookie',100,'playing','sid');
+
+
+		game4.addPlayer(mike,0);
+		game4.addPlayer(kev,1);
+		game4.addPlayer(sam,2);
+
+
+		game4.setDealer(mike);
+
+			//game4.foldPlayer(bob);
+			//game4.foldPlayer(clint);
+			//game4.firstRound();
+
+		game4.postBlinds();
+		game4.dealHands();
+		game4.printSeats();
+		game4.getNextAction();
+
+		game4.doAction(mike,'call');
+		game4.getNextAction();
+
+		game4.doAction(kev,'call');
+		game4.getNextAction();
+
+		game4.doAction(sam,'check');
+		game4.getNextAction();
+
+		game4.doAction(kev,'check',98);
+		game4.getNextAction();
+
+		game4.doAction(sam,'check');
+		game4.getNextAction();
+
+		game4.doAction(mike,'check');
+		game4.getNextAction();
+
+		game4.doAction(kev,'check',98);
+		game4.getNextAction();
+
+		game4.doAction(sam,'check');
+		game4.getNextAction();
+
+		game4.doAction(mike,'check');
+		game4.getNextAction();
+
+		game4.doAction(kev,'check',98);
+		game4.getNextAction();
+
+		game4.doAction(sam,'check');
+		game4.getNextAction();
+
+		game4.doAction(mike,'check');
+		game4.getNextAction();
+
+		chai.assert.equal(game4.isSettled(),true);
+		done();
+	})
 });

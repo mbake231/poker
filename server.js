@@ -78,8 +78,10 @@ io.on('connection', function(socket){
 			});
 
 		socket.on('incomingAction', function (data) {
-			if(gameController.checkValidUser(data.gameid,data.hash)==true)
-					gameController.incomingAction(data.game,data.userhash,data.action,data.amt);
+			if(gameController.checkValidUser(data.gameid,data.hash)==true){
+				console.log('wegood');
+				gameController.incomingAction(data.game,data.hash,data.action,data.amt);
+			}
 			else
 				console.log("An user with no id in this game tried to "+data.action+".");
 			

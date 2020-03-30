@@ -31,31 +31,7 @@ function checkToStartNextHand() {
   }
 }
 
-function leaveTableNextHand (game,hash) {
 
-	game1.leaveTableNextHand(hash);
-	sendSeatList();
-	sendDataToAllPlayers(game1);
-
-}
-
-
-
-function callClock (gameid) {
-	game1.callClock();
-	var scope = this;
-	//have to send new data after clock expires
-	var timer = setTimeout(
-			function (){
-				scope.sendDataToAllPlayers(game1);
-				console.log('times up');
-			}
-			, 1000*(game1.getTimerLength()+2));
-}
-
-function sendSeatList(gameid,sessionid) {
-	server.io.to(sessionid).emit('publicSeatList',game1.getPublicSeatList());
-}
 
 
 function addNewPlayerToGame (gameHash,userid,cookie,balance,status,seat,sessionid) {
@@ -171,9 +147,8 @@ function toggleSitOut(gameid,hash) {
 }
 
 function checkValidUser(gameid,hash) {
-	if(game1.getPlayerByHash(hash)!=false)
-		return true;
-	return false;
+	return game1.doesPlayerExistByHash(hash);
+
 }
 
 function reconnect(gameid,cookie,newSessionId) {
@@ -190,7 +165,31 @@ function reconnect(gameid,cookie,newSessionId) {
 
 }
 
+function leaveTableNextHand (game,hash) {
 
+	game1.leaveTableNextHand(hash);
+	sendSeatList();
+	sendDataToAllPlayers(game1);
+
+}
+
+
+
+function callClock (gameid) {
+	game1.callClock();
+	var scope = this;
+	//have to send new data after clock expires
+	var timer = setTimeout(
+			function (){
+				scope.sendDataToAllPlayers(game1);
+				console.log('times up');
+			}
+			, 1000*(game1.getTimerLength()+2));
+}
+
+function sendSeatList(gameid,sessionid) {
+	server.io.to(sessionid).emit('publicSeatList',game1.getPublicSeatList());
+}
 
 exports.addNewPlayerToGame = addNewPlayerToGame;
 exports.runGame = runGame;

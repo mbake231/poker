@@ -224,7 +224,18 @@ class game {
 			if(this.gameTable.seats[i].hash===myhash)
 				return this.gameTable.seats[i];
 		}
-		console.log("found no user by that hash");
+		console.log("No user by that hash to return.");
+		return false;
+	}
+
+	doesPlayerExistByHash(myhash) {
+		for (var i=0;i<this.gameTable.game_size;i++){
+			if(this.gameTable.seats[i].hash===myhash && myhash!=null) {
+				if(myhash.length==16)
+					return true;
+			}
+		}
+		console.log("No user exists in this game with that hash.");
 		return false;
 	}
 
@@ -289,17 +300,19 @@ class game {
 					" Status: "+this.gameTable.seats[i].status+
 				//	" Next up :"+this.gameTable.seats[i].nextPlayer.userid+
 					" Hand: "+ this.gameTable.seats[i].card1+" "+this.gameTable.seats[i].card2+
-					" $ in: "+ this.gameTable.seats[i].moneyOnLine+
-					"Raise to call:"+this.gameTable.bettingRound.currentRaiseToCall
+					" $ in: "+ this.gameTable.seats[i].moneyOnLine +
+					" Hash: "+this.gameTable.seats[i].hash +
+					" SID: "+this.gameTable.seats[i].sessionid 
 					);
 			}
 			else
 				console.log("Seat "+i+": Empty");
 		}
-		for (var i=0;i<this.gameTable.board.length;i++)
-				console.log(this.gameTable.board[i]+" ");
-			
 		
+		console.log("Raise to call:"+this.gameTable.bettingRound.currentRaiseToCall);
+		//print board
+		console.log("Board: "+this.gameTable.board);
+
 			
 		
 	}
@@ -352,6 +365,7 @@ class game {
 
 		return false;
 	}
+
 	dealHands() {
 
 		for (var i=0;i<this.gameTable.game_size;i++)
@@ -359,7 +373,7 @@ class game {
 			if(this.gameTable.seats[i].status=='playing'|| this.gameTable.seats[i].status=='folded')
 				this.gameTable.seats[i].status='inhand';
 		}
-		
+
 		//deal card 1
 		var cardGetter = this.gameTable.seats[this.gameTable.dealer.seat].nextPlayer;
 			while (cardGetter.card1==null && cardGetter.status=='inhand')
@@ -720,9 +734,9 @@ class game {
 				NumberofAllInPlayers++;
 
 		//if we have all ins and the game was folded dead or ended before river, we need to put more cards out
-		console.log('NUM ALL IN '+NumberofAllInPlayers);
+		console.log('Number all in players:'+NumberofAllInPlayers);
 		if (NumberofAllInPlayers>0 && (this.gameTable.bettingRound.endByFold==true || this.isOnlyOnePlayerNotAllIn()==true)) {
-			console.log('INSIDE');			//do a show down
+			console.log("Doing a card run out.");
 			for(var i=0;i<this.gameTable.board.length;i++){
 				if(this.gameTable.board[i]==null) {
 					this.gameTable.board[i]=this.gameTable.deck.dealCard();

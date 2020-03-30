@@ -171,16 +171,16 @@ function register () {
 
 	function check() {
 		checkAudio.play();
-		socket.emit('incomingAction', {game:gameid,userhash:myid,action:'check'});
+		socket.emit('incomingAction', {game:gameid,hash:myid,action:'check'});
 	}
 
 	function call() {
 		callAudio.play();
-		socket.emit('incomingAction', {game:gameid,userhash:myid,action:'call'});
+		socket.emit('incomingAction', {game:gameid,hash:myid,action:'call'});
 	}
 
 	function fold() {
-		socket.emit('incomingAction', {game:gameid,userhash:myid,action:'fold'});
+		socket.emit('incomingAction', {game:gameid,hash:myid,action:'fold'});
 	}
 
 	function reconnect() {
@@ -199,7 +199,7 @@ function register () {
 			if(Number(inputedAmt)<=Number(mySeatData.balance)) {
 				console.log('sending raise of '+inputedAmt);
 				$('#raise').find('.raiseInput').css('color','black');
-				socket.emit('incomingAction', {game:gameid,userhash:myid,action:'raise',amt:Number(inputedAmt)});
+				socket.emit('incomingAction', {game:gameid,hash:myid,action:'raise',amt:Number(inputedAmt)});
 			}
 			else {
 				$('#raise').find('.raiseInput').css('color','red');
