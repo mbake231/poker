@@ -9,8 +9,7 @@ var Promise = require("bluebird");
 //create a game
 
 var game1 = new game();
-console.log("started game");
-
+console.log("Started game.");
 var gameCount = 0;
 
 var firstDealer;
@@ -21,14 +20,17 @@ var handLogSentIndex=0;
 
 //TESTS########
 
-
+//this checks to see if game is over every 2seconds then it calls next fx to wait 3 seconds and reset
 function checkToStartNextHand() {
   if(game1.isSettled()==true)
-    nextHand();
+    triggerNextHand();
   else {
   	//console.log("ping");
-  	return Promise.delay(3000).then(() => checkToStartNextHand());
+  	return Promise.delay(2000).then(() => checkToStartNextHand());
   }
+}
+function triggerNextHand() {
+	setTimeout(function(){ nextHand(); }, 3000);
 }
 
 

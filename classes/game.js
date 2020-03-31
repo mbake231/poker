@@ -1,7 +1,5 @@
-
 var deck = require('./deck.js').deck;
 var pot = require('./pot.js').pot;
-
 var pokerCalc = require('poker-calc');
 var Hand = require('pokersolver').Hand;
 
@@ -53,7 +51,6 @@ class game {
 		this.gameTable.bettingRound.pots[0] =  new pot(0);
 		this.gameTable.currentPot=this.gameTable.bettingRound.pots[0];
 		this.newHandLog();
-
 
 	}
 

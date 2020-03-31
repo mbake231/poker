@@ -109,3 +109,10 @@ app.get('/',function(req,res)
 		{title:'Neighborhood Poker',message:'Welcome'})
 
 });
+
+
+app.get('/maketable',function(req,res)
+{
+	res.render('maketable')
+
+});
