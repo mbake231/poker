@@ -8,7 +8,8 @@
 var socket = io();
 var gameData;
 var seats = [];
-var myid;
+var myid=null;
+var myname=null;
 var mySeatData;
 var gameid='train';
 
@@ -117,6 +118,7 @@ function makeid(length) {
 }
 
 function register () {
+	console.log('oy');
 		var register = {
 			gameHash: 'train',
 			userid: $('#userid').val(),
@@ -133,13 +135,11 @@ function register () {
 	function sit (seat) {
 		checkAudio.play();
 		if($('#player'+seat).find('.nameInput').val().length!=0 &&  $('#player'+seat).find('.balanceInput').val().length!=0) {
-		var register = {
-			gameHash: 'train',
-			storedCookie: storedCookie,
-			userid: $('#player'+seat).find('.nameInput').val(),
-			balance: $('#player'+seat).find('.balanceInput').val(),
-			status: 'playing',
-			seat: seat}
+			var register = {
+				gameHash: 'train',
+				balance: $('#player'+seat).find('.balanceInput').val(),
+				status: 'playing',
+				seat: seat }
 			$('#player'+seat).find('.balanceInput').css('border','1px solid black;');
 			$('#player'+seat).find('.balanceInput').css('border','1px solid black;');
 			socket.emit('register', register);
@@ -184,8 +184,8 @@ function register () {
 	}
 
 	function reconnect() {
-		console.log('ATTEMPTING RECONNECT: '+gameid+' '+storedCookie);
-		socket.emit('reconnectionAttempt', {gameid:gameid,storedCookie:storedCookie,hash:myid});
+		console.log('ATTEMPTING RECONNECT: '+gameid+' '+myid);
+		socket.emit('reconnectionAttempt', {gameid:gameid,hash:myid});
 	}
 
 	function toggleSitOut() {
@@ -212,6 +212,36 @@ function register () {
 	}
 
 $(window).on('load', function(){
+	reconnect();
+
+	//get my id
+	$.ajax({
+		url: "api/user_data",
+		xhrFields: {
+			withCredentials: true
+		}
+	}).done(function (data) 
+	{ 
+		console.log(data._id);
+		myid=String(data._id);
+		myname=data.name;
+		console.log('WHAT R U'+myid)
+		if(myid!=null && myid!='undefined') {
+			$('#navbar').html('Hello '+myname+' <a href=/logout>Logout</a>');
+		}
+	
+	});
+
+	
+
+	//login box
+	$('#login-trigger').click(function(){
+		$(this).next('#login-content').slideToggle();
+		$(this).toggleClass('active');
+  
+		if ($(this).hasClass('active')) $(this).find('span').html('&#x25B2;')
+		  else $(this).find('span').html('&#x25BC;')
+		})
 
 	//pre-cache cards
 	var cards = new Array(52);
@@ -234,9 +264,9 @@ $(window).on('load', function(){
 		storedCookie = id;
 		//console.log('neww cook');
 	}
-	else {
-		reconnect();
-	}
+	else {}
+
+	
 
 	socket.emit('seatList', gameid);
 
@@ -247,15 +277,15 @@ $(window).on('load', function(){
 
 		//store MY data
 		$.each(seats,function(index) {
-			if(seats[index].hash === myid){
+			if(seats[index].hash == myid){
 				mySeatData = seats[index];
 				//console.log("MY SEAT "+mySeatData.seat);
 			}
 		})
-
-		if(mySeatData.leavenexthand==true) {
-			$('#leaveTable').html('Leaving table next hand');
-		}
+		if(mySeatData!=null)
+			if(mySeatData.leavenexthand==true) {
+				$('#leaveTable').html('Leaving table next hand');
+			}
 		else if (mySeatData.leavenexthand==false)
 			$('#leaveTable').html('Leave table');
 		
@@ -467,9 +497,9 @@ $(window).on('load', function(){
 		
 	});
 
-	socket.on('yourHash', function(myNewid) {
+	/*socket.on('yourHash', function(myNewid) {
 	myid=myNewid;
 	console.log("MY ID:"+myid);
-	});
+	});*/
 
 });

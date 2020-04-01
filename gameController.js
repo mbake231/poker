@@ -5,6 +5,7 @@ var server = require('./server');
 var player = require('./classes/player.js').player;
 var game = require('./classes/game.js').game;
 var Promise = require("bluebird");
+var Promise=require('bluebird');
 
 //create a game
 
@@ -20,40 +21,22 @@ var handLogSentIndex=0;
 
 //TESTS########
 
-//this checks to see if game is over every 2seconds then it calls next fx to wait 3 seconds and reset
-function checkToStartNextHand() {
-  if(game1.isSettled()==true)
-    triggerNextHand();
-  else {
-  	//console.log("ping");
-  	return Promise.delay(2000).then(() => checkToStartNextHand());
-  }
-}
-function triggerNextHand() {
-	setTimeout(function(){ nextHand(); }, 3000);
-}
 
-
-
-
-function addNewPlayerToGame (gameHash,userid,cookie,balance,status,seat,sessionid) {
+function addNewPlayerToGame (gameHash,_id,balance,status,seat,sessionid) {
 	
 	//did they already join?
-	if(game1.findPlayerBySessionID(sessionid) == false) {
+	if(game1.getPlayerByHash(_id) == false) {
 		//constructor(userid,cookie,balance,status,sessionid) {
-		var newPlayer = new player(userid,cookie,Number(balance),status,sessionid);
-		
+		var newPlayer = new player(_id,Number(balance),status,sessionid);
+		newPlayer.setUserId(_id);
 		//some point will need to look up game by hash and add that way
 		game1.addPlayer(newPlayer,seat);
 		game1.printSeats();
 
-
-		server.io.to(sessionid).emit('yourHash',newPlayer.hash);
-
 		sendDataToAllPlayers(game1);
 	}
 	else {
-		console.log("this session is already sitting");
+		console.log("This user is already sitting");
 	}
 
 }
@@ -119,17 +102,19 @@ function nextHand(){
 	else
 		console.log("need more than one player!");
 }
-
+// url / game / game_id <it gets the json for that gameid
 function sendDataToAllPlayers(thisGame) {
 	//THIS IS A PROBLEM LOL
 	thisGame=game1;
 	var sendList = thisGame.getAllPlayerSessionIDs();
+//	console.log(sendList);
 	var sessionidToSend;
 	var handlogThisSession = (game1.getHandLog().length) - handLogSentIndex;
 	for (var i=0; i<sendList.length;i++)
 	{
 			sessionidToSend=sendList[i].sessionid;
 			if(sendList[i]!=null) {
+				console.log('sending to '+sessionidToSend);
 				server.io.to(sessionidToSend).emit('update',thisGame.generatePrivatePlayerData(sendList[i].hash));
 
 							for(var b = 0; b <= handlogThisSession;b++) {
@@ -142,7 +127,18 @@ function sendDataToAllPlayers(thisGame) {
 	handLogSentIndex+=handlogThisSession;
 }
 
-
+//this checks to see if game is over every 2seconds then it calls next fx to wait 3 seconds and reset
+function checkToStartNextHand() {
+	if(game1.isSettled()==true)
+	  triggerNextHand();
+	else {
+		//console.log("ping");
+		return Promise.delay(2000).then(() => checkToStartNextHand());
+	}
+  }
+  function triggerNextHand() {
+	  setTimeout(function(){ nextHand(); }, 3000);
+  }
 
 function toggleSitOut(gameid,hash) {
 	game1.getPlayerByHash(hash).toggleSitOut();
@@ -153,14 +149,14 @@ function checkValidUser(gameid,hash) {
 
 }
 
-function reconnect(gameid,cookie,newSessionId) {
-	console.log("TRYING TO RECONNECT: "+cookie);
-	if (game1.getPlayerByCookie(cookie) != false) {
+function reconnect(gameid,hash,newSessionId) {
+	console.log("TRYING TO RECONNECT: "+hash);
+	if (game1.getPlayerByHash(hash) != false) {
 
-		game1.getPlayerByCookie(cookie).updateSessionId(newSessionId);
-		server.io.to(newSessionId).emit('yourHash',game1.getPlayerByCookie(cookie).hash);
+		game1.getPlayerByHash(hash).updateSessionId(newSessionId);
+		//server.io.to(newSessionId).emit('yourHash',game1.getPlayerByCookie(cookie).hash);
 		sendDataToAllPlayers(game1);
-		console.log (game1.getPlayerByCookie(cookie).userid+" RECONNECTED");
+		console.log (game1.getPlayerByHash(hash).userid+" RECONNECTED");
 	}
 	else 
 		console.log('couldnt reconnect player: didnt find clientID');
@@ -174,8 +170,6 @@ function leaveTableNextHand (game,hash) {
 	sendDataToAllPlayers(game1);
 
 }
-
-
 
 function callClock (gameid) {
 	game1.callClock();

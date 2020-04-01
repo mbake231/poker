@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+body
+block content
+-if(messages.error)
+   div#note #{messages.error}
+.main.container
+    .row
+      .col-md-6.col-md-offset-3
+        h1.display-4.m-b-2 Login
+
+        // register form
+        form(method='POST' action='/login')
+          div.form-group
+            label(for='email') Email:
+            input#email.form-control(type='email', name='email')
+          div.form-group
+            label(for='password') password:
+            input#password.form-control(type='Password' name='password')
+          button.btn.btn-primary(type='submit') Login
+          

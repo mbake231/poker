@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+link(rel='stylesheet', href='PokerTable.css')
+body
+block content
+  -if(messages.error)
+     div#note #{messages.error}
+  .main.container
+    .row
+      .col-md-6.col-md-offset-3
+        h1.display-4.m-b-2 Register
+
+        // register form
+        form(method='POST' action='/register')
+          div.form-group
+            label(for='name') Name:
+            input#name.form-control(type='text', name='name')
+          div.form-group
+            label(for='email') Email:
+            input#email.form-control(type='email', name='email')
+          div.form-group
+            label(for='password') Password:
+            input#password.form-control(type='password' name='password')
+          button.button.is-primary(type='submit') Register

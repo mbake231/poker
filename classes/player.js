@@ -1,19 +1,39 @@
+var db = require ('../db.js');
+var MongoClient = require('mongodb').MongoClient;
+var url = "mongodb://localhost:27017/";
+ObjectId = require('mongodb').ObjectID;
+
+
 class player {
-	constructor(userid,cookie,balance,status,sessionid) {
-		this.userid=userid;
-		this.cookie=cookie;
-		this.balance=balance.toFixed(2);;
+	constructor(_id,balance,status,sessionid) {
+		this.balance=Number(balance).toFixed(2);;
 		this.status=status;
 		this.card1=null;
 		this.card2=null;
 		this.moneyOnLine=0;
 		this.nextPlayer=null;
-		this.hash=this.makeid(16);
+		this.hash=String(_id);
 		this.sessionid=sessionid;
 		this.sitoutnexthand=false;
 		this.leavenexthand=false;
-		//return player;
+		this.setUserId(this.hash);
+		
+		 
+
 	}
+	async setUserId (_id) {
+		const scope=this;
+		await MongoClient.connect(url, function(err, db) {
+			if (err) throw err;
+			var dbo = db.db("pokerDB");
+			dbo.collection("Users").findOne({"_id":ObjectId(_id)}, function(err, res) {
+				console.log(res.name);
+				//scope.userid = res.name;
+				scope.userid=res.name;
+			});
+		  });
+	}
+
 
 	toggleSitOut(){
 		if(this.sitoutnexthand==false)

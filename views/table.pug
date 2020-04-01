@@ -4,6 +4,22 @@ script(src='https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js')
 script(src='socket.io.js')
 link(rel='stylesheet', href='PokerTable.css')
 script(src='clientJQ.js')
+nav
+    ul#navbar
+        li#login
+          a#login-trigger Log in ▼
+          div#login-content
+            form(method="POST" action="/login")
+              fieldset#inputs
+                input#email(type="email" name="email" placeholder="Your email address" required)
+                input#password(type="password" name="password" placeholder="password" required)
+              fieldset#actions
+                input#submit(type="submit" value="Log in" )
+                label
+                input(type="checkbox" checked="checked")
+                Keep Stay signed in
+        li#signup
+        a(href="/register") Register
 main
   .div#table
     table.pokerTable

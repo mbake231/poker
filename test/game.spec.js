@@ -7,12 +7,12 @@ const game = require('../classes/game.js').game;
 describe('game1', function (){
 	it('EVERYONE ALL IN AND GUY OVER BET MASSIVE',function (done){
 		let game2 = new game();
-		let mike = new player("mike",'cookie',290,'playing','sid');
-		let kim = new player("kim",'cookie',400,'playing','sid');
-		let shane = new player("shane",'cookie',10000,'playing','sid');
-		let kev = new player("kev",'cookie',100,'playing','sid');
-		let clint = new player("clint",'cookie',1000,'playing','sid');
-		let bob = new player("bob",'cookie',200,'playing','sid');
+		let mike = new player("5e83a80f4aeeda2c0a258d4f",290,'playing','sid');
+		let kim = new player("5e83aa2c8391902cc37073b9",400,'playing','sid');
+		let shane = new player("5e83aa9a64ca552d1437f9f3",10000,'playing','sid');
+		let kev = new player("5e83ab2844d4db2d4038c095",100,'playing','sid');
+		let clint = new player("5e83ad4c4e56222def2e3148",1000,'playing','sid');
+		let bob = new player("5e83ad6a0a60bc2e134b1baf",200,'playing','sid');
 
 		game2.addPlayer(mike,0);
 		game2.addPlayer(kim,1);
@@ -69,12 +69,12 @@ describe('game1', function (){
 	it('this game should settle with allins and an ending fold',function (done){
 		let game1 = new game();
 
-		let mike = new player("mike",'cookie',290,'playing','sid');
-		let kim = new player("kim",'cookie',400,'playing','sid');
-		let shane = new player("shane",'cookie',1000,'playing','sid');
-		let kev = new player("kev",'cookie',100,'playing','sid');
-		let clint = new player("clint",'cookie',1000,'playing','sid');
-		let bob = new player("bob",'cookie',200,'playing','sid');
+		let mike = new player("5e83a80f4aeeda2c0a258d4f",290,'playing','sid');
+		let kim = new player("5e83aa2c8391902cc37073b9",400,'playing','sid');
+		let shane = new player("5e83aa9a64ca552d1437f9f3",1000,'playing','sid');
+		let kev = new player("5e83ab2844d4db2d4038c095",100,'playing','sid');
+		let clint = new player("5e83ad4c4e56222def2e3148",1000,'playing','sid');
+		let bob = new player("5e83ad6a0a60bc2e134b1baf",200,'playing','sid');
 
 		game1.addPlayer(mike,0);
 		game1.addPlayer(kim,1);
@@ -143,12 +143,12 @@ describe('game1', function (){
 
 	it('all in that gets fold on',function (done){
 		let game3 = new game();
-		let mike = new player("mike",'cookie',1000,'playing','sid');
-		let kim = new player("kim",'cookie',1000,'playing','sid');
-		let shane = new player("shane",'cookie',1000,'playing','sid');
-		let kev = new player("kev",'cookie',100,'playing','sid');
-		let clint = new player("clint",'cookie',1000,'playing','sid');
-		let bob = new player("bob",'cookie',1000,'playing','sid');
+		let mike = new player("5e83a80f4aeeda2c0a258d4f",1000,'playing','sid');
+		let kim = new player("5e83aa2c8391902cc37073b9",1000,'playing','sid');
+		let shane = new player("5e83aa9a64ca552d1437f9f3",1000,'playing','sid');
+		let kev = new player("5e83ab2844d4db2d4038c095",100,'playing','sid');
+		let clint = new player("5e83ad4c4e56222def2e3148",1000,'playing','sid');
+		let bob = new player("5e83ad6a0a60bc2e134b1baf",1000,'playing','sid');
 
 		game3.addPlayer(mike,0);
 		game3.addPlayer(kim,1);
@@ -210,13 +210,13 @@ describe('game1', function (){
 		done();
 	})
 */
-})
 
-describe('game1', function (){
+
+
 	it('fold out on blinds',function (done){
 		let game1 = new game();
-		let mike = new player("mike",'cookie',290,'playing','sid');
-		let kev = new player("kev",'cookie',400,'playing','sid');
+		let mike = new player("5e83a80f4aeeda2c0a258d4f",290,'playing','sid');
+		let kev = new player("5e83ab2844d4db2d4038c095",400,'playing','sid');
 
 
 		game1.addPlayer(mike,0);
@@ -241,14 +241,14 @@ describe('game1', function (){
 
 	it('fold to an all in caller DOES IT END WITH MIKE CALLING THO?',function (done){
 		let game1 = new game();
-		let mike = new player("mike",'cookie',100,'playing','sid');
-		let kev = new player("kev",'cookie',100,'playing','sid');
-		let sam = new player("sam",'cookie',100,'playing','sid');
+		let mike = new player("5e83a80f4aeeda2c0a258d4f",100,'playing','sid');
+		let kev = new player("5e83ab2844d4db2d4038c095",100,'playing','sid');
+		let shane = new player("5e83aa9a64ca552d1437f9f3",100,'playing','sid');
 
 
 		game1.addPlayer(mike,0);
 		game1.addPlayer(kev,1);
-		game1.addPlayer(sam,2);
+		game1.addPlayer(shane,2);
 
 
 		game1.setDealer(mike);
@@ -268,13 +268,13 @@ describe('game1', function (){
 		game1.doAction(kev,'call');
 		game1.getNextAction();
 
-		game1.doAction(sam,'check');
+		game1.doAction(shane,'check');
 		game1.getNextAction();
 
 		game1.doAction(kev,'raise',98);
 		game1.getNextAction();
 
-		game1.doAction(sam,'fold');
+		game1.doAction(shane,'fold');
 		game1.getNextAction();
 
 		chai.assert.notEqual(game1.doAction(mike,'call'),false);
@@ -284,8 +284,8 @@ describe('game1', function (){
 	it('short stack allin is shoved on top of by a big stack all-iner',function (done){
 
 	let game1 = new game();
-	let mike = new player("mike",'cookie',105,'playing','sid');
-	let kev = new player("kev",'cookie',92,'playing','sid');
+	let mike = new player("5e83a80f4aeeda2c0a258d4f",105,'playing','sid');
+	let kev = new player("5e83ab2844d4db2d4038c095",92,'playing','sid');
 
 
 	game1.addPlayer(mike,0);
@@ -325,14 +325,14 @@ describe('game1', function (){
 
 	it('boring check game',function (done){
 		let game1 = new game();
-		let mike = new player("mike",'cookie',100,'playing','sid');
-		let kev = new player("kev",'cookie',100,'playing','sid');
-		let sam = new player("sam",'cookie',100,'playing','sid');
+		let mike = new player("5e83a80f4aeeda2c0a258d4f",100,'playing','sid');
+		let kev = new player("5e83ab2844d4db2d4038c095",100,'playing','sid');
+		let shane = new player("5e83aa9a64ca552d1437f9f3",100,'playing','sid');
 
 
 		game1.addPlayer(mike,0);
 		game1.addPlayer(kev,1);
-		game1.addPlayer(sam,2);
+		game1.addPlayer(shane,2);
 
 
 		game1.setDealer(mike);
@@ -352,13 +352,13 @@ describe('game1', function (){
 		game1.doAction(kev,'call');
 		game1.getNextAction();
 
-		game1.doAction(sam,'check');
+		game1.doAction(shane,'check');
 		game1.getNextAction();
 
 		game1.doAction(kev,'check',98);
 		game1.getNextAction();
 
-		game1.doAction(sam,'check');
+		game1.doAction(shane,'check');
 		game1.getNextAction();
 
 		game1.doAction(mike,'check');
@@ -367,7 +367,7 @@ describe('game1', function (){
 		game1.doAction(kev,'check',98);
 		game1.getNextAction();
 
-		game1.doAction(sam,'check');
+		game1.doAction(shane,'check');
 		game1.getNextAction();
 
 		game1.doAction(mike,'check');
@@ -376,7 +376,7 @@ describe('game1', function (){
 		game1.doAction(kev,'check',98);
 		game1.getNextAction();
 
-		game1.doAction(sam,'check');
+		game1.doAction(shane,'check');
 		game1.getNextAction();
 
 		game1.doAction(mike,'check');
@@ -389,8 +389,8 @@ describe('game1', function (){
 	it('ensure all-in caller can only call or fold', function (done) {
 		
 		let game1 = new game();
-		let mike = new player("mike",'cookie',100,'playing','sid');
-		let kev = new player("kev",'cookie',50,'playing','sid');
+		let mike = new player("5e83a80f4aeeda2c0a258d4f",100,'playing','sid');
+		let kev = new player("5e83ab2844d4db2d4038c095",50,'playing','sid');
 
 
 		game1.addPlayer(mike,0);
