@@ -16,7 +16,7 @@ class player {
 		this.sessionid=sessionid;
 		this.sitoutnexthand=false;
 		this.leavenexthand=false;
-		this.setUserId(this.hash);
+		//this.setUserId(this.hash);
 		
 		 
 
