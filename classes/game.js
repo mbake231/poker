@@ -2,18 +2,20 @@ var deck = require('./deck.js').deck;
 var pot = require('./pot.js').pot;
 var pokerCalc = require('poker-calc');
 var Hand = require('pokersolver').Hand;
-
-
+//var gc = require('../newgameController.js');
+var server = require('../server');
 
 class game {
 
-	constructor () {
-
+	constructor (param) {
 		this.gameTable = {
-			hash:'train',
+			isTest:false,
+			gameid:null,
 			game_size:9,
 			 seats:[],
 			numseats:0,
+			handCount:0,
+			handLogSentIndex:0,
 			isSettled: 'no',
 			handLog: [],
 			deck:[],
@@ -47,11 +49,97 @@ class game {
 			this.gameTable.seats[i] = "empty";
 
 		this.gameTable.deck = new deck();
-		this.gameTable.hash = this.makeid(16);
+		this.gameTable.gameid = this.makeid(16);
 		this.gameTable.bettingRound.pots[0] =  new pot(0);
 		this.gameTable.currentPot=this.gameTable.bettingRound.pots[0];
 		this.newHandLog();
+		if(param=='test')
+			this.gameTable.isTest=true;
+	}
 
+	getHandCount() {
+		return this.gameTable.handCount;
+	}
+
+	startGame() {
+		if(this.getNumberPlayersPlaying()>1) {
+			console.log("This is the first hand!");
+			var lowestSeat = this.getLowestOccupiedSeat();
+
+			this.setDealer(lowestSeat);
+			this.runGame();
+		}
+		else
+			console.log('not enough players');
+	}
+
+	runGame() {
+		this.gameTable.handCount++;
+		if(this.gameTable.handCount>1) {
+			console.log("This is hand "+this.gameTable.handCount);
+			this.setDealer(this.gameTable.dealer.nextPlayer);
+		}
+		
+		this.postBlinds();
+		this.dealHands();
+		this.printSeats();
+		this.getNextAction();
+		if(this.gameTable.isTest==false)
+			this.sendDataToAllPlayers();
+		
+	}
+
+	nextHand() {
+		this.goToNextHand();
+		if(this.gameTable.isTest==false)
+			this.sendDataToAllPlayers();
+
+		if(this.getNumberPlayersPlaying()>1)
+			this.runGame();
+		else
+			console.log('not enough players');
+	}
+
+	sendSeatList(sessionid) {
+		server.io.to(sessionid).emit('publicSeatList',this.getPublicSeatList());
+	}
+
+	sendDataToAllPlayers() {
+		var sendList = this.getAllPlayerSessionIDs();
+		var sessionidToSend;
+		var handlogThisSession = (this.getHandLog().length) - this.gameTable.handLogSentIndex;
+		for (var i=0; i<sendList.length;i++)
+		{
+				sessionidToSend=sendList[i].sessionid;
+				if(sendList[i]!=null) {
+					//console.log('sending to '+sessionidToSend);
+					server.io.to(sessionidToSend).emit('update',this.generatePrivatePlayerData(sendList[i].hash));
+	
+								for(var b = 0; b <= handlogThisSession;b++) {
+									server.io.to(sessionidToSend).emit('logEvent',this.getHandLog()[this.gameTable.handLogSentIndex+b] );
+								}
+					}
+		}
+		this.gameTable.handLogSentIndex+=handlogThisSession;
+	}
+
+	reconnect(hash,newSessionId) {
+		console.log("TRYING TO RECONNECT: "+hash);
+		if (this.getPlayerByHash(hash) != false) {
+	
+			this.getPlayerByHash(hash).updateSessionId(newSessionId);
+			//server.io.to(newSessionId).emit('yourHash',game1.getPlayerByCookie(cookie).hash);
+			if(this.gameTable.isTest==false)
+				this.sendDataToAllPlayers();
+			console.log (this.getPlayerByHash(hash).userid+" RECONNECTED");
+		}
+		else 
+			console.log('couldnt reconnect player: didnt find clientID');
+	
+	}
+
+	getGameId() {
+		return this.gameTable.gameid;
 	}
 
 	newHandLog(){
@@ -222,7 +310,7 @@ class game {
 			}
 		}
 		
-		console.log("No user by that hash to return.");
+		//console.log("No user by that hash to return.");
 		return false;
 	}
 
@@ -238,6 +326,10 @@ class game {
 
 	getLastEvent() {
 		return this.gameTable.lastEvent;
+	}
+
+	getLastBet() {
+		return this.gameTable.bettingRound.lastBet;
 	}
 
 
@@ -279,6 +371,8 @@ class game {
 				this.getPreviousPlayer(player).nextPlayer=player;
 			}
 		}
+		if(this.gameTable.isTest==false)
+			this.sendDataToAllPlayers();
 	}
 
 	foldPlayer (player) {
@@ -348,7 +442,7 @@ class game {
 		//check to make sure theyre not sitting out, if so next guy gets it
 		for(var i=player.seat;i<this.gameTable.game_size;i++) {
 			if(this.gameTable.seats[i].status=='playing') {
-				console.log('DEAER '+this.gameTable.seats[i])
+				console.log('DEALER '+this.gameTable.seats[i].userid)
 				this.gameTable.dealer=this.gameTable.seats[i];
 				return this.gameTable.seats[i];
 			}
@@ -864,8 +958,10 @@ class game {
 			}
 
 			this.gameTable.isSettled="yes";
-
-
+			this.mochatest=true;
+			let scope=this;
+			if(this.gameTable.isTest==false)
+				setTimeout(function(){ scope.nextHand(); }, 4000);
 		}
 
 
@@ -927,6 +1023,8 @@ class game {
 			function (){
 				scope.sitActionOnPlayerOut();
 				scope.doAction(scope.gameTable.bettingRound.actionOn,'fold-clock');
+				if(scope.gameTable.isTest==false)
+					scope.sendDataToAllPlayers();
 
 			}
 			, 1000*this.gameTable.bettingRound.actionOnTimeLimit);
@@ -1070,6 +1168,8 @@ class game {
 
 			//}
 		}
+		if(this.gameTable.isTest==false)
+			this.sendDataToAllPlayers();
 	}
 
 	getNextActionsAvailable() {
@@ -1093,6 +1193,7 @@ class game {
 					this.advanceToNextPlayer();
 					console.log(player.userid+" has checked.");
 					this.updateHandLog(player.userid+" has checked.");
+					this.getNextAction();
 					return true;
 				
 				}
@@ -1118,13 +1219,16 @@ class game {
 						//to make new pots if someone folded and didnt call with different MOL sizes
 						this.addMoneyLineToPot();
 						this.settleTheHand();
+						return true;
 					}
 					else{
 						//must avance first cuz i unload nextplayer on fold
 						this.foldPlayer(player);
 						this.advanceToNextPlayer();
+						this.getNextAction();
 						
 					}
+					this.getNextAction();
 					return true;
 
 				}
@@ -1153,6 +1257,7 @@ class game {
 						
 						
 						this.advanceToNextPlayer();
+						console.log('INSIDE ACTION ON:'+this.gameTable.bettingRound.actionOn.userid);
 
 						console.log(player.userid+" has called "+this.gameTable.bettingRound.currentRaiseToCall);
 						this.updateHandLog(player.userid+" has called $"+this.gameTable.bettingRound.currentRaiseToCall);
@@ -1162,6 +1267,7 @@ class game {
 						if(player.balance==0){
 							if(this.isOnlyOnePlayerNotAllIn()==true) {
 								this.goToNextRound();
+								return true;
 							}
 							else {
 							this.putPlayerAllIn(player);
@@ -1170,12 +1276,14 @@ class game {
 							}
 						}
 
+
 						
 					}
 					else {
 						console.log("amount doesnt have enough for call");
 						return false;
 					}
+					this.getNextAction();
 					return true;
 				}
 				else if (action=='raise') {
@@ -1193,7 +1301,7 @@ class game {
 						this.updateHandLog(player.userid+" has raised to $"+this.gameTable.bettingRound.currentRaiseToCall+".");
 						if(player.balance==0)
 							this.putPlayerAllIn(player);
-
+						this.getNextAction();
 						return true;
 					}
 					else {
@@ -1310,5 +1418,6 @@ class game {
 }
 
 
+//module.exports=game;
 exports.game=game;
 //exports.addPlayer=addPlayer;

@@ -5,7 +5,7 @@ ObjectId = require('mongodb').ObjectID;
 
 
 class player {
-	constructor(_id,balance,status,sessionid) {
+	constructor(_id,balance,status,sessionid,userid) {
 		this.balance=Number(balance).toFixed(2);;
 		this.status=status;
 		this.card1=null;
@@ -15,24 +15,54 @@ class player {
 		this.hash=String(_id);
 		this.sessionid=sessionid;
 		this.sitoutnexthand=false;
-		this.leavenexthand=false;
-		//this.setUserId(this.hash);
-		
-		 
+		this.leavenexthand=false;	
+		this.userid=userid;	 
+	}
 
-	}
-	async setUserId (_id) {
+	async setUserName (_id) {
 		const scope=this;
-		await MongoClient.connect(url, function(err, db) {
-			if (err) throw err;
-			var dbo = db.db("pokerDB");
-			dbo.collection("Users").findOne({"_id":ObjectId(_id)}, function(err, res) {
-				console.log(res.name);
-				//scope.userid = res.name;
-				scope.userid=res.name;
-			});
-		  });
-	}
+		try {
+			MongoClient.connect(url, function(err, db) {
+			 const dbo = db.db('pokerDB');
+			
+			 //Step 1: declare promise
+			
+			 var myPromise = () => {
+			   return new Promise((resolve, reject) => {
+			  
+				dbo.collection("Users").findOne({"_id":ObjectId(_id)}, function(err, res) {
+					   err 
+						  ? reject(err) 
+						  : resolve(res);
+					 });
+			   });
+			 };
+	  
+			 //Step 2: async promise handler
+			 var callMyPromise = async () => {
+				
+				var result = await (myPromise());
+				//anything here is executed after result is resolved
+				console.log('RESULT'+result.name);
+				return result.name;
+			 };
+	   
+			 //Step 3: make the call
+			 callMyPromise().then(function(result) {
+				scope.userid=result;
+				
+			 });
+		  }); //end mongo client
+		  return 'done';
+		 } catch (e) {
+		   next(e)
+		 }
+		 
+	  };
+		
+	
+
+	
 
 
 	toggleSitOut(){

@@ -9,7 +9,7 @@ var Promise=require('bluebird');
 
 //create a game
 
-var game1 = new game();
+//var game1 = new game();
 console.log("Started game.");
 var gameCount = 0;
 
@@ -40,6 +40,8 @@ function addNewPlayerToGame (gameHash,_id,balance,status,seat,sessionid) {
 	}
 
 }
+
+
 
 function runGame() {
 

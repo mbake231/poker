@@ -7,7 +7,9 @@ var bodyParser = require('body-parser');
 var crypto = require('crypto');
 var bcrypt = require('bcrypt');
 var passport = require('passport');
-var gameController = require('./gameController.js');
+//var gameController = require('./gameController.js');
+var newgameController = require('./newgameController.js');
+
 var flash = require('express-flash');
 var session = require('express-session');
 var passportSocketIo = require('passport.socketio');
@@ -72,15 +74,15 @@ io.use(passportSocketIo.authorize({
 	//var hash;
 	//console.log((socket.request)); 
 	socket.on('seatList', function (gameid) {
-		gameController.sendSeatList(gameid,socket.id);
-		gameController.sendDataToAllPlayers();
+		newgameController.sendSeatList(gameid,socket.id);
+		//gameController.sendDataToAllPlayers();
 	});
 
 	if(socket.request.user && socket.request.user.logged_in!=false) {
 
 		socket.on('register', function (regDetails) {
 			//(gameHash,_id,balance,status,seat,sessionid) 
-			gameController.addNewPlayerToGame(regDetails.gameHash,
+			newgameController.addNewPlayerToGame(regDetails.gameHash,
 									socket.request.user._id,
 									regDetails.balance,
 									regDetails.status,
@@ -92,14 +94,14 @@ io.use(passportSocketIo.authorize({
 		//listen for start game
 		socket.on('startGame', function (data) {
 			//if(gameController.checkValidUser(data.gameid,data.hash)==true)
-				gameController.runGame();
+				newgameController.startGame(data.gameid);
 			//else
 			//	console.log("An user with no id in this game tried to start the game.")
 			});
 
 		socket.on('callClock', function (data) {
 			//if(gameController.checkValidUser(data.gameid,data.hash)==true) {
-				gameController.callClock(data.gameid);
+				newgameController.callClock(data.gameid);
 				socket.broadcast.emit('clockCalled',true);
 		//	}
 		//	else
@@ -108,21 +110,21 @@ io.use(passportSocketIo.authorize({
 
 		socket.on('toggleSitOut', function (data) {
 		//	if(gameController.checkValidUser(data.gameid,data.hash)==true)
-				gameController.toggleSitOut(data.gameid,data.hash);
+				newgameController.toggleSitOut(data.gameid,data.hash);
 		//	else
 		//		console.log("An user with no id in this game tried to toggle sit out.")
 			});
 
 		socket.on('leaveTable', function (data) {
 		//	if(gameController.checkValidUser(data.gameid,data.hash)==true)
-					gameController.leaveTableNextHand(data.gameid,data.hash);
+					newgameController.leaveTableNextHand(data.gameid,data.hash);
 		//	else
 		//		console.log("An user with no id in this game tried to leave table.")
 			});
 
 		socket.on('incomingAction', function (data) {
 			//if(gameController.checkValidUser(data.gameid,data.hash)==true){
-				gameController.incomingAction(data.game,data.hash,data.action,data.amt);
+				newgameController.incomingAction(data.game,data.hash,data.action,data.amt);
 			//}
 			//else
 			//	console.log("An user with no id in this game tried to "+data.action+".");
@@ -137,7 +139,7 @@ io.use(passportSocketIo.authorize({
 			});
 
 		socket.on('reconnectionAttempt', function (data) {
-			gameController.reconnect(data.gameid,socket.request.user._id,socket.id);
+			newgameController.reconnect(data.gameid,socket.request.user._id,socket.id);
 			});
 	}//if
 });
@@ -147,17 +149,33 @@ exports.io = io;
 
 app.get('/',function(req,res)
 {
+	
+	res.redirect('/createTable');
+
+
+});
+
+app.get('/table',function(req,res)
+{
+	
 	res.render('table',
 		{user:req.user})
 
 });
 
-
-app.get('/maketable',function(req,res)
+app.get('/createTable',function(req,res)
 {
-	res.render('maketable')
+	res.render('createTable')
 
 });
+
+app.post('/createTable',function(req,res)
+{
+	var id = newgameController.newGame();
+	res.redirect('/table?game='+id);
+
+});
+
 
 app.get('/login',function(req,res)
 {
@@ -214,7 +232,6 @@ try {
 catch {
 	res.redirect('/register');
 }
-console.log(users);
 
 });
 

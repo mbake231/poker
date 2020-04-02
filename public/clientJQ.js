@@ -11,8 +11,17 @@ var seats = [];
 var myid=null;
 var myname=null;
 var mySeatData;
-var gameid='train';
+var gameid=getParameterByName('game');
 
+function getParameterByName(name, url) {
+    if (!url) url = window.location.href;
+    name = name.replace(/[\[\]]/g, '\\$&');
+    var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
+        results = regex.exec(url);
+    if (!results) return null;
+    if (!results[2]) return '';
+    return decodeURIComponent(results[2].replace(/\+/g, ' '));
+}
 
 
 function format () {
@@ -120,7 +129,7 @@ function makeid(length) {
 function register () {
 	console.log('oy');
 		var register = {
-			gameHash: 'train',
+			gameHash: gameid,
 			userid: $('#userid').val(),
 			balance: $('#balance').val(),
 			status: 'playing',
@@ -134,9 +143,9 @@ function register () {
 
 	function sit (seat) {
 		checkAudio.play();
-		if($('#player'+seat).find('.nameInput').val().length!=0 &&  $('#player'+seat).find('.balanceInput').val().length!=0) {
+		if($('#player'+seat).find('.balanceInput').val().length!=0) {
 			var register = {
-				gameHash: 'train',
+				gameHash: gameid,
 				balance: $('#player'+seat).find('.balanceInput').val(),
 				status: 'playing',
 				seat: seat }
@@ -212,7 +221,7 @@ function register () {
 	}
 
 $(window).on('load', function(){
-	reconnect();
+	//reconnect();
 
 	//get my id
 	$.ajax({
