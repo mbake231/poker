@@ -1,0 +1,73 @@
+#body {
+    background-image: url('/img/table.png');
+    background-repeat: no-repeat;
+    background-position: 50% 50%;
+    background-size: 600px;
+    background-attachment: fixed;
+    background-color: lightgray !important;
+    
+}
+
+
+#ActionBar {
+    position:fixed;
+    display: inline-block;
+  
+    left:700px;
+    top:650px;
+  }
+
+
+#seat0 {
+    position:fixed;
+    left:225px;
+    top:70px;
+  }
+  
+  #seat1 {
+    position:fixed;
+    left:625px;
+    top:70px;
+  }
+  
+  #seat2 {
+    position:fixed;
+    left:825px;
+    top:220px;
+  }
+  
+  #seat3 {
+    position:fixed;
+    left:825px;
+    top:370px;
+   
+  }#seat4 {
+    position:fixed;
+    left:725px;
+    top:500px;
+   
+  }
+  #seat5 {
+    position:fixed;
+    left:425px;
+    top:520px;
+  
+  }
+  #seat6 {
+    position:fixed;
+    left:125px;
+    top:500px;
+    
+  }
+  #seat7 {
+    position:fixed;
+    left:75px;
+    top:370px;
+  
+  }
+  #seat8 {
+    position:fixed;
+    left:75px;
+    top:220px;
+   
+  }
