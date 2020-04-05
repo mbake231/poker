@@ -45,7 +45,7 @@ app.use(express.static(__dirname + '/public'));
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 //app.use(cors());
-app.use(cors({credentials: true}));
+app.use(cors({credentials: true, origin: 'http://localhost:8000'}));
 
 if(process.env.NODE_ENV === 'production') {
 	app.use(express.static('client/build'));

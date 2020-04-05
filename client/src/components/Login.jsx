@@ -13,7 +13,14 @@ export default function Login(props) {
 
   function handleSubmit(event) {
     event.preventDefault();
-    axios.post('http://127.0.0.1:3000/login', {
+    var url;
+    if(process.env.NODE_ENV === 'production')
+      url='https://www.fartmanjack.heroku.com/login';
+    else
+      url='http://127.0.0.1:3000/login';
+
+
+    axios.post(url, {
         email:email,
         password:password
     },{withCredentials: true}).then(response => {
