@@ -45,8 +45,7 @@ app.use(express.static(__dirname + '/public'));
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 //app.use(cors());
-app.use(cors({origin: 'http://localhost:8000',credentials: true}));
-//app.use(cors({origin: 'http://localhost:3000',credentials: true}));
+app.use(cors({credentials: true}));
 
 if(process.env.NODE_ENV === 'production') {
 	app.use(express.static('client/build'));
@@ -74,8 +73,7 @@ initializePassport(
 	email => users.find(user => user.email === email),
 	id => users.find(user => user.id === id)
 );
-io.set('origins', 'http://localhost:8000');
-//io.set('origins', 'http://localhost:3000');
+io.set('origins', '*:*');
 
 
 io.use(passportSocketIo.authorize({
