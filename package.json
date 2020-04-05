@@ -38,7 +38,8 @@
   "devDependencies": {},
   "scripts": {
     "test": "mocha",
-    "start": "node server.js"
+    "start": "node server.js",
+    "heroku-postbuild": "cd client && npm install && npm run build"
   },
   "repository": {
     "type": "git",
@@ -49,5 +50,8 @@
   "bugs": {
     "url": "https://github.com/mikeehinger/poker/issues"
   },
-  "homepage": "https://github.com/mikeehinger/poker#readme"
+  "homepage": "https://github.com/mikeehinger/poker#readme",
+  "directories": {
+    "test": "test"
+  }
 }

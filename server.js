@@ -17,7 +17,7 @@ var MongoStore=require('connect-mongo')(session);
 var sessionStore = new MongoStore({url: 'mongodb://localhost:27017/mydb'});
 var db = require('./db.js');
 var initializePassport = require ('./passport-config.js');
-
+var path = require('path');
 
 var io = require('socket.io')(http);
 
@@ -48,6 +48,12 @@ app.use(bodyParser.json())
 app.use(cors({origin: 'http://localhost:8000',credentials: true}));
 //app.use(cors({origin: 'http://localhost:3000',credentials: true}));
 
+if(process.env.NODE_ENV === 'production') {
+	app.use(express.static('client/build'));
+	app.get('*', (req, res) => {
+		res.sendFile(path.join(__dirname, 'client','build','index.html'));
+	})
+}
 
 app.use(session({
 	secret: 'F4RT',
