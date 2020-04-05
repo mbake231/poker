@@ -38,7 +38,7 @@
   "devDependencies": {},
   "scripts": {
     "test": "mocha",
-    "start": "node server.js",
+    "start": "node server.js && cd client && npm start",
     "heroku-postbuild": "cd client && npm install && npm run build"
   },
   "repository": {
