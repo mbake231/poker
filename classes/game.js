@@ -3,7 +3,7 @@ var pot = require('./pot.js').pot;
 var pokerCalc = require('poker-calc');
 var Hand = require('pokersolver').Hand;
 //var gc = require('../newgameController.js');
-var server = require('../server');
+var server = require('../server.js');
 
 class game {
 
@@ -49,7 +49,7 @@ class game {
 			this.gameTable.seats[i] = "empty";
 
 		this.gameTable.deck = new deck();
-		this.gameTable.gameid = this.makeid(16);
+		this.gameTable.gameid = 'fart'; //this.makeid(16);
 		this.gameTable.bettingRound.pots[0] =  new pot(0);
 		this.gameTable.currentPot=this.gameTable.bettingRound.pots[0];
 		this.newHandLog();
@@ -112,7 +112,6 @@ class game {
 		{
 				sessionidToSend=sendList[i].sessionid;
 				if(sendList[i]!=null) {
-					//console.log('sending to '+sessionidToSend);
 					server.io.to(sessionidToSend).emit('update',this.generatePrivatePlayerData(sendList[i].hash));
 	
 								for(var b = 0; b <= handlogThisSession;b++) {
@@ -1348,7 +1347,9 @@ class game {
     }
     //so we can package the data to send to everyone
 	generatePrivatePlayerData (thisHash) {
-		var privategameTable =  JSON.stringify(this.gameTable,function( key, value) {
+		var privategameTable = this.gameTable;
+		privategameTable.yourid=thisHash;
+		privategameTable =  JSON.stringify(privategameTable,function( key, value) {
 			//remove circular stuff
  			if(key == 'nextPlayer') { 
     			return "removedForStringify";

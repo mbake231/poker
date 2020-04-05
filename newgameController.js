@@ -11,7 +11,23 @@ const games = [];
 
 //TEST
 
-		
+var thisGame = new game();
+games.push(thisGame);
+
+//addNewPlayerToGame('fart',"5e83a80f4aeeda2c0a258d4f",290,'playing',0,"mike");
+//addNewPlayerToGame('fart',"5e83aa2c8391902cc37073b9",400,'playing',1,'sid',"kim");
+//addNewPlayerToGame('fart',"5e848f1cc52dc04e0a5a2470",10000,'playing',3,'sid',"shane");
+//addNewPlayerToGame('fart',"5e83ab2844d4db2d4038c095",100,'playing',5,'sid',"kev");
+
+        
+//startGame('fart');
+//ameid,user,action,amt
+/*incomingAction('fart','5e83ab2844d4db2d4038c095','raise',5);
+incomingAction('fart','5e83ab2844d4db2d4038c095','call');
+incomingAction('fart','5e83a80f4aeeda2c0a258d4f','call');
+incomingAction('fart','5e83aa2c8391902cc37073b9','call');
+*/
+
 
 //TEST
 

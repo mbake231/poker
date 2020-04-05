@@ -9,7 +9,7 @@ var bcrypt = require('bcrypt');
 var passport = require('passport');
 //var gameController = require('./gameController.js');
 var newgameController = require('./newgameController.js');
-
+const cors = require("cors");
 var flash = require('express-flash');
 var session = require('express-session');
 var passportSocketIo = require('passport.socketio');
@@ -25,7 +25,17 @@ const PORT = process.env.PORT || 3000;
 
 var app = express()
   , http = require('http').createServer(app)
-  , io = io.listen(http);
+  , io = require("socket.io")(http, {
+    handlePreflightRequest: (req, res) => {
+        const headers = {
+            "Access-Control-Allow-Headers": "Content-Type, Authorization",
+            "Access-Control-Allow-Origin": req.headers.origin, //or the specific origin you want to give access to,
+            "Access-Control-Allow-Credentials": true
+        };
+        res.writeHead(200, headers);
+        res.end();
+    }
+});;
 
 http.listen(PORT);
 
@@ -34,6 +44,10 @@ app.set('view cache', false);
 app.use(express.static(__dirname + '/public'));
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
+//app.use(cors());
+app.use(cors({origin: 'http://localhost:8000',credentials: true}));
+//app.use(cors({origin: 'http://localhost:3000',credentials: true}));
+
 
 app.use(session({
 	secret: 'F4RT',
@@ -54,6 +68,9 @@ initializePassport(
 	email => users.find(user => user.email === email),
 	id => users.find(user => user.id === id)
 );
+io.set('origins', 'http://localhost:8000');
+//io.set('origins', 'http://localhost:3000');
+
 
 io.use(passportSocketIo.authorize({
 	cookieParser: require('cookie-parser'), //optional your cookie-parser middleware function. Defaults to require('cookie-parser')
@@ -71,8 +88,13 @@ io.use(passportSocketIo.authorize({
 
 
 	io.on('connection', function(socket){
+	
+		socket.on('handshake', function () {
+			socket.emit('handshake',socket.request.user._id);
+		});
+
 	//var hash;
-	//console.log((socket.request)); 
+	console.log(socket.request.user._id+' connected.'); 
 	socket.on('seatList', function (gameid) {
 		newgameController.sendSeatList(gameid,socket.id);
 		//gameController.sendDataToAllPlayers();
@@ -83,13 +105,23 @@ io.use(passportSocketIo.authorize({
 		socket.on('register', function (regDetails) {
 			//(gameHash,_id,balance,status,seat,sessionid) 
 			newgameController.addNewPlayerToGame(regDetails.gameHash,
-									socket.request.user._id,
+									regDetails.userid,   //CHANGE THIS BACK TO socket.request.user._id
 									regDetails.balance,
 									regDetails.status,
 									regDetails.seat,
 									socket.id);
 				});
 		//	
+		//listen for start game
+		socket.on('createGame', function (data) {
+			//if(gameController.checkValidUser(data.gameid,data.hash)==true)
+				var newid=newgameController.newGame();
+				socket.emit('createGame',newid);
+
+
+			//else
+			//	console.log("An user with no id in this game tried to start the game.")
+			});
 
 		//listen for start game
 		socket.on('startGame', function (data) {
@@ -142,9 +174,11 @@ io.use(passportSocketIo.authorize({
 			newgameController.reconnect(data.gameid,socket.request.user._id,socket.id);
 			});
 	}//if
+	else
+		console.log("I hear you but I can't listen to you.");
 });
 
-exports.io = io;
+
 
 
 app.get('/',function(req,res)
@@ -183,14 +217,28 @@ app.get('/login',function(req,res)
 
 });
 
-app.post('/login',passport.authenticate('local', {
-	successRedirect:'/',
-	failureRedirect: '/login',
-	failureFlash: true
-})
+app.post('/login',
+function(req,res,next) {
+	next()
+},
+
+passport.authenticate('local'),
+(req,res) => {
 
 
+	console.log('logged in', req.user);
+	console.log();
+	var userInfo= {
+		username: req.user._id
+	};
+	res.send(userInfo);
+
+
+
+}
 );
+
+
 
 app.get('/register',function(req,res)
 {
@@ -201,7 +249,7 @@ app.get('/register',function(req,res)
 app.post('/register',async (req,res) => {
 try {
 	const hashedPassword = await bcrypt.hash(req.body.password, 10);
-
+	const scope = res;
 	MongoClient.connect(url, function(err, db) {
 		if (err) throw err;
 		var dbo = db.db("pokerDB");
@@ -209,9 +257,10 @@ try {
 			try {
 				if(res==null) {
 					var user = { name: req.body.name, email: req.body.email,password: hashedPassword };
-					dbo.collection("Users").insertOne(user, function(err, res) {
+					dbo.collection("Users").insertOne(user, function(err, result) {
 					if (err) throw err;
-					console.log("1 user inserted");
+					console.log('Inserted: '+result);
+					scope.send(result);
 					db.close();
 					});
 				}
@@ -227,7 +276,7 @@ try {
 		});
 	  });
 
-	res.redirect('/');
+	
 }
 catch {
 	res.redirect('/register');
@@ -253,3 +302,6 @@ app.get('/logout', async (req, res) => {
 		});
 	}
 });
+
+
+exports.io = io;

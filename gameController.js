@@ -18,7 +18,7 @@ var dealer;
 var handLogSentIndex=0;
 
 //TESTS########
-
+var thisGame = new game();
 //TESTS########
 
 
