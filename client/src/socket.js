@@ -1,7 +1,10 @@
 import socketIOClient from "socket.io-client";
 
+const production  = 'https://fartmanjack.herokuapp.com:3000';
+const development = 'http://localhost:3000/';
+const url = (process.env.NODE_ENV ? production : development);
 
-const socket = socketIOClient(window.location.hostname+':3000');
+const socket = socketIOClient(url);
 
 
 export default socket;
