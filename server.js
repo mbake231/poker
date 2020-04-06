@@ -1,6 +1,6 @@
 var Promise=require('bluebird');
 var MongoClient = Promise.promisifyAll(require('mongodb')).MongoClient;
-var url = "mongodb://localhost:27017/";
+var url = process.env.MONGODB_URI || "mongodb://localhost:27017/";
 var mongoose = require('mongoose');
 var express=require('express');
 var bodyParser = require('body-parser');
