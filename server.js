@@ -80,7 +80,7 @@ initializePassport(
 	id => users.find(user => user.id === id)
 );
 if(process.env.NODE_ENV === 'production') {
-	io.set('origins', 'https://fartmanjack.herokuapp.com);
+	io.set('origins', 'https://fartmanjack.herokuapp.com');
 }
 else {
 	io.set('origins', 'http://localhost:8000');
