@@ -1,6 +1,6 @@
 const bcrypt = require('bcrypt');
 var MongoClient = require('mongodb').MongoClient;
-var url = "mongodb://localhost:27017/";
+var url = process.env.MONGODB_URI || "mongodb://localhost:27017/";
 const LocalStrategy = require('passport-local').Strategy;
 ObjectId = require('mongodb').ObjectID;
 
