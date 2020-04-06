@@ -58,6 +58,7 @@ function initialize (passport, getUserByEmail, getUserById) {
                             if (err) throw err;
                             var dbo = null;
 				              if(process.env.NODE_ENV == 'production') {
+                                  console.log('TRY TO DE SERIALS')
 					            dbo = db.db('heroku_fbgvjbpl');
 			    	            }
 			    	        else {
@@ -65,6 +66,7 @@ function initialize (passport, getUserByEmail, getUserById) {
 			    	        }
                             dbo.collection("Users").findOne({"_id":ObjectId(id)}, function(err, result) {
                               if (err) throw err;
+                              console.log("FOUND"+result);
                               return done(null,result);
                               db.close();
                             });
