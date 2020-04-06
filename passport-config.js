@@ -58,7 +58,7 @@ function initialize (passport, getUserByEmail, getUserById) {
                             if (err) throw err;
                             var dbo = null;
 				              if(process.env.NODE_ENV == 'production') {
-                                  console.log('TRY TO DE SERIALS')
+                                  console.log('TRY TO DE SERIALS:'+ id);
 					            dbo = db.db('heroku_fbgvjbpl');
 			    	            }
 			    	        else {
