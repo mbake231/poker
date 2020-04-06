@@ -41,18 +41,18 @@ http.listen(PORT);
 
 app.set('view engine','pug');
 app.set('view cache', false);
-app.enable('trust proxy'); // add this line
 app.use(express.static(__dirname + '/public'));
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 //app.use(cors());
 if(process.env.NODE_ENV === 'production') {
-	app.use(cors({origin: '*:*',credentials: true}));
+	app.use(cors({origin: 'https://fartmanjack.herokuapp.com:*',credentials: true}));
 }
 else {
 	app.use(cors({origin: 'http://localhost:8000',credentials: true}));
 
 }
+app.enable('trust proxy'); // add this line
 
 if(process.env.NODE_ENV === 'production') {
 	app.use(express.static('client/build'));
