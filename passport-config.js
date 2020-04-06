@@ -11,11 +11,10 @@ function initialize (passport, getUserByEmail, getUserById) {
                     if (err) throw err;
                     var dbo = null;
 				    if(process.env.NODE_ENV === 'production') {
-					dbo = db.db('heroku_fbgvjbpl');
+					    dbo = db.db('heroku_fbgvjbpl');
 			    	}
 			    	else {
-					dbo = db.db('pokerDB');
-				
+					    dbo = db.db('pokerDB');
 			    	}
                     dbo.collection("Users").findOne({email:email}, async function(err, user) {
                         if (err) throw err;
