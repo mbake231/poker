@@ -15,8 +15,8 @@ export default function Login(props) {
     event.preventDefault();
     var url;
     if(process.env.NODE_ENV === 'production')
-      url='https://www.fartmanjack.heroku.com/login';
-    else
+      url=window.location.origin+'/login';
+    //else
       url='http://localhost:3000/login';
 
 

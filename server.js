@@ -55,7 +55,7 @@ if(process.env.NODE_ENV === 'production') {
 }
 
 app.use(session({
-	secret: 'F4RT',
+	secret: process.env.SECRET || 'F4RT',
 	store:sessionStore,
 	key: 'connect.sid',
 	resave: false,
@@ -79,7 +79,7 @@ io.set('origins', 'http://localhost:8000');
 io.use(passportSocketIo.authorize({
 	cookieParser: require('cookie-parser'), //optional your cookie-parser middleware function. Defaults to require('cookie-parser')
 	key:          'connect.sid',       //make sure is the same as in your session settings in app.js
-	secret:       'F4RT',      //make sure is the same as in your session settings in app.js
+	secret:       process.env.SECRET || 'F4RT',      //make sure is the same as in your session settings in app.js
 	store:        sessionStore,        //you need to use the same sessionStore you defined in the app.use(session({... in app.js
 	success:      function(data, accept){accept(null, true)},  // *optional* callback on success
 	fail:         function(data, message, critical, accept){accept(null, false)},     // *optional* callback on fail/error
