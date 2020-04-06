@@ -246,12 +246,11 @@ try {
 	MongoClient.connect(url, function(err, db) {
 		if (err) throw err;
 		var dbo = null;
-				if(process.env.NODE_ENV === 'production') {
+				if(process.env.NODE_ENV == 'production') {
 					dbo = db.db('heroku_fbgvjbpl');
 				}
 				else {
 					dbo = db.db('pokerDB');
-				
 				}
 		dbo.collection("Users").findOne({"email":req.body.email}, function(err, res) {
 			try {

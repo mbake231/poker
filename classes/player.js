@@ -24,7 +24,7 @@ class player {
 		try {
 			MongoClient.connect(url, function(err, db) {
 				const dbo=null;
-				if(process.env.NODE_ENV === 'production') {
+				if(process.env.NODE_ENV == 'production') {
 					dbo = db.db('heroku_fbgvjbpl');
 				}
 				else {

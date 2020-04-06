@@ -10,7 +10,7 @@ function initialize (passport, getUserByEmail, getUserById) {
                 MongoClient.connect(url, function(err, db) {
                     if (err) throw err;
                     var dbo = null;
-				    if(process.env.NODE_ENV === 'production') {
+				    if(process.env.NODE_ENV == 'production') {
 					    dbo = db.db('heroku_fbgvjbpl');
 			    	}
 			    	else {
@@ -56,7 +56,13 @@ function initialize (passport, getUserByEmail, getUserById) {
                     //return done(null, function (id) {
                         MongoClient.connect(url, function(err, db) {
                             if (err) throw err;
-                            var dbo = db.db("pokerDB");
+                            var dbo = null;
+				              if(process.env.NODE_ENV == 'production') {
+					            dbo = db.db('heroku_fbgvjbpl');
+			    	            }
+			    	        else {
+					              dbo = db.db('pokerDB');
+			    	        }
                             dbo.collection("Users").findOne({"_id":ObjectId(id)}, function(err, result) {
                               if (err) throw err;
                               return done(null,result);
