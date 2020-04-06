@@ -45,7 +45,7 @@ app.use(express.static(__dirname + '/public'));
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 //app.use(cors());
-app.use(cors({credentials: true, origin: 'http://localhost:8000'}));
+app.use(cors({origin: 'http://localhost:8000',credentials: true}));
 
 if(process.env.NODE_ENV === 'production') {
 	app.use(express.static('client/build'));
@@ -73,7 +73,7 @@ initializePassport(
 	email => users.find(user => user.email === email),
 	id => users.find(user => user.id === id)
 );
-io.set('origins', '*:*');
+io.set('origins', 'http://localhost:8000');
 
 
 io.use(passportSocketIo.authorize({
@@ -97,11 +97,13 @@ io.use(passportSocketIo.authorize({
 			socket.emit('handshake',socket.request.user._id);
 		});
 
-	//var hash;
+	
 	console.log(socket.request.user._id+' connected.'); 
+
+
+	//ask for public seat list
 	socket.on('seatList', function (gameid) {
 		newgameController.sendSeatList(gameid,socket.id);
-		//gameController.sendDataToAllPlayers();
 	});
 
 	if(socket.request.user && socket.request.user.logged_in!=false) {
@@ -118,60 +120,35 @@ io.use(passportSocketIo.authorize({
 		//	
 		//listen for start game
 		socket.on('createGame', function (data) {
-			//if(gameController.checkValidUser(data.gameid,data.hash)==true)
 				var newid=newgameController.newGame();
 				socket.emit('createGame',newid);
-
-
-			//else
-			//	console.log("An user with no id in this game tried to start the game.")
 			});
 
 		//listen for start game
 		socket.on('startGame', function (data) {
-			//if(gameController.checkValidUser(data.gameid,data.hash)==true)
 				newgameController.startGame(data.gameid);
-			//else
-			//	console.log("An user with no id in this game tried to start the game.")
 			});
 
 		socket.on('callClock', function (data) {
-			//if(gameController.checkValidUser(data.gameid,data.hash)==true) {
 				newgameController.callClock(data.gameid);
 				socket.broadcast.emit('clockCalled',true);
-		//	}
-		//	else
-		//		console.log("An user with no id in this game tried to call the clock.")
 			});
 
 		socket.on('toggleSitOut', function (data) {
-		//	if(gameController.checkValidUser(data.gameid,data.hash)==true)
 				newgameController.toggleSitOut(data.gameid,data.hash);
-		//	else
-		//		console.log("An user with no id in this game tried to toggle sit out.")
 			});
 
 		socket.on('leaveTable', function (data) {
-		//	if(gameController.checkValidUser(data.gameid,data.hash)==true)
-					newgameController.leaveTableNextHand(data.gameid,data.hash);
-		//	else
-		//		console.log("An user with no id in this game tried to leave table.")
+				newgameController.leaveTableNextHand(data.gameid,data.hash);
 			});
 
 		socket.on('incomingAction', function (data) {
-			//if(gameController.checkValidUser(data.gameid,data.hash)==true){
-				newgameController.incomingAction(data.game,data.hash,data.action,data.amt);
-			//}
-			//else
-			//	console.log("An user with no id in this game tried to "+data.action+".");
-			
+				console.log(data);
+				newgameController.incomingAction(data.gameid,data.hash,data.action,data.amt);			
 			});
 
 		socket.on('nextHand', function (data) {
-			//if(gameController.checkValidUser(data.gameid,data.hash)==true)
-					gameController.nextHand();
-			//else
-			//	console.log("An user with no id in this game tried to start the next hand.");
+				gameController.nextHand();
 			});
 
 		socket.on('reconnectionAttempt', function (data) {
@@ -223,6 +200,7 @@ app.get('/login',function(req,res)
 
 app.post('/login',
 function(req,res,next) {
+
 	next()
 },
 
@@ -231,12 +209,11 @@ passport.authenticate('local'),
 
 
 	console.log('logged in', req.user);
-	console.log();
 	var userInfo= {
 		username: req.user._id
 	};
 	res.send(userInfo);
-
+	res.end();
 
 
 }

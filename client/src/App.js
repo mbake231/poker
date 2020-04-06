@@ -20,17 +20,10 @@ class App extends Component {
       my_id: null,
       gameData: {},
       seats: [],
-      actions: ['fold','call','raise']
+      my_name: null
       
     };
-
-
-  
-
   }
-
-
-
 
   componentDidMount() {
 
@@ -42,6 +35,7 @@ class App extends Component {
         console.log("My ID is:"+_id);
         this.setState({my_id:_id})
       });
+      /*
       //SETUP TEST GAME
       var gameid;
       socket.emit('createGame', 'no data');
@@ -70,7 +64,7 @@ class App extends Component {
 
 
    
-     
+     */
     
   }
 
@@ -80,14 +74,14 @@ class App extends Component {
     return (
 
       <div className="App container">
-        <MyNav my_id={this.state.my_id}>
+        <MyNav my_id={this.state.my_id} my_name={this.state.my_name}>
             <Link to="/">Scratch</Link>
         </MyNav>
         
         <Switch>
             <Route path="/" exact exact exact render={(props) =><Home {...props} />} />
             <Route path="/login" exact component={Login} />
-            <Route path="/table/*" exact render={(props) => <Table my_id={this.state.my_id} gameData={this.state.gameData} seats={this.state.seats} actions={this.state.actions}
+            <Route path="/table/*" exact render={(props) => <Table my_id={this.state.my_id} 
             {...props}  />} />
         </Switch>
     </div>

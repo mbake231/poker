@@ -1,33 +1,39 @@
-import React, { Component } from 'react';
-import {
-  Navbar, 
-  NavItem,
-  Button,
-  Nav
-} from 'react-bootstrap';
+import React, { useState,Component } from 'react';
+import InputGroup from 'react-bootstrap/InputGroup'
 import socket from '../../socket';
+import { Button, FormGroup, FormControl, FormLabel } from "react-bootstrap";
+import './ActionButtons.css'
 
-class RaiseButton extends Component {
-
+    export default function RaiseButton(props) {
+        const [amt, setAmt] = useState("");
+        function validateForm() {
+            return amt.length > 0 && isNaN(amt)==false;
+      }
 
  
- handleClick(e) {
+ function handleClick(e) {
     e.preventDefault();
-    var actionpackage = {gameid:this.props.gameid,
-                        hash:this.props.my_id,
+    console.log(amt);
+    var actionpackage = {gameid:props.gameid,
+                        hash:props.my_id,
                         action:'raise',
-                        amt:10};
+                        amt:amt};
     socket.emit('incomingAction',actionpackage);
  }
 
 
 
-    render() { 
+
         return (
-        <div>
-            <Button onClick={this.handleClick.bind(this)}>Raise</Button>
+        <div id='raiseModule'>
+            <Button className='actionItem' disabled={!validateForm()} onClick={handleClick}>Raise</Button>
+            <InputGroup className="actionItem mb-3">
+                <InputGroup.Prepend>
+                <InputGroup.Text>$</InputGroup.Text>
+                </InputGroup.Prepend>
+                <FormControl aria-label="Amount" onChange={e => setAmt(e.target.value)} />
+            </InputGroup>
         </div> );
-    }
+    
 }
  
-export default RaiseButton;

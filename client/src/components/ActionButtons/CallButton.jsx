@@ -16,6 +16,8 @@ class CallButton extends Component {
     var actionpackage = {gameid:this.props.gameid,
                         hash:this.props.my_id,
                         action:'call'};
+
+    console.log(actionpackage);
     socket.emit('incomingAction',actionpackage);
  }
 
@@ -24,7 +26,7 @@ class CallButton extends Component {
     render() { 
         return (
         <div>
-            <Button onClick={this.handleClick.bind(this)}>Call</Button>
+            <Button className='actionItem' onClick={this.handleClick.bind(this)}>Call</Button>
         </div> );
     }
 }

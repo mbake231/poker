@@ -1,29 +1,34 @@
-import React, { Component } from 'react';
+import React, { useState,Component } from 'react';
 import Card from 'react-bootstrap/Card'
-import {Button} from "react-bootstrap";
 import "./Chevron.css";
 import socket from '../socket';
+import { Button, FormGroup, FormControl, FormLabel } from "react-bootstrap";
+import InputGroup from 'react-bootstrap/InputGroup'
 
-class PlayerChevron extends Component {
+
+//class PlayerChevron extends Component {
 
 
-  componentDidMount() {
-   
+    export default function PlayerChevron(props) {
+        const [amt, setAmt] = useState("");
 
-  }
 
-  handleClick(e) {
+function validateForm() {
+           return amt.length > 0 && isNaN(amt)==false;
+     }
+
+  function handleClick(e) {
     e.preventDefault();
 
         const register = {
-			gameHash: this.props.gameid,
-			userid: this.props.my_id,
-			balance: 100,
+			gameHash: props.gameid,
+			userid: props.my_id,
+			balance: amt,
 			status: 'playing',
-			seat: this.props.id
+			seat: props.id
 		}
         socket.emit('register', register);
-        socket.emit('startGame',{gameid:this.props.gameid});
+        socket.emit('startGame',{gameid:props.gameid});
 
       
   }
@@ -31,14 +36,22 @@ class PlayerChevron extends Component {
 
 
 
-    render() { 
-        if(this.props.info=='empty') {
+   
+        if(props.info=='empty') {
             return ( 
-                <Card id={'seat'+this.props.id} style={{ width: '14rem' }}>
+                <Card id={'seat'+props.id} style={{ width: '14rem' }}>
                     <Card.Body>
                         <Card.Title>
                         </Card.Title>
-                        <Button onClick={this.handleClick.bind(this)}>Sit</Button>
+                        <div className='inputGroup'>
+                        <Button disabled={!validateForm()} onClick={handleClick}>Sit</Button>
+                        <InputGroup className="actionItem mb-3">
+                            <InputGroup.Prepend>
+                            <InputGroup.Text>$</InputGroup.Text>
+                            </InputGroup.Prepend>
+                            <FormControl aria-label="Amount" onChange={e => setAmt(e.target.value)} />
+                        </InputGroup>
+                        </div>
                         <Card.Text>
                         </Card.Text>
                     </Card.Body>
@@ -49,23 +62,22 @@ class PlayerChevron extends Component {
 
          else {
             return ( 
-                <Card id={'seat'+this.props.id} style={{ width: '14rem' }}>
+                <Card id={'seat'+props.id} style={{ width: '14rem' }}>
                     <Card.Body>
-                        <Card.Title>{this.props.info.userid}</Card.Title>
+                        <Card.Title>{props.info.userid}</Card.Title>
                         <Card.Text>
-                            {this.props.info.balance}
+                            {props.info.balance}
                         </Card.Text>
                     </Card.Body>
                     <div className="cards">
-                        <div id="card1"><img src={'/img/cards/'+this.props.info.card1+".svg"} width='75px' /></div>
-                        <div id="card2"><img src={'/img/cards/'+this.props.info.card2+".svg"} width='75px' /></div>
+                        <div id="card1"><img src={'/img/cards/'+props.info.card1+".svg"} width='75px' /></div>
+                        <div id="card2"><img src={'/img/cards/'+props.info.card2+".svg"} width='75px' /></div>
                     </div>
                 </Card>
 
          );
         }
     }
-}
 
 
-export default PlayerChevron;
+

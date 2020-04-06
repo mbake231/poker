@@ -31,7 +31,7 @@ class ActionBar extends Component {
             <RaiseButton my_id={this.props.my_id} gameid={this.props.gameid}></RaiseButton>
             </div>
         </div> );
-      else if (this.props.actions.length == 2 && this.props.actions[0]=='check')
+      else if (this.props.actions.length == 2 && this.props.actions[1]=='check')
       return (
         <div>
           <div id='ButtonContainer' className="mb-2">
@@ -39,7 +39,7 @@ class ActionBar extends Component {
             <RaiseButton my_id={this.props.my_id} gameid={this.props.gameid}></RaiseButton>            
             </div>
         </div> );
-      else if (this.props.actions.length == 2 && this.props.actions[0]=='fold')
+      else if (this.props.actions.length == 2 && this.props.actions[1]=='fold')
       return (
         <div>
           <div id='ButtonContainer' className="mb-2">

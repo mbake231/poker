@@ -15,7 +15,7 @@ class FoldButton extends Component {
     e.preventDefault();
     var actionpackage = {gameid:this.props.gameid,
                         hash:this.props.my_id,
-                        action:'fold'};
+                        action:'check'};
     socket.emit('incomingAction',actionpackage);
  }
 
@@ -24,7 +24,7 @@ class FoldButton extends Component {
     render() { 
         return (
         <div>
-            <Button onClick={this.handleClick.bind(this)}>Fold</Button>
+            <Button className='actionItem' onClick={this.handleClick.bind(this)}>Check</Button>
         </div> );
     }
 }

@@ -7,3 +7,14 @@
 }
 
 
+#Table {
+
+
+  margin: 0 auto;
+  width:900px;
+  height:700px;
+     background-image: url('/img/table.png') !important;
+     background-repeat: no-repeat;
+     background-position: center center;
+  
+ }

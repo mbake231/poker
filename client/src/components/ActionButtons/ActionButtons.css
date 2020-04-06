@@ -1,8 +1,10 @@
-#ButtonContainer{
+#raiseModule {
     display: flex;
     align-items: right;
     justify-content: center;
-    position: relative;
-    left:300px;
+    width:200px
+}
+
+.actionItem {
     margin-left: 3px;
 }

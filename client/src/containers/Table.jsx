@@ -2,6 +2,8 @@ import React, { Component } from "react";
 import "./Table.css";
 import PlayerChevron from "../components/PlayerChevron"
 import ActionBar from "../components/ActionBar"
+import Board from "../components/Board"
+
 import socket from '../socket'
 
 
@@ -11,7 +13,9 @@ class Table extends Component{
   this.state = {
     gameid:null,
     actions:[],
-    seats: []
+    seats: [],
+    board: []
+
   }
     
   };
@@ -21,7 +25,7 @@ componentDidMount() {
 
       this.setState({gameid:gameid}, (res) => {
         socket.emit('seatList', this.state.gameid);
-
+        socket.emit('reconnectionAttempt', {gameid:this.state.gameid,hash:this.props.my_id});
       } )
       
 
@@ -42,16 +46,17 @@ componentDidMount() {
         const data = JSON.parse(privateData);
         this.setState({gameData:data});
         this.setState({seats: data.seats});
+        this.setState({board:data.board});
         console.log(data);
         if(data.bettingRound.actionOn!=null){
-          if(data.bettingRound.actionOn.hash==this.state.my_id) {
+          if(data.bettingRound.actionOn.hash==this.props.my_id) {
             this.setState({actions:data.bettingRound.nextActionsAvailable})
           }
           else
-          this.setState({actions:['fold','call','raise']});
+          this.setState({actions:[]});
         }
         else {
-          this.setState({actions:['fold','call','raise']});
+          this.setState({actions:[]});
         }
       });
 }
@@ -64,6 +69,7 @@ render () {
         {this.state.seats.map((seat,i) => {
             return <PlayerChevron id={i} info={this.state.seats[i]} gameid={this.state.gameid} my_id={this.props.my_id}></PlayerChevron>
         })}
+      <Board board={this.state.board}></Board>
       <div id='ActionBar'>
         <ActionBar actions={this.state.actions} my_id={this.props.my_id} gameid={this.state.gameid}></ActionBar>
       </div> 

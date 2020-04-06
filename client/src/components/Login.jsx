@@ -17,7 +17,7 @@ export default function Login(props) {
     if(process.env.NODE_ENV === 'production')
       url='https://www.fartmanjack.heroku.com/login';
     else
-      url='http://127.0.0.1:3000/login';
+      url='http://localhost:3000/login';
 
 
     axios.post(url, {
@@ -26,7 +26,7 @@ export default function Login(props) {
     },{withCredentials: true}).then(response => {
         console.log(response) 
             if(response.data.username) {
-                console.log('seccessful login')
+                console.log('successful login')
                 
                 
             }else {

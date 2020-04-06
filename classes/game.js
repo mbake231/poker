@@ -49,7 +49,7 @@ class game {
 			this.gameTable.seats[i] = "empty";
 
 		this.gameTable.deck = new deck();
-		this.gameTable.gameid = 'fart'; //this.makeid(16);
+		this.gameTable.gameid = this.makeid(16);
 		this.gameTable.bettingRound.pots[0] =  new pot(0);
 		this.gameTable.currentPot=this.gameTable.bettingRound.pots[0];
 		this.newHandLog();

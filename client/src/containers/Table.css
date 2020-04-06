@@ -1,73 +1,74 @@
-#body {
-    background-image: url('/img/table.png');
-    background-repeat: no-repeat;
-    background-position: 50% 50%;
-    background-size: 600px;
-    background-attachment: fixed;
-    background-color: lightgray !important;
-    
+
+
+#Board{
+  position:relative;
+
+    left:270px;
+    top:-600px;
+    display: flex;
 }
-
-
+.boardCard{
+  margin-left:3px;
+}
 #ActionBar {
-    position:fixed;
+    position:relative;
     display: inline-block;
   
-    left:700px;
-    top:650px;
+    left:400px;
+    top:-280px;
   }
 
 
 #seat0 {
-    position:fixed;
-    left:225px;
-    top:70px;
+  position: relative;
+  left: 100px;
+
   }
   
   #seat1 {
-    position:fixed;
-    left:625px;
-    top:70px;
+    position: relative;
+    left: 600px;
+    top:-90px;
   }
   
   #seat2 {
-    position:fixed;
-    left:825px;
-    top:220px;
+    position: relative;
+    left:785px;
+    top:-40px;
   }
   
   #seat3 {
-    position:fixed;
-    left:825px;
-    top:370px;
+    position:relative;
+    left:785px;
+    top:10px;
    
   }#seat4 {
-    position:fixed;
-    left:725px;
-    top:500px;
+    position:relative;
+    left:680px;
+    top:60px;
    
   }
   #seat5 {
-    position:fixed;
-    left:425px;
-    top:520px;
+    position:relative;
+    left:355px;
+    top:30px;
   
   }
   #seat6 {
-    position:fixed;
-    left:125px;
-    top:500px;
+    position:relative;
+    left:25px;
+    top:-130px;
     
   }
   #seat7 {
-    position:fixed;
-    left:75px;
-    top:370px;
+    position:relative;
+    left:-100px;
+    top:-350px;
   
   }
   #seat8 {
-    position:fixed;
-    left:75px;
-    top:220px;
+    position:relative;
+    left:-90px;
+    top:-620px;
    
   }

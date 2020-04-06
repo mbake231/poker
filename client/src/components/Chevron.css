@@ -8,3 +8,12 @@ ul{padding:0;}
     justify-content: center;
     max-height: 200px;
 }
+
+
+.inputGroup {
+    display: flex;
+    align-items: right;
+    justify-content: center;
+    width:150px;
+    height: 38px
+}

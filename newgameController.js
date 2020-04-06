@@ -85,11 +85,13 @@ function leaveTableNextHand(gameid,hash){
 }
 
 function reconnect(gameid,_id,sid){
-    let thisGame = findGameById(gameid);
-    if(thisGame != null)
-      thisGame.reconnect(_id,sid);
-    else
-        console.log('No game with that ID.');
+    if(gameid!=null && _id != null){
+        let thisGame = findGameById(gameid);
+        if(thisGame != null)
+        thisGame.reconnect(_id,sid);
+        else
+            console.log('No game with that ID.');
+    }
 
 }
 
@@ -113,9 +115,13 @@ function  addNewPlayerToGame (gameid,_id,balance,status,seat,sessionid) {
 }
 
 function incomingAction(gameid,user,action,amt){
-    var game = findGameById(gameid);
-	var userActing = game.getPlayerByHash(user);
-    game.doAction(userActing, action, amt);
+    if(gameid!=null && user!=null) {
+        var game = findGameById(gameid);
+        var userActing = game.getPlayerByHash(user);
+        game.doAction(userActing, action, amt);
+    }
+    else
+        console.log("Can't find game or user, data is null");
 }
 
 function sendSeatList(gameid,sessionid) {
