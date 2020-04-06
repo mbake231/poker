@@ -80,7 +80,7 @@ initializePassport(
 	id => users.find(user => user.id === id)
 );
 if(process.env.NODE_ENV === 'production') {
-	io.set('origins', 'http://localhost:3000');
+	io.set('origins', 'https://localhost:3000');
 }
 else {
 	io.set('origins', 'http://localhost:8000');
