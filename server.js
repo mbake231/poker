@@ -52,7 +52,6 @@ else {
 	app.use(cors({origin: 'http://localhost:8000',credentials: true}));
 
 }
-app.enable('trust proxy'); // add this line
 
 if(process.env.NODE_ENV === 'production') {
 	app.use(express.static('client/build'));
@@ -66,7 +65,6 @@ app.use(session({
 	store:sessionStore,
 	key: 'connect.sid',
 	resave: false,
-	proxy: true,
 	saveUninitialized: false
 }))
 
