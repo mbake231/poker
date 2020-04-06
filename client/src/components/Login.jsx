@@ -15,7 +15,7 @@ export default function Login(props) {
     event.preventDefault();
     var url;
     if(process.env.NODE_ENV === 'production')
-      url=window.location.origin+'/login';
+      url=process.env.BASE_URL +'/login';
     //else
       url='http://localhost:3000/login';
 
