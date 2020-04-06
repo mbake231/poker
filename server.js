@@ -41,6 +41,7 @@ http.listen(PORT);
 
 app.set('view engine','pug');
 app.set('view cache', false);
+app.enable('trust proxy'); // add this line
 app.use(express.static(__dirname + '/public'));
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
@@ -65,6 +66,7 @@ app.use(session({
 	store:sessionStore,
 	key: 'connect.sid',
 	resave: false,
+	proxy: true,
 	saveUninitialized: false
 }))
 
