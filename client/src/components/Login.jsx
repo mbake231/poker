@@ -16,7 +16,7 @@ export default function Login(props) {
     var url;
     if(process.env.NODE_ENV === 'production')
       url='/login';
-    //else
+    else
       url='http://localhost:3000/login';
 
 
