@@ -9,7 +9,14 @@ function initialize (passport, getUserByEmail, getUserById) {
     const authenticateUser = async (email,password,done)  => {
                 MongoClient.connect(url, function(err, db) {
                     if (err) throw err;
-                    var dbo = db.db("pokerDB");
+                    var dbo = null;
+				    if(process.env.NODE_ENV === 'production') {
+					dbo = db.db('heroku_fbgvjbpl');
+			    	}
+			    	else {
+					dbo = db.db('pokerDB');
+				
+			    	}
                     dbo.collection("Users").findOne({email:email}, async function(err, user) {
                         if (err) throw err;
                            if (user == null){

@@ -23,7 +23,15 @@ class player {
 		const scope=this;
 		try {
 			MongoClient.connect(url, function(err, db) {
-			 const dbo = db.db('pokerDB');
+				const dbo=null;
+				if(process.env.NODE_ENV === 'production') {
+					dbo = db.db('heroku_fbgvjbpl');
+				}
+				else {
+					dbo = db.db('pokerDB');
+				
+				}
+			 
 			
 			 //Step 1: declare promise
 			
