@@ -6,11 +6,11 @@ ObjectId = require('mongodb').ObjectID;
 
 class player {
 	constructor(_id,balance,status,sessionid,userid) {
-		this.balance=Number(balance);
+		this.balance=parseInt(balance);
 		this.status=status;
 		this.card1=null;
 		this.card2=null;
-		this.moneyOnLine=Number(0);
+		this.moneyOnLine=parseInt(0);
 		this.nextPlayer=null;
 		this.hash=String(_id);
 		this.sessionid=sessionid;
@@ -95,8 +95,8 @@ class player {
 	}
 
 	addMoneyToLine(amt) {
-		this.balance = Number(this.balance) - Number(amt);
-		this.moneyOnLine = Number(this.moneyOnLine) + Number(amt);
+		this.balance = parseInt(this.balance) - parseInt(amt);
+		this.moneyOnLine = parseInt(this.moneyOnLine) + parseInt(amt);
 
 		console.log('player '+this.balance);
 		console.log('player '+this.moneyOnLine);
@@ -109,7 +109,7 @@ class player {
 
 	hasEnough(amt) {
 		//console.log(Number(this.balance)+" vs " +Number(amt));
-		if ( Number(this.balance)>=Number(amt) )
+		if ( parseInt(this.balance)>=parseInt(amt) )
 			return true;
 		return false;
 	}

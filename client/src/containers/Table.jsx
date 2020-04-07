@@ -40,6 +40,17 @@ componentDidMount() {
       this.setState({gameData:data});  
       this.setState({seats: data.seats});
       }
+
+      this.call = new Audio('/audio/call.wav')
+      this.call.load()
+      this.check = new Audio('/audio/check.wav')
+      this.check.load()
+      this.raise = new Audio('/audio/raise.wav')
+      this.raise.load()
+      this.shuffle = new Audio('/audio/shuffle.wav')
+      this.shuffle.load()
+      this.yourturn = new Audio('/audio/yourturn.wav')
+      this.yourturn.load()
     });
 
 
@@ -53,6 +64,7 @@ componentDidMount() {
         console.log(data);
         if(data.bettingRound.actionOn!=null){
           if(data.bettingRound.actionOn.hash==this.props.my_id) {
+            this.playAudio(this.yourturn);
             this.setState({actions:data.bettingRound.nextActionsAvailable})
           }
           else
@@ -69,10 +81,35 @@ componentDidMount() {
         this.setState({totalPot:data.bettingRound.potsTotal});
         this.setState({roundPot:data.bettingRound.totalOnLine});
 
+        //play audio
+        if(data.bettingRound!=null) {
+          if(data.bettingRound.lastBet=='raise')
+           this.playAudio(this.raise);
+          if(data.bettingRound.lastBet=='call')
+           this.playAudio(this.check);
+          if(data.bettingRound.lastBet=='check')
+            this.playAudio(this.check);
+
+
+        }
 
       });
 }
 
+playAudio(audio) {
+  console.log('playin');
+  const audioPromise = audio.play()
+  if (audioPromise !== undefined) {
+    audioPromise
+      .then(_ => {
+        // autoplay started
+      })
+      .catch(err => {
+        // catch dom exception
+        console.info(err)
+      })
+  }
+}
         
 render () {
 

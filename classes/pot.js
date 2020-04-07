@@ -2,7 +2,7 @@ var numMembers=0;
 
 class pot {
 	constructor (total) {
-		this.total=Number(total).toFixed(2);
+		this.total=parseInt(total);
 		this.members=[];
 		this.winners=[];
 		this.numMembers=0;

@@ -17,7 +17,7 @@ import './ActionButtons.css'
     var actionpackage = {gameid:props.gameid,
                         hash:props.my_id,
                         action:'raise',
-                        amt:(Number(amt)*100)
+                        amt:parseInt(amt*100)
                     };
     socket.emit('incomingAction',actionpackage);
  }

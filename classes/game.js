@@ -27,19 +27,19 @@ class game {
 				hand:null,
 				winningPot:0},
 			currentPot:null,
-			smallBlind:Number(100),  //add to constructor
-			bigBlind:Number(200),
+			smallBlind:parseInt(100),  //add to constructor
+			bigBlind:parseInt(200),
 			bettingRound: {
 				lastRaiser:null,
-				potsTotal:Number(0),
+				potsTotal:parseInt(0),
 				pots:[],
 				actionOn:null,
 				actionOnTimer:null,
 				actionOnTimeLimit:5,
 				nextActionsAvailable:[],
 				round:0,
-				totalOnLine:Number(0),
-				currentRaiseToCall:Number(0),
+				totalOnLine:parseInt(0),
+				currentRaiseToCall:parseInt(0),
 				endByFold:false,
 				lastBet:null
 				}
@@ -717,9 +717,9 @@ class game {
 		//deduct that amount from everyone if they are not folded, and if they still have $ on line, and add them as a member
 		for(var i = 0;i<this.gameTable.game_size;i++){
 				if((this.gameTable.seats[i].status=='inhand' || this.gameTable.seats[i].status=='allin') && this.gameTable.seats[i].moneyOnLine>0){
-						this.gameTable.seats[i].moneyOnLine-=amt;
-						this.gameTable.currentPot.total+=amt;
-						this.gameTable.bettingRound.potsTotal+=amt;
+						this.gameTable.seats[i].moneyOnLine-=parseInt(amt);
+						this.gameTable.currentPot.total+=parseInt(amt);
+						this.gameTable.bettingRound.potsTotal+=parseInt(amt);
 						//if not already a member of this pot add them if they didnt fold
 						if(this.isPlayerMemberofCurrentPot(this.gameTable.seats[i])==false && this.gameTable.seats[i].status!='folded'){
 							this.gameTable.currentPot.addMember(this.gameTable.seats[i]);
@@ -888,17 +888,17 @@ class game {
 							+","
 							+winningPlayer.card2
 							+'] '+winningHand+"! "
-							+ "The pot total was $"+selectedPot.total
+							+ "The pot total was $"+(selectedPot.total/100).toFixed()
 							+" and it paid "+ this.getPlayerByHash(winner[b].playerId).userid +" $"
-							+amtToPay+".");
+							+(amtToPay/100).toFixed(2)+".");
 						this.updateHandLog(this.getPlayerByHash(winner[b].playerId).userid+" WINS with ["
 						+winningPlayer.card1
 						+","
 						+winningPlayer.card2
 						+'] '+winningHand+"! "
-						+ "The pot total was $"+selectedPot.total
+						+ "The pot total was $"+(selectedPot.total/100).toFixed(2)
 						+" and it paid "+ this.getPlayerByHash(winner[b].playerId).userid +" $"
-						+amtToPay+".");
+						+(amtToPay/100).toFixed(2)+".");
 					//4 store winner of each pot with beautified hand
 						
 						selectedPot.winners.push({winner:winningPlayer,
@@ -948,8 +948,8 @@ class game {
 					//total winning
 					amtToPay=+this.gameTable.bettingRound.pots[i].total;
 
-					console.log("Everyone folded so "+this.gameTable.bettingRound.pots[i].winners[0].winner.userid+" wins $"+amtToPay+".");
-					this.updateHandLog("Everyone folded so "+this.gameTable.bettingRound.pots[i].winners[0].winner.userid+" wins $"+amtToPay+".");
+					console.log("Everyone folded so "+this.gameTable.bettingRound.pots[i].winners[0].winner.userid+" wins $"+(amtToPay/100).toFixed(2)+".");
+					this.updateHandLog("Everyone folded so "+this.gameTable.bettingRound.pots[i].winners[0].winner.userid+" wins $"+(amtToPay/100).toFixed(2)+".");
 
 				}
 				//pay the man his money
@@ -1032,6 +1032,7 @@ class game {
 	getNextAction () {
 
 		this.printSeats();
+		this.printGamePots();
 
 		//BIG BLIND CAN ACT AT END OF PRE-FLOP BETTING
 		//IF ACTION IS TO BIGBLIND + AND NO ONE RAISED AKA LAST BET IS CALL AND THE CALL IS SAME AS BIG BLIND
@@ -1232,7 +1233,7 @@ class game {
 
 				}
 				else if (action=="call") {
-						var amtToCall = this.gameTable.bettingRound.currentRaiseToCall-player.moneyOnLine;
+						var amtToCall = parseInt(this.gameTable.bettingRound.currentRaiseToCall-player.moneyOnLine);
 					//	console.log('amt to call '+amtToCall+" hasEnough?"+player.hasEnough(this.gameTable.bettingRound.currentRaiseToCall));
 					
 					//either they have enough to cover or theyre all in
@@ -1258,8 +1259,8 @@ class game {
 						this.advanceToNextPlayer();
 						console.log('INSIDE ACTION ON:'+this.gameTable.bettingRound.actionOn.userid);
 
-						console.log(player.userid+" has called "+this.gameTable.bettingRound.currentRaiseToCall);
-						this.updateHandLog(player.userid+" has called $"+this.gameTable.bettingRound.currentRaiseToCall);
+						console.log(player.userid+" has called $"+(this.gameTable.bettingRound.currentRaiseToCall/100).toString());
+						this.updateHandLog(player.userid+" has called $"+(this.gameTable.bettingRound.currentRaiseToCall/100).toString());
 
 						//check to see if this call sets player all in all in
 						//will need to allow a call if it puts someone all in
@@ -1296,15 +1297,15 @@ class game {
 						//so when player had to put more in, the actual raise number only goes up how much he raised it
 						this.gameTable.bettingRound.currentRaiseToCall+=amt;
 						this.advanceToNextPlayer();
-						console.log(player.userid+" has raised to $"+this.gameTable.bettingRound.currentRaiseToCall+".");
-						this.updateHandLog(player.userid+" has raised to $"+this.gameTable.bettingRound.currentRaiseToCall+".");
+						console.log(player.userid+" has raised to $"+(this.gameTable.bettingRound.currentRaiseToCall/100).toFixed(2)+".");
+						this.updateHandLog(player.userid+" has raised to $"+(this.gameTable.bettingRound.currentRaiseToCall/100).toFixed(2)+".");
 						if(player.balance==0)
 							this.putPlayerAllIn(player);
 						this.getNextAction();
 						return true;
 					}
 					else {
-						console.log(player.userid+" doesn't have enough for a raise of"+amt);
+						console.log(player.userid+" doesn't have enough for a raise of"+(amt/100).toFixed(2));
 						return false;
 					}
 				}
