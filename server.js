@@ -135,6 +135,7 @@ io.use(passportSocketIo.authorize({
 		//listen for start game
 		socket.on('createGame', function (data) {
 				var newid=newgameController.newGame();
+				console.log(data);
 				socket.emit('createGame',newid);
 			});
 
