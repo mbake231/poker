@@ -1,6 +1,6 @@
 import socketIOClient from "socket.io-client";
 
-const production  = BASE_URL+':'+process.env.PORT;
+const production  = process.env.BASE_URL+':'+process.env.PORT;
 //const production  = '';
 
 const development = 'http://localhost:3000';
