@@ -109,6 +109,7 @@ io.use(passportSocketIo.authorize({
 //	console.log(socket.request);
 		socket.on('handshake', function () {
 			socket.emit('handshake',socket.request.user._id);
+			console.log('sending hankshake');
 		});
 
 	

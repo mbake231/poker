@@ -59,6 +59,8 @@ class App extends Component {
   }
 
   componentDidMount() {
+    socket.emit('handshake', 'give me my id');
+
   /*  this.handShake();
 
     socket.on('handshake', (_id) => {

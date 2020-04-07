@@ -8,7 +8,7 @@ class Home extends Component{
 
  handleClick(e) {
   e.preventDefault();
-
+  
   socket.emit('createGame', 'nodata');
 
   socket.on('createGame',gameid => {
