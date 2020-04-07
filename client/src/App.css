@@ -10,13 +10,17 @@
 
 #Table {
 
-
-    width: 100%;
-    height:100%;
+  
+    width: 1440px;
+    height:770px;
     margin: 0 auto;
      background-image: url('/img/bigtable.png') !important;
      background-repeat: no-repeat;
      background-size:auto;
      background-position: calc(50% - 50px) calc(50% - 75px);
   
+ }
+
+ #navbar {
+   width:100%;
  }

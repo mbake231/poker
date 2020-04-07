@@ -80,13 +80,13 @@ render () {
     <div id='Table' className="Table">
       <div id='seatbox'>
         {this.state.seats.map((seat,i) => {
-            return <PlayerChevron id={i} info={this.state.seats[i]} chipstack={this.state.seats[i].moneyOnLine} gameid={this.state.gameid} my_id={this.props.my_id}></PlayerChevron>
+            return <PlayerChevron id={i} info={this.state.seats[i]} gameid={this.state.gameid} my_id={this.props.my_id}></PlayerChevron>
         })}
         </div>
-      <Pots totalPot={this.state.totalPot} roundPot={this.state.roundPot}></Pots>
+      <Pots totalPot={Number(this.state.totalPot)} roundPot={Number(this.state.roundPot)}></Pots>
       <Board board={this.state.board}></Board>
       <div id='ActionBar'>
-        <ActionBar toCallAmt={this.state.toCallAmt} actions={this.state.actions} my_id={this.props.my_id} gameid={this.state.gameid}></ActionBar>
+        <ActionBar toCallAmt={Number(this.state.toCallAmt)} actions={this.state.actions} my_id={this.props.my_id} gameid={this.state.gameid}></ActionBar>
       </div> 
     </div>
   );

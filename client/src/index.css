@@ -16,8 +16,14 @@ code {
 }
 
 
-body > #root > #AppContainer  {
+body > #root   {
   width: 1440px;
   height:770px;
 
+}
+
+#AppContainer{
+  position: absolute;
+  width: 100%;
+  margin: 0 auto;
 }

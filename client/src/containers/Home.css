@@ -11,3 +11,8 @@
   .Home .lander p {
     color: #999;
   }
+
+  .Home {
+    margin: 0 auto;
+    width:50%;
+  }

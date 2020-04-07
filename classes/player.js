@@ -6,11 +6,11 @@ ObjectId = require('mongodb').ObjectID;
 
 class player {
 	constructor(_id,balance,status,sessionid,userid) {
-		this.balance=Number(balance).toFixed(2);;
+		this.balance=Number(balance);
 		this.status=status;
 		this.card1=null;
 		this.card2=null;
-		this.moneyOnLine=0;
+		this.moneyOnLine=Number(0);
 		this.nextPlayer=null;
 		this.hash=String(_id);
 		this.sessionid=sessionid;
@@ -95,8 +95,12 @@ class player {
 	}
 
 	addMoneyToLine(amt) {
-		this.balance-=amt;
-		this.moneyOnLine+=amt;
+		this.balance = Number(this.balance) - Number(amt);
+		this.moneyOnLine = Number(this.moneyOnLine) + Number(amt);
+
+		console.log('player '+this.balance);
+		console.log('player '+this.moneyOnLine);
+
 	}
 
 	clearMoneyOnLine(){

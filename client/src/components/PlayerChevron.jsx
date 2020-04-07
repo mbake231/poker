@@ -27,7 +27,7 @@ function validateForm() {
         const register = {
 			gameHash: props.gameid,
 			userid: props.my_id,
-			balance: Number(amt),
+			balance: (Number(amt*100)).toFixed(2),
 			status: 'playing',
 			seat: props.id
 		}
@@ -65,7 +65,7 @@ function validateForm() {
                     <Card.Body>
                         <Card.Title>{props.info.userid}</Card.Title>
                         <Card.Text>
-                            {"$"+props.info.balance}
+                            {"$"+(Number(props.info.balance)/100).toFixed(2)}
                         </Card.Text>
                     </Card.Body>
                     <div className="cards">

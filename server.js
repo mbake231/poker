@@ -158,7 +158,7 @@ io.use(passportSocketIo.authorize({
 
 		socket.on('incomingAction', function (data) {
 				console.log(data);
-				newgameController.incomingAction(data.gameid,data.hash,data.action,data.amt);			
+				newgameController.incomingAction(data.gameid,data.hash,data.action,Number(data.amt));			
 			});
 
 		socket.on('nextHand', function (data) {

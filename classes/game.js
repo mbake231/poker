@@ -27,19 +27,19 @@ class game {
 				hand:null,
 				winningPot:0},
 			currentPot:null,
-			smallBlind:1,  //add to constructor
-			bigBlind:2,
+			smallBlind:Number(100),  //add to constructor
+			bigBlind:Number(200),
 			bettingRound: {
 				lastRaiser:null,
-				potsTotal:0,
+				potsTotal:Number(0),
 				pots:[],
 				actionOn:null,
 				actionOnTimer:null,
 				actionOnTimeLimit:5,
 				nextActionsAvailable:[],
 				round:0,
-				totalOnLine:0,
-				currentRaiseToCall:0,
+				totalOnLine:Number(0),
+				currentRaiseToCall:Number(0),
 				endByFold:false,
 				lastBet:null
 				}
