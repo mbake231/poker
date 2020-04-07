@@ -59,7 +59,7 @@ class App extends Component {
   }
 
   componentDidMount() {
-    this.handShake();
+  /*  this.handShake();
 
     socket.on('handshake', (_id) => {
       //console.log("incoming update " + privateData);
@@ -69,7 +69,7 @@ class App extends Component {
     
     //get id
  
-      /*
+      
       //SETUP TEST GAME
       var gameid;
       socket.emit('createGame', 'no data');
