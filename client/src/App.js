@@ -42,14 +42,14 @@ class App extends Component {
         console.log(response) 
             if(response.data.username) {
                 console.log('successful login '+response.data.username);
-                this.setState({my_id:response.data.username });
-              return response;
+               // this.setState({my_id:response.data.username });
+           //   return response;
             }
          
             else {
                 console.log("Sign in error")
             }
-            return response;
+           // return response;
         }
     )
   }
