@@ -39,7 +39,8 @@ class App extends Component {
         email:email,
         password:password
     },{withCredentials: true}).then(response => {
-        console.log(response) 
+        console.log(response);
+        console.log(response.data.username);
             if(response.data.username) {
                 console.log('successful login '+response.data.username);
                // this.setState({my_id:response.data.username });
