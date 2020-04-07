@@ -39,7 +39,9 @@ class App extends Component {
                   password:password
                   },{withCredentials: true});
     
-                  this.setState({my_id:response.data.username});
+                  //this.setState({my_id:response.data.username}, () => {
+                    this.handShake();
+               //   });
 
     
 
@@ -68,7 +70,7 @@ class App extends Component {
   }
 
   componentDidMount() {
-    socket.emit('handshake', 'give me my id');
+    this.handShake();
 
   
 
