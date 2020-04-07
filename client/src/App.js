@@ -41,6 +41,7 @@ class App extends Component {
     
                   //this.setState({my_id:response.data.username}, () => {
                     this.handShake();
+                    window.location.reload(false);
                //   });
 
     
