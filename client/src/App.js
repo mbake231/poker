@@ -41,29 +41,33 @@ class App extends Component {
     },{withCredentials: true}).then(response => {
         console.log(response) 
             if(response.data.username) {
-                console.log('successful login')
-
-
-
-           //    return true;
+                console.log('successful login '+response.data.username);
+                this.setState({my_id:response.data.username})
+                window.location.reload(false);
+                
             }else {
                 console.log("Sign in error")
-            //    return false;
             }
         }
     )
   }
 
-  componentDidMount() {
-
-    
-    //get id
+  handShake() { 
     socket.emit('handshake', 'give me my id');
+    
+  }
+
+  componentDidMount() {
+    this.handShake();
+
     socket.on('handshake', (_id) => {
       //console.log("incoming update " + privateData);
         console.log("My ID is:"+_id);
         this.setState({my_id:_id})
       });
+    
+    //get id
+ 
       /*
       //SETUP TEST GAME
       var gameid;
