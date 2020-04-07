@@ -43,6 +43,7 @@ class App extends Component {
         console.log(response.data.username);
             if(response.data.username) {
                 console.log('successful login '+response.data.username);
+                console.log('successful just un '+response.username);
                // this.setState({my_id:response.data.username });
            //   return response;
             }
