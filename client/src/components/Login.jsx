@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Button, FormGroup, FormControl, FormLabel } from "react-bootstrap";
 import "./Login.css";
 import axios from 'axios';
+import socket from '../socket'
 
 export default function Login(props) {
   const [email, setEmail] = useState("");
@@ -12,7 +13,13 @@ export default function Login(props) {
   }
 
   function handleSubmit(event) {
+
     event.preventDefault();
+    
+    props.login(email,password);
+    props.close();
+
+    /*
     var url;
     if(process.env.NODE_ENV === 'production')
       url='https://fartmanjack.herokuapp.com/login';
@@ -27,15 +34,15 @@ export default function Login(props) {
         console.log(response) 
             if(response.data.username) {
                 console.log('successful login')
-                
-                
+                socket.emit('handshake','nodate');
+                props.close();
             }else {
                 console.log("Sign in error")
             }
         }
     )
+*/
 }
-
   return (
     <div className="Login">
       <form onSubmit={handleSubmit}>

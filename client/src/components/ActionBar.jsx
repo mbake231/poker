@@ -26,8 +26,8 @@ class ActionBar extends Component {
         return (
         <div>
           <div id='ButtonContainer' className="mb-2">
-            <FoldButton my_id={this.props.my_id} gameid={this.props.gameid}></FoldButton>
-            <CallButton my_id={this.props.my_id} gameid={this.props.gameid}></CallButton>
+            <FoldButton my_id={this.props.my_id} gameid={this.props.gameid} text={'Fold'}></FoldButton>
+            <CallButton toCallAmt={this.props.toCallAmt} my_id={this.props.my_id} gameid={this.props.gameid}></CallButton>
             <RaiseButton my_id={this.props.my_id} gameid={this.props.gameid}></RaiseButton>
             </div>
         </div> );
@@ -35,7 +35,8 @@ class ActionBar extends Component {
       return (
         <div>
           <div id='ButtonContainer' className="mb-2">
-            <CheckButton my_id={this.props.my_id} gameid={this.props.gameid}></CheckButton>
+            <CheckButton my_id={this.props.my_id} gameid={this.props.gameid} text={"Check"}></CheckButton>
+            <FoldButton my_id={this.props.my_id} gameid={this.props.gameid} text={""}></FoldButton>
             <RaiseButton my_id={this.props.my_id} gameid={this.props.gameid}></RaiseButton>            
             </div>
         </div> );
@@ -44,7 +45,9 @@ class ActionBar extends Component {
         <div>
           <div id='ButtonContainer' className="mb-2">
             <FoldButton my_id={this.props.my_id} gameid={this.props.gameid}></FoldButton>
-            <RaiseButton my_id={this.props.my_id} gameid={this.props.gameid}></RaiseButton>
+            <CallButton my_id={this.props.my_id} gameid={this.props.gameid}></CallButton>
+            <FoldButton my_id={this.props.my_id} gameid={this.props.gameid} text={""}></FoldButton>
+
             </div>
         </div> );
         else

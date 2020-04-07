@@ -17,7 +17,7 @@ import './ActionButtons.css'
     var actionpackage = {gameid:props.gameid,
                         hash:props.my_id,
                         action:'raise',
-                        amt:amt};
+                        amt:Number(amt).toFixed(2)};
     socket.emit('incomingAction',actionpackage);
  }
 
@@ -26,13 +26,14 @@ import './ActionButtons.css'
 
         return (
         <div id='raiseModule'>
-            <Button className='actionItem' disabled={!validateForm()} onClick={handleClick}>Raise</Button>
-            <InputGroup className="actionItem mb-3">
+            <Button className='actionItem' disabled={!validateForm()} onClick={handleClick}>{'Raise $'+amt}</Button>
+            <InputGroup className="raiseBtn raiseInput mb-3">
                 <InputGroup.Prepend>
                 <InputGroup.Text>$</InputGroup.Text>
                 </InputGroup.Prepend>
                 <FormControl aria-label="Amount" onChange={e => setAmt(e.target.value)} />
             </InputGroup>
+
         </div> );
     
 }

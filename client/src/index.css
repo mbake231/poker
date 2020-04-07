@@ -16,3 +16,8 @@ code {
 }
 
 
+body > #root > #AppContainer  {
+  width: 1440px;
+  height:770px;
+
+}

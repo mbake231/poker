@@ -1,10 +1,15 @@
-#raiseModule {
-    display: flex;
-    align-items: right;
-    justify-content: center;
-    width:200px
-}
+
 
 .actionItem {
     margin-left: 3px;
+}
+
+.raiseInput {
+    position: absolute;
+    top: -150px;
+    width: 200px;
+}
+
+.ghostBtn {
+    visibility: hidden;
 }

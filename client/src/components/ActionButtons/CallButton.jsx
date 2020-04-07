@@ -26,7 +26,7 @@ class CallButton extends Component {
     render() { 
         return (
         <div>
-            <Button className='actionItem' onClick={this.handleClick.bind(this)}>Call</Button>
+            <Button className='actionItem' onClick={this.handleClick.bind(this)}>{'Call $'+this.props.toCallAmt}</Button>
         </div> );
     }
 }

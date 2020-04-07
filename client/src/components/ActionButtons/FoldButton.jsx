@@ -22,10 +22,17 @@ class FoldButton extends Component {
 
 
     render() { 
+        if(this.props.text=='Fold')
         return (
         <div>
-            <Button className='actionItem' onClick={this.handleClick.bind(this)}>Fold</Button>
+            <Button className='actionItem' onClick={this.handleClick.bind(this)}>{this.props.text}</Button>
         </div> );
+        else
+        return (
+            <div>
+                <Button className='actionItem ghostBtn' onClick={this.handleClick.bind(this)}>{this.props.text}</Button>
+            </div> );
+
     }
 }
  

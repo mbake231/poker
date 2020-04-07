@@ -23,7 +23,7 @@ class player {
 		const scope=this;
 		try {
 			MongoClient.connect(url, function(err, db) {
-				const dbo=null;
+				var dbo=null;
 				if(process.env.NODE_ENV == 'production') {
 					dbo = db.db('heroku_fbgvjbpl');
 				}
@@ -86,7 +86,7 @@ class player {
 	}
 
 	updateSessionId(newSessionid) {
-		console.log(this.sessionid +" IS NOW "+newSessionid);
+	//	console.log(this.sessionid +" IS NOW "+newSessionid);
 		this.sessionid=newSessionid;
 	}
 

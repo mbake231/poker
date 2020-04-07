@@ -123,7 +123,7 @@ class game {
 	}
 
 	reconnect(hash,newSessionId) {
-		console.log("TRYING TO RECONNECT: "+hash);
+		//console.log("TRYING TO RECONNECT: "+hash);
 		if (this.getPlayerByHash(hash) != false) {
 	
 			this.getPlayerByHash(hash).updateSessionId(newSessionId);
@@ -1031,7 +1031,7 @@ class game {
 
 	getNextAction () {
 
-		
+		this.printSeats();
 
 		//BIG BLIND CAN ACT AT END OF PRE-FLOP BETTING
 		//IF ACTION IS TO BIGBLIND + AND NO ONE RAISED AKA LAST BET IS CALL AND THE CALL IS SAME AS BIG BLIND

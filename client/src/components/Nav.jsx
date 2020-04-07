@@ -35,7 +35,7 @@ class MyNav extends Component {
       }
         return (
         <Navbar>
-            <LoginModal ref={this.loginModalRef} ></LoginModal>
+            <LoginModal ref={this.loginModalRef} login={this.props.login.bind(this)} ></LoginModal>
             <Navbar.Brand href="#home">Clint Do-Me Son's Poker Dojo</Navbar.Brand>
             <Navbar.Toggle />
               <Navbar.Collapse className="justify-content-end">

@@ -32,7 +32,7 @@ render() {
                <Modal.Title>Login</Modal.Title>
              </Modal.Header>
              <Modal.Body>
-               <Login></Login>
+               <Login close={this.handleClose.bind(this)} login={this.props.login.bind(this)}></Login>
              </Modal.Body>
           </Modal>
         </div>

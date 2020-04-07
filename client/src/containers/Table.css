@@ -1,74 +1,174 @@
 
 
 #Board{
-  position:relative;
+  position: absolute;;
 
-    left:270px;
-    top:-600px;
+    left:500px;
+    top:320px;
     display: flex;
 }
 .boardCard{
   margin-left:3px;
 }
+
+#totalPot {
+  position: absolute;;
+
+    left:630px;
+    top:290px;
+    display: flex;
+}
+
+.chipStack {
+  position: absolute;
+
+  list-style-type: none;
+  display: flex;
+flex-direction: column-reverse;
+}
+
+.chip {
+  margin: -12px 0;
+}
+
+#roundPot {
+  position: absolute;;
+
+    left:630px;
+    top:430px;
+    display: flex;
+}
+
+#seatbox{
+  margin: 0 auto;
+
+  width: 900px;
+  height:700px;
+}
+
+.stackAmt{
+  position: absolute;
+  left:40px;
+}
+
 #ActionBar {
-    position:relative;
+    position: absolute;;
     display: inline-block;
   
-    left:400px;
-    top:-280px;
+    left:500px;
+    top:600px;
   }
-
 
 #seat0 {
-  position: relative;
-  left: 100px;
+  position: absolute;
+  left:470px;
+  top:80px;
+}
 
-  }
+#chipstack0 {
+  position: absolute;
+  left:580px;
+  top:205px;
+}
+
+#seat1 {
+  position: absolute;
+  left:720px;
+  top:80px;
+}
+
+#chipstack1 {
+  position: absolute;
+  left:760px;
+  top:240px;
+}
+
+#seat2 {
+  position: absolute;
+  left:950px;
+  top:195px;
+}
+
+
+#chipstack2 {
+  position: absolute;
+  left:870px;
+  top:300px;
+}
+
+#seat3 {
+  position: absolute;
+  left:975px;
+  top:330px;
+}
+
+#chipstack3 {
+  position: absolute;
+  left:910px;
+  top:365px;
+
+}
+
+#seat4 {
+  position: absolute;
+  left:920px;
+  top:485px;
   
-  #seat1 {
-    position: relative;
-    left: 600px;
-    top:-90px;
-  }
+}
+
+#chipstack4 {
+  position: absolute;
+  left:855px;
+  top:475px;
   
-  #seat2 {
-    position: relative;
-    left:785px;
-    top:-40px;
-  }
-  
-  #seat3 {
-    position:relative;
-    left:785px;
-    top:10px;
-   
-  }#seat4 {
-    position:relative;
-    left:680px;
-    top:60px;
-   
-  }
-  #seat5 {
-    position:relative;
-    left:355px;
-    top:30px;
-  
-  }
-  #seat6 {
-    position:relative;
-    left:25px;
-    top:-130px;
-    
-  }
-  #seat7 {
-    position:relative;
-    left:-100px;
-    top:-350px;
-  
-  }
-  #seat8 {
-    position:relative;
-    left:-90px;
-    top:-620px;
-   
-  }
+}
+
+
+
+#seat5 {
+  position: absolute;
+  left:590px;
+  top:570px;
+}
+#chipstack5 {
+  position: absolute;
+  left:670px;
+  top:530px;
+}
+
+#seat6 {
+  position: absolute;
+  left:250px;
+  top:485px;
+}
+
+#chipstack6 {
+  position: absolute;
+  left:485px;
+  top:515px;
+}
+
+#seat7 {
+  position: absolute;
+  left:185px;
+  top:330px;
+}
+
+#chipstack7 {
+  position: absolute;
+  left:420px;
+  top:365px;
+}
+
+#seat8 {
+  position: absolute;
+  left:205px;
+  top:196px;
+}
+
+#chipstack8 {
+  position: absolute;
+  left:455px;
+  top:296px;
+}
+

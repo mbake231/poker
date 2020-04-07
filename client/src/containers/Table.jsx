@@ -3,7 +3,7 @@ import "./Table.css";
 import PlayerChevron from "../components/PlayerChevron"
 import ActionBar from "../components/ActionBar"
 import Board from "../components/Board"
-
+import Pots from "../components/Pots"
 import socket from '../socket'
 
 
@@ -14,7 +14,10 @@ class Table extends Component{
     gameid:null,
     actions:[],
     seats: [],
-    board: []
+    board: [],
+    toCallAmt:0,
+    totalPot:0,
+    roundPot:0
 
   }
     
@@ -58,6 +61,15 @@ componentDidMount() {
         else {
           this.setState({actions:[]});
         }
+        //set call button amts
+        if(data.bettingRound.actionOn!=null)
+          this.setState({toCallAmt:(data.bettingRound.currentRaiseToCall - data.bettingRound.actionOn.moneyOnLine)})
+     
+        //set pot sizes
+        this.setState({totalPot:data.bettingRound.potsTotal});
+        this.setState({roundPot:data.bettingRound.totalOnLine});
+
+
       });
 }
 
@@ -66,12 +78,15 @@ render () {
 
   return (
     <div id='Table' className="Table">
+      <div id='seatbox'>
         {this.state.seats.map((seat,i) => {
-            return <PlayerChevron id={i} info={this.state.seats[i]} gameid={this.state.gameid} my_id={this.props.my_id}></PlayerChevron>
+            return <PlayerChevron id={i} info={this.state.seats[i]} chipstack={this.state.seats[i].moneyOnLine} gameid={this.state.gameid} my_id={this.props.my_id}></PlayerChevron>
         })}
+        </div>
+      <Pots totalPot={this.state.totalPot} roundPot={this.state.roundPot}></Pots>
       <Board board={this.state.board}></Board>
       <div id='ActionBar'>
-        <ActionBar actions={this.state.actions} my_id={this.props.my_id} gameid={this.state.gameid}></ActionBar>
+        <ActionBar toCallAmt={this.state.toCallAmt} actions={this.state.actions} my_id={this.props.my_id} gameid={this.state.gameid}></ActionBar>
       </div> 
     </div>
   );

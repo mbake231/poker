@@ -25,6 +25,35 @@ class App extends Component {
     };
   }
 
+  login(email,password) {
+    var url;
+    if(process.env.NODE_ENV === 'production')
+      url='https://fartmanjack.herokuapp.com/login';
+    else
+      url='http://localhost:3000/login';
+
+
+
+
+    axios.post(url, {
+        email:email,
+        password:password
+    },{withCredentials: true}).then(response => {
+        console.log(response) 
+            if(response.data.username) {
+                console.log('successful login')
+
+
+
+           //    return true;
+            }else {
+                console.log("Sign in error")
+            //    return false;
+            }
+        }
+    )
+  }
+
   componentDidMount() {
 
     
@@ -65,6 +94,8 @@ class App extends Component {
 
    
      */
+
+
     
   }
 
@@ -73,8 +104,8 @@ class App extends Component {
   render() {
     return (
 
-      <div className="App container">
-        <MyNav my_id={this.state.my_id} my_name={this.state.my_name}>
+      <div id="AppContainer">
+        <MyNav my_id={this.state.my_id} my_name={this.state.my_name} login={this.login.bind(this)}>
             <Link to="/">Scratch</Link>
         </MyNav>
         

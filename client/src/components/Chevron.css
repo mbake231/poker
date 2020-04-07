@@ -3,6 +3,7 @@ ul{padding:0;}
 .cards {
     position: absolute;
     margin-left: 45%;
+    top:-15px;
     display: flex;
     align-items: right;
     justify-content: center;
@@ -15,5 +16,13 @@ ul{padding:0;}
     align-items: right;
     justify-content: center;
     width:150px;
-    height: 38px
+    height: 38px;
+   
+    
+}
+.card {
+    width:200px !important;
+    height: 80px !important;
+    padding-top: -50px;
+    
 }

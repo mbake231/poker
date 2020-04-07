@@ -1,17 +1,21 @@
-import React, { useState,Component } from 'react';
+import React, { useState,useEffect,Component } from 'react';
 import Card from 'react-bootstrap/Card'
 import "./Chevron.css";
 import socket from '../socket';
 import { Button, FormGroup, FormControl, FormLabel } from "react-bootstrap";
 import InputGroup from 'react-bootstrap/InputGroup'
-
+import ChipStack from './ChipStack';
 
 //class PlayerChevron extends Component {
 
 
     export default function PlayerChevron(props) {
         const [amt, setAmt] = useState("");
+        const [chipstack, setChipStack] = useState(0);
 
+   useEffect(()=> {
+        setChipStack(props.info.moneyOnLine);
+   })
 
 function validateForm() {
            return amt.length > 0 && isNaN(amt)==false;
@@ -23,7 +27,7 @@ function validateForm() {
         const register = {
 			gameHash: props.gameid,
 			userid: props.my_id,
-			balance: amt,
+			balance: Number(amt),
 			status: 'playing',
 			seat: props.id
 		}
@@ -33,19 +37,13 @@ function validateForm() {
       
   }
 
-
-
-
-   
         if(props.info=='empty') {
             return ( 
                 <Card id={'seat'+props.id} style={{ width: '14rem' }}>
                     <Card.Body>
-                        <Card.Title>
-                        </Card.Title>
                         <div className='inputGroup'>
                         <Button disabled={!validateForm()} onClick={handleClick}>Sit</Button>
-                        <InputGroup className="actionItem mb-3">
+                        <InputGroup className="mb-3">
                             <InputGroup.Prepend>
                             <InputGroup.Text>$</InputGroup.Text>
                             </InputGroup.Prepend>
@@ -62,18 +60,21 @@ function validateForm() {
 
          else {
             return ( 
+                <div>
                 <Card id={'seat'+props.id} style={{ width: '14rem' }}>
                     <Card.Body>
                         <Card.Title>{props.info.userid}</Card.Title>
                         <Card.Text>
-                            {props.info.balance}
+                            {"$"+props.info.balance}
                         </Card.Text>
                     </Card.Body>
                     <div className="cards">
-                        <div id="card1"><img src={'/img/cards/'+props.info.card1+".svg"} width='75px' /></div>
-                        <div id="card2"><img src={'/img/cards/'+props.info.card2+".svg"} width='75px' /></div>
+                        <div id="card1"><img src={'/img/cards/'+props.info.card1+".svg"} width='65px' /></div>
+                        <div id="card2"><img src={'/img/cards/'+props.info.card2+".svg"} width='65px' /></div>
                     </div>
                 </Card>
+                <ChipStack chipstack={chipstack} id={props.id}></ChipStack>
+                </div>
 
          );
         }
