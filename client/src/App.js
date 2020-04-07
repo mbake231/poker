@@ -42,10 +42,12 @@ class App extends Component {
         console.log(response) 
             if(response.data.username) {
                 console.log('successful login '+response.data.username);
-                this.setState({my_id:response.data.username})
-                window.location.reload(false);
-                
-            }else {
+                this.setState({my_id:response.data.username}, () => {
+                  window.location.reload(false);
+              });
+            }
+         
+            else {
                 console.log("Sign in error")
             }
         }
