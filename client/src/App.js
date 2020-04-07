@@ -23,19 +23,27 @@ class App extends Component {
       my_name: null
       
     };
+    this.login = this.login.bind(this);
   }
 
-  login(email,password) {
+  async login(email,password) {
     var url;
     if(process.env.NODE_ENV === 'production')
       url='https://fartmanjack.herokuapp.com/login';
     else
       url='http://localhost:3000/login';
 
+  
+      const response = await axios.post(url, {
+                   email:email,
+                  password:password
+                  },{withCredentials: true});
+    
+                  this.setState({my_id:response.data.username});
 
+    
 
-
-    axios.post(url, {
+    /*axios.post(url, {
         email:email,
         password:password
     },{withCredentials: true}).then(response => {
@@ -43,17 +51,15 @@ class App extends Component {
         console.log(response.data.username);
             if(response.data.username) {
                 console.log('successful login '+response.data.username);
-                console.log('successful just un '+response.username);
-                this.setState({my_id:response.data.username });
-           //   return response;
             }
          
             else {
                 console.log("Sign in error")
             }
-           // return response;
-        }
-    )
+        }).then(response => {
+            this.setState({my_id:response.data.username });
+
+        })*/
   }
 
   handShake() { 
@@ -64,7 +70,7 @@ class App extends Component {
   componentDidMount() {
     socket.emit('handshake', 'give me my id');
 
-  /*  this.handShake();
+  
 
     socket.on('handshake', (_id) => {
       //console.log("incoming update " + privateData);
@@ -74,7 +80,7 @@ class App extends Component {
     
     //get id
  
-      
+      /*  this.handShake();
       //SETUP TEST GAME
       var gameid;
       socket.emit('createGame', 'no data');
