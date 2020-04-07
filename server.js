@@ -112,7 +112,7 @@ io.use(passportSocketIo.authorize({
 		});
 
 	
-	//console.log(socket.request.user._id+' connected.'); 
+	console.log(socket.request.user._id+' connected.'); 
 
 
 	//ask for public seat list
