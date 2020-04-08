@@ -5,6 +5,7 @@ import SitNextHandButton from './GameMenuButtons/SitNextHandButton';
 import LeaveTableButton from './GameMenuButtons/LeaveTableButton';
 import CallClockButton from './GameMenuButtons/CallClockButton';
 import SitBackDownButton from './GameMenuButtons/SitBackDownButton';
+import AddChipsButton from './GameMenuButtons/AddChipsButton';
 
 
 export default function GameMenu(props) {
@@ -14,6 +15,7 @@ if(props.my_seat!=null) {
     return (
         <div id='gameMenu'>
                 <CallClockButton gameid={props.gameid} my_id={props.my_id} clockCalled={props.clockCalled}></CallClockButton>
+                <AddChipsButton gameid={props.gameid} my_id={props.my_id}></AddChipsButton>
                 <SitNextHandButton gameid={props.gameid} my_id={props.my_id}></SitNextHandButton>
                 <LeaveTableButton gameid={props.gameid} my_id={props.my_id}></LeaveTableButton>
         </div>
@@ -24,6 +26,7 @@ if(props.my_seat!=null) {
         <div id='gameMenu'>
                 <Button className='ghostBtn'></Button>
                 <Button className='ghostBtn'></Button>
+                <AddChipsButton gameid={props.gameid} my_id={props.my_id}></AddChipsButton>
                 <LeaveTableButton gameid={props.gameid} my_id={props.my_id}></LeaveTableButton>
         </div>
     );
@@ -32,6 +35,7 @@ if(props.my_seat!=null) {
     return (
         <div id='gameMenu'>
                 <Button className='ghostBtn'></Button>
+                <AddChipsButton gameid={props.gameid} my_id={props.my_id}></AddChipsButton>
                 <SitBackDownButton gameid={props.gameid} my_id={props.my_id}>Sit back down</SitBackDownButton>
                 <LeaveTableButton gameid={props.gameid} my_id={props.my_id}></LeaveTableButton>
         </div>

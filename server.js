@@ -156,6 +156,10 @@ io.use(passportSocketIo.authorize({
 		socket.on('sitBackDown', function (data) {
 				newgameController.sitBackDown(data.gameid,data.hash);
 			});
+		
+		socket.on('addChips', function (data) {
+				newgameController.addChips(data.gameid,data.hash,data.amt);
+			});
 
 		socket.on('leaveTable', function (data) {
 				newgameController.leaveTableNextHand(data.gameid,data.hash);
