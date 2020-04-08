@@ -12,7 +12,9 @@ class game {
 			game_size:9,
 			 seats:[],
 			numseats:0,
+			gameRunning:false,
 			handCount:0,
+			clockCalled: false,
 			handLogSentIndex:0,
 			isSettled: 'no',
 			handLog: [],
@@ -69,9 +71,12 @@ class game {
 
 			this.setDealer(lowestSeat);
 			this.runGame();
+			this.gameRunning=true;
 		}
-		else
+		else {
 			console.log('not enough players');
+			this.gameRunning=false;
+		}
 	}
 
 	runGame() {
@@ -106,6 +111,7 @@ class game {
 	}
 
 	sendDataToAllPlayers() {
+		//console.log('send data');
 		var sendList = this.getAllPlayerSessionIDs();
 		var sessionidToSend;
 		var handlogThisSession = (this.getHandLog().length) - this.gameTable.handLogSentIndex;
@@ -215,11 +221,11 @@ class game {
 			//remove those who were set to leave
 			for (var i=0;i<this.gameTable.game_size;i++) {
 				if(this.gameTable.seats[i].leavenexthand==true) {
+					var deletedSID = this.gameTable.seats[i].sessionid;
 					console.log(this.gameTable.seats[i].userid+" has left the table.");
 					this.updateHandLog(this.gameTable.seats[i].userid+" has left the table.");
-					this.gameTable.seats[i]='empty';
 					this.deletePlayer(this.gameTable.seats[i]);
-					
+					this.sendSeatList(deletedSID);
 				}
 			}
 			//set sitting out
@@ -449,7 +455,7 @@ class game {
 		//check to make sure theyre not sitting out, if so next guy gets it
 		for(var i=player.seat;i<this.gameTable.game_size;i++) {
 			if(this.gameTable.seats[i].status=='playing') {
-				console.log('DEALER '+this.gameTable.seats[i].userid)
+				console.log('The dealer is '+this.gameTable.seats[i].userid)
 				this.gameTable.dealer=this.gameTable.seats[i];
 				return this.gameTable.seats[i];
 			}
@@ -680,6 +686,7 @@ class game {
 
 	leaveTableNextHand (hash) {
 		var playerToLeave = this.getPlayerByHash(hash);
+
 		//make sure i pass dealer to the next player if i am dealer
 		if(this.gameTable.dealer!=null){
 			if(this.gameTable.dealer.hash==playerToLeave.hash)
@@ -691,13 +698,43 @@ class game {
 		//leave
 	
 		if(playerToLeave.status=='sittingout' || playerToLeave.status=='folded' || playerToLeave.status=='playing') {
+			var deletedSID = playerToLeave.sessionid;
 			this.deletePlayer(playerToLeave);
-
+			this.sendSeatList(deletedSID);
+			this.sendDataToAllPlayers();
 		}
 		else
 			playerToLeave.leavenexthand = true;		
 
 		
+	}
+
+	sitPlayerBackDown(hash) {
+		var playerToSit = this.getPlayerByHash(hash);
+		var sittingSID = playerToSit.sessionid;
+
+		if(playerToSit.status=='sittingout' && playerToSit.hashEnough(this.gameTable.bigBlind)==true) {
+			playerToSit.sitBackDown();
+			playerToSit.toggleSitOut(); //set this back to true!
+			this.sendSeatList(sittingSID);
+			console.log(playerToSit.userid+" has sat back down!");
+			this.updateHandLog(playerToSit.userid+" has sat back down!");
+			this.sendDataToAllPlayers();
+
+			if(this.gameTable.gameRunning==false) {
+				if(this.getNumberPlayersPlaying()>1) {
+					console.log("We have enough players, starting up!")
+					this.updateHandLog("We have enough players, starting up!");
+					if(this.handCount==0)
+						this.startGame();
+					else
+						this.nextHand();
+				}
+			}
+		}
+		else
+			console.log('Not enough money!');
+
 	}
 
 	areMoneyLinesZero() {
@@ -962,8 +999,10 @@ class game {
 				var lastManStanding;
 				this.clearRoundData();
 				for (var i=0;i<this.gameTable.seats.length;i++){
-					if(this.gameTable.seats[i].status=='inhand')
+					if(this.gameTable.seats[i].status=='inhand') {
 						lastManStanding=this.gameTable.seats[i];
+						console.log('LMS is '+lastManStanding.seat);
+					}
 					
 				}
 				//set all pots winner to last man standing and add amount to pay
@@ -973,15 +1012,16 @@ class game {
 											winningHand:"everyone folding."});
 					//total winning
 					amtToPay=+this.gameTable.bettingRound.pots[i].total;
-
+					
 					console.log("Everyone folded so "+this.gameTable.bettingRound.pots[i].winners[0].winner.userid+" wins $"+(amtToPay/100).toFixed(2)+".");
 					this.updateHandLog("Everyone folded so "+this.gameTable.bettingRound.pots[i].winners[0].winner.userid+" wins $"+(amtToPay/100).toFixed(2)+".");
 
 				}
 				//pay the man his money
-				lastManStanding.givePot(amtToPay);
+				console.log('We gave seat '+lastManStanding.seat+ ' $'+amtToPay);
+				lastManStanding.givePot(parseInt(amtToPay));
 			}
-			console.log('SETLING');
+			console.log('Game is now settled.');
 			this.gameTable.isSettled="yes";
 			this.mochatest=true;
 			let scope=this;
@@ -1027,6 +1067,9 @@ class game {
 
 	callClock() {
 			this.actionOnTimer();
+			this.gameTable.clockCalled = true;
+			this.sendDataToAllPlayers();
+
 	}
 
 	getTimerLength () {
@@ -1035,6 +1078,10 @@ class game {
 
 	sitActionOnPlayerOut(player) {
 		this.gameTable.bettingRound.actionOn.toggleSitOut();
+	}
+
+	isClockCalled() {
+		return this.gameTable.clockCalled;
 	}
 
 	actionOnTimer() {
@@ -1048,6 +1095,7 @@ class game {
 			function (){
 				scope.sitActionOnPlayerOut();
 				scope.doAction(scope.gameTable.bettingRound.actionOn,'fold-clock');
+				scope.gameTable.clockCalled=false;
 				if(scope.gameTable.isTest==false)
 					scope.sendDataToAllPlayers();
 
@@ -1399,10 +1447,22 @@ class game {
 				&&  privategameTable.seats[i].card1!=null
 				&&  privategameTable.seats[i].hash!=thisHash) 
 				{
-				if(this.cardsToReveal[i].card1=='private') 
+				if(privategameTable.seats[i].status=='folded') 
+					privategameTable.seats[i].card1 = null;
+				else if(this.cardsToReveal[i].card1=='private') 
 					privategameTable.seats[i].card1 = "private";
-				if(this.cardsToReveal[i].card2=='private') 
+				
+				if(privategameTable.seats[i].status=='folded') 
+					privategameTable.seats[i].card2 = null;
+				else if(this.cardsToReveal[i].card2=='private') 
 					privategameTable.seats[i].card2 = "private";
+					
+			}
+			else if(privategameTable.seats[i].hash==thisHash) {
+				if(privategameTable.seats[i].status=='folded') {
+					privategameTable.seats[i].card1 = privategameTable.seats[i].card1+'fold';
+					privategameTable.seats[i].card2 = privategameTable.seats[i].card2+'fold';
+				}
 			}
 		}
 		return JSON.stringify(privategameTable);
@@ -1437,8 +1497,14 @@ class game {
 
 		for(var i=0; i<this.gameTable.game_size;i++){
 			if(publicSeatList.seats[i] != 'empty') {
+				if(publicSeatList.seats[i].card1 != null && publicSeatList.seats[i].status != 'folded') {
 					publicSeatList.seats[i].card1 = "private";
 					publicSeatList.seats[i].card2 = "private";
+				}
+				else {
+					publicSeatList.seats[i].card1 = null;
+					publicSeatList.seats[i].card2 = null;
+				}
 
 			}
 		}

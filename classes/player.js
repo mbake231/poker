@@ -51,7 +51,7 @@ class player {
 				
 				var result = await (myPromise());
 				//anything here is executed after result is resolved
-				console.log('RESULT'+result.name);
+				//console.log('RESULT'+result.name);
 				return result.name;
 			 };
 	   
@@ -78,12 +78,16 @@ class player {
 	}
 
 	givePot(amt) {
-		this.balance+=Number(amt);
+		this.balance+=parseInt(amt);
 	}
 
 	updateSessionId(newSessionid) {
 	//	console.log(this.sessionid +" IS NOW "+newSessionid);
 		this.sessionid=newSessionid;
+	}
+
+	sitBackDown() {
+		this.status='playing';
 	}
 
 	setSeat(seat) {

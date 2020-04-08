@@ -65,7 +65,7 @@ function initialize (passport, getUserByEmail, getUserById) {
 			    	        }
                             dbo.collection("Users").findOne({"_id":ObjectId(id)}, function(err, result) {
                               if (err) throw err;
-                              console.log("Successfully deserailized:"+result._id);
+                            //  console.log("Successfully deserailized:"+result._id);
 
                               return done(null,result);
                               db.close();

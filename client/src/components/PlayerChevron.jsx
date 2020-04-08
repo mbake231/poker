@@ -5,6 +5,7 @@ import socket from '../socket';
 import { Button, FormGroup, FormControl, FormLabel } from "react-bootstrap";
 import InputGroup from 'react-bootstrap/InputGroup'
 import ChipStack from './ChipStack';
+import Badge from 'react-bootstrap/Badge'
 
 //class PlayerChevron extends Component {
 
@@ -58,7 +59,7 @@ function validateForm() {
          );
         }
 
-         else if (props.info.card1 != 'fold' && props.info.card1 != null)
+         else if (props.info.status != 'sittingout')
          {
             return ( 
                 <div>
@@ -79,11 +80,11 @@ function validateForm() {
 
          );
         }
-        else if (props.info.card1 == 'fold' || props.info.card1 == null)
-         {
+        
+        else if(props.info.status=='sittingout') {
             return ( 
                 <div>
-                <Card id={'seat'+props.id} style={{ width: '14rem' }}>
+                <Card className='sittingOut' id={'seat'+props.id} style={{ width: '14rem' }}>
                     <Card.Body>
                         <Card.Title>{props.info.userid}</Card.Title>
                         <Card.Text>
@@ -91,8 +92,7 @@ function validateForm() {
                         </Card.Text>
                     </Card.Body>
                     <div className="cards">
-                        <div id="card1"></div>
-                        <div id="card2"></div>
+                        <Badge variant="dark">Sitting Out</Badge>
                     </div>
                 </Card>
                 <ChipStack chipstack={chipstack} id={props.id}></ChipStack>
@@ -100,6 +100,9 @@ function validateForm() {
 
          );
         }
+        else
+            return (<div></div>);
+        
     }
 
 

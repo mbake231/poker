@@ -4,6 +4,8 @@ import PlayerChevron from "../components/PlayerChevron"
 import ActionBar from "../components/ActionBar"
 import Board from "../components/Board"
 import Chat from "../components/Chat"
+import GameMenu from "../components/GameMenu"
+
 import Pots from "../components/Pots"
 import socket from '../socket'
 
@@ -15,34 +17,20 @@ class Table extends Component{
     gameid:null,
     actions:[],
     seats: [],
+    my_seat: null,
     board: [],
     toCallAmt:0,
     totalPot:0,
     roundPot:0,
-    chat:[]
+    chat:[],
+    clockCalled:false,
+    my_status:null
 
   }
     
   };
    
 componentDidMount() {
-      var gameid = window.location.pathname.slice(7)
-
-      this.setState({gameid:gameid}, (res) => {
-        socket.emit('seatList', this.state.gameid);
-        socket.emit('reconnectionAttempt', {gameid:this.state.gameid,hash:this.props.my_id});
-      } )
-      
-
-      socket.on('publicSeatList', (publicData) => {
-    //console.log("incoming update " + publicData);
-    const data = JSON.parse(publicData);
-      if(data.gameid==this.state.gameid) {
-      
-      this.setState({gameData:data});  
-      this.setState({seats: data.seats});
-      }
-
       this.call = new Audio('/audio/call.wav')
       this.call.load()
       this.check = new Audio('/audio/check.wav')
@@ -53,6 +41,32 @@ componentDidMount() {
       this.shuffle.load()
       this.yourturn = new Audio('/audio/yourturn.wav')
       this.yourturn.load()
+
+      var gameid = window.location.pathname.slice(7)
+
+      this.setState({gameid:gameid}, (res) => {
+        socket.emit('seatList', this.state.gameid);
+        socket.emit('reconnectionAttempt', {gameid:this.state.gameid,hash:this.props.my_id});
+      } )
+      
+
+      socket.on('publicSeatList', (publicData) => {
+      const data = JSON.parse(publicData);
+      if(data.gameid==this.state.gameid) {
+      
+      this.setState({gameData:data});  
+      this.setState({seats: data.seats}, () => {
+        if(this.state.my_seat!=null){
+          if(this.state.my_seat.hash!=this.state.seats[this.state.my_seat.seat].hash)
+            this.setState({my_seat:null}); 
+        }
+    });
+        
+      
+      
+
+
+      }
     });
 
 
@@ -75,12 +89,38 @@ componentDidMount() {
         else {
           this.setState({actions:[]});
         }
+
+        //set my seat
+        if(this.props.my_id!=null && this.state.seats.length!=0){
+          var ctr=0;
+          while(ctr>=0) {
+            console.log(ctr);
+            if(ctr > this.state.gameData.game_size) {
+              ctr=-99;
+              this.setState({my_seat:null});
+            }
+            else if(this.state.seats[ctr]!='empty') {
+              if(this.state.seats[ctr].hash == this.props.my_id){
+                console.log('seat set')
+                this.setState({my_seat:this.state.seats[ctr]});
+                ctr=-99;
+              }
+              
+            }
+            ctr++;
+          }
+        }
+        
+
         //set call button amts
         if(data.bettingRound.actionOn!=null)
           this.setState({toCallAmt:(data.bettingRound.currentRaiseToCall - data.bettingRound.actionOn.moneyOnLine)})
      
         //sethandlog
         this.setState({chat:data.handLog})
+
+        //setclock
+        this.setState({clockCalled:data.clockCalled})
         
         //set pot sizes
         this.setState({totalPot:data.bettingRound.potsTotal});
@@ -125,6 +165,7 @@ render () {
         </div>
       <Pots totalPot={Number(this.state.totalPot)} roundPot={Number(this.state.roundPot)}></Pots>
       <Board board={this.state.board}></Board>
+      <GameMenu gameid={this.state.gameid} my_id={this.props.my_id} my_seat={this.state.my_seat} clockCalled={this.state.clockCalled}></GameMenu>
       <Chat chat={this.state.chat}></Chat>
       <div id='ActionBar'>
         <ActionBar toCallAmt={Number(this.state.toCallAmt)} actions={this.state.actions} my_id={this.props.my_id} gameid={this.state.gameid}></ActionBar>

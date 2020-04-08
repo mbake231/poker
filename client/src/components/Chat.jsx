@@ -1,15 +1,17 @@
 import React, { Component } from 'react';
-
+import ScrollableFeed from 'react-scrollable-feed'
 
 class Chat extends Component {
 
 
-    componentDidUpdate() {
-        this.scrollToBottom();
+    componentDidMount() {
+     //   this.scrollToBottom();
       }
 
       scrollToBottom = () => {
-        this.messagesEnd.scrollIntoView({ behavior: "smooth" });
+       // this.messagesEnd.scrollIntoView({ behavior: "smooth" });
+       //    <li style={{ float:"left", clear: "both" }}
+     //  ref={(el) => { this.messagesEnd = el; }}></li>
       }
 
 
@@ -17,13 +19,11 @@ class Chat extends Component {
  
             return ( 
                 <div id='Chat'>
-                    <ul className='chatList'>                        
+                    <ScrollableFeed className='chatList'>                        
                             {this.props.chat.map((item,i) => {
                                 return <li>{this.props.chat[i]}</li>
                                 })}
-                            <li style={{ float:"left", clear: "both" }}
-                        ref={(el) => { this.messagesEnd = el; }}></li>
-                    </ul>
+                    </ScrollableFeed>
                     
                 </div>
 
