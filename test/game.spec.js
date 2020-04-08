@@ -17,7 +17,7 @@ this.timeout(7000);
 		let kev = new player("5e83ab2844d4db2d4038c095",10000,'playing','sid',"kev");
 		let clint = new player("5e83ad4c4e56222def2e3148",100000,'playing','sid',"clint");
 		let bob = new player("5e83ad6a0a60bc2e134b1baf",20000,'playing','sid',"bob");
-
+		
 		game1.addPlayer(mike,0);
 		game1.addPlayer(kim,1);
 		game1.addPlayer(shane,2);
@@ -67,6 +67,23 @@ this.timeout(7000);
 
 		
 				chai.assert.equal(game1.isSettled(),true);
+
+				
+
+				chai.assert.equal(
+				mike.balance+
+				kim.balance+
+				shane.balance+
+				kev.balance+
+				clint.balance+
+				bob.balance,
+				29000+40000+1000000+10000+100000+20000
+				);
+
+
+
+
+
 				done();
 		
 	
@@ -145,6 +162,17 @@ this.timeout(7000);
 
 
 		chai.assert.equal(game1.isSettled(),true);
+		chai.assert.equal(
+			mike.balance+
+			kim.balance+
+			shane.balance+
+			kev.balance+
+			clint.balance+
+			bob.balance,
+			29000+40000+100000+10000+100000+20000
+			);
+
+
 		done();
 
 	})
@@ -159,7 +187,7 @@ this.timeout(7000);
 		let kev = new player("5e83ab2844d4db2d4038c095",10000,'playing','sid');
 		let clint = new player("5e83ad4c4e56222def2e3148",100000,'playing','sid');
 		let bob = new player("5e83ad6a0a60bc2e134b1baf",100000,'playing','sid');
-
+		
 		game1.addPlayer(mike,0);
 		game1.addPlayer(kim,1);
 		game1.addPlayer(shane,2);
@@ -210,6 +238,17 @@ this.timeout(7000);
 		game1.printSeats();
 
 		chai.assert.equal(game1.isSettled(),true);
+		chai.assert.equal(
+			mike.balance+
+			kim.balance+
+			shane.balance+
+			kev.balance+
+			clint.balance+
+			bob.balance,
+			(100000*5)+10000
+			);
+
+		
 		done();
 	})
 
@@ -238,6 +277,11 @@ this.timeout(7000);
 		game1.doAction(kev,'fold');
 		game1.printSeats();
 		chai.assert.equal(game1.isSettled(),true);
+		chai.assert.equal(
+			mike.balance+
+			kev.balance,
+			29000+40000
+			);
 		done();
 	})
 
@@ -282,6 +326,14 @@ this.timeout(7000);
 		//chai.assert.notEqual(game1.doAction(mike,'call'),false);
 		//chai.assert.equal(game1.getLastBet(),'call');
 		chai.assert.equal(game1.isSettled(),true);
+
+		chai.assert.equal(
+			mike.balance+
+			kev.balance+
+			shane.balance,
+			10000*3
+			);
+
 		done();
 	})
 	it('short stack allin is shoved on top of by a big stack all-iner',function (done){
@@ -323,6 +375,11 @@ this.timeout(7000);
 
 
 		chai.assert.equal(mike.moneyOnLine,0);
+		chai.assert.equal(
+			mike.balance+
+			kev.balance,
+			10500+9200
+			);
 		chai.assert.equal(game1.isSettled(),true);
 		done();
 	})
@@ -386,6 +443,12 @@ this.timeout(7000);
 		//////game1.getNextAction();
 
 		chai.assert.equal(game1.isSettled(),true);
+		chai.assert.equal(
+			mike.balance+
+			kev.balance+
+			shane.balance,
+			10000*3
+			);
 		done();
 	})
 
@@ -449,6 +512,13 @@ this.timeout(7000);
 
 		setTimeout(function(){
 			chai.assert.equal(game1.isSettled(),true);
+
+			chai.assert.equal(
+				mike.balance+
+				kev.balance,
+				10000+5000
+				);
+
 			done();
 		}, 6000)
 		
@@ -483,6 +553,13 @@ this.timeout(7000);
 
 		game1.doAction(mike,'fold');
 		chai.assert.equal(game1.isSettled(),true);
+
+		chai.assert.equal(
+			mike.balance+
+			kev.balance,
+			4200+5000
+			);
+
 			done();
 		
 	

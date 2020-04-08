@@ -3,6 +3,7 @@ import "./Table.css";
 import PlayerChevron from "../components/PlayerChevron"
 import ActionBar from "../components/ActionBar"
 import Board from "../components/Board"
+import Chat from "../components/Chat"
 import Pots from "../components/Pots"
 import socket from '../socket'
 
@@ -17,7 +18,8 @@ class Table extends Component{
     board: [],
     toCallAmt:0,
     totalPot:0,
-    roundPot:0
+    roundPot:0,
+    chat:[]
 
   }
     
@@ -77,6 +79,9 @@ componentDidMount() {
         if(data.bettingRound.actionOn!=null)
           this.setState({toCallAmt:(data.bettingRound.currentRaiseToCall - data.bettingRound.actionOn.moneyOnLine)})
      
+        //sethandlog
+        this.setState({chat:data.handLog})
+        
         //set pot sizes
         this.setState({totalPot:data.bettingRound.potsTotal});
         this.setState({roundPot:data.bettingRound.totalOnLine});
@@ -89,8 +94,6 @@ componentDidMount() {
            this.playAudio(this.check);
           if(data.bettingRound.lastBet=='check')
             this.playAudio(this.check);
-
-
         }
 
       });
@@ -122,6 +125,7 @@ render () {
         </div>
       <Pots totalPot={Number(this.state.totalPot)} roundPot={Number(this.state.roundPot)}></Pots>
       <Board board={this.state.board}></Board>
+      <Chat chat={this.state.chat}></Chat>
       <div id='ActionBar'>
         <ActionBar toCallAmt={Number(this.state.toCallAmt)} actions={this.state.actions} my_id={this.props.my_id} gameid={this.state.gameid}></ActionBar>
       </div> 

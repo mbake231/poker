@@ -15,7 +15,7 @@ export default function PlayerChevron(props) {
     var temp=parseInt(0);
     if(leftToStack>0) {
         while (leftToStack > 0) {
-            console.log(leftToStack);
+           // console.log(leftToStack);
             if(Math.floor(leftToStack / parseInt(chipsAvailable[ctr])) >=1) {
                     temp=leftToStack; 
                 for (var i=0;i<Math.floor(temp / chipsAvailable[ctr]);i++) {
@@ -23,15 +23,15 @@ export default function PlayerChevron(props) {
                     stacked+=chipsAvailable[ctr];
                     leftToStack= parseInt(leftToStack) - parseInt(chipsAvailable[ctr]);
                     leftToStack=parseInt(leftToStack);
-                    console.log('chip im on '+chipsAvailable[ctr]);
+                   // console.log('chip im on '+chipsAvailable[ctr]);
                 }
             }
             ctr++;
-            console.log(ctr);
+            //console.log(ctr);
 
         }
     }
-    console.log(stack);
+  //  console.log(stack);
       if(props.chipstack>0)
         return (
             <ul id={'chipstack'+props.id} className='chipStack'>

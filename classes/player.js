@@ -69,10 +69,6 @@ class player {
 	  };
 		
 	
-
-	
-
-
 	toggleSitOut(){
 		if(this.sitoutnexthand==false)
 			this.sitoutnexthand=true;
@@ -97,10 +93,6 @@ class player {
 	addMoneyToLine(amt) {
 		this.balance = parseInt(this.balance) - parseInt(amt);
 		this.moneyOnLine = parseInt(this.moneyOnLine) + parseInt(amt);
-
-		console.log('player '+this.balance);
-		console.log('player '+this.moneyOnLine);
-
 	}
 
 	clearMoneyOnLine(){

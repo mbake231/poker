@@ -19,6 +19,22 @@
     display: flex;
 }
 
+#Chat {
+  position: absolute;
+  width:400px;
+  height:150px;
+  top:610px;
+  left:50px;
+  background-color:#f2f2f2;
+  
+}
+
+.chatList {
+  overflow: auto;
+  list-style-type: none;
+  height:150px;
+}
+
 .chipStack {
   position: absolute;
 

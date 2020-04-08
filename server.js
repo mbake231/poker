@@ -245,40 +245,59 @@ app.get('/register',function(req,res)
 
 app.post('/register',async (req,res) => {
 try {
-	const hashedPassword = await bcrypt.hash(req.body.password, 10);
-	const scope = res;
-	MongoClient.connect(url, function(err, db) {
-		if (err) throw err;
-		var dbo = null;
-				if(process.env.NODE_ENV == 'production') {
-					dbo = db.db('heroku_fbgvjbpl');
-				}
-				else {
-					dbo = db.db('pokerDB');
-				}
-		dbo.collection("Users").findOne({"email":req.body.email}, function(err, res) {
-			try {
-				if(res==null) {
-					var user = { name: req.body.name, email: req.body.email,password: hashedPassword };
-					dbo.collection("Users").insertOne(user, function(err, result) {
-					if (err) throw err;
-					console.log('Inserted: '+result);
-					scope.send(result);
-					db.close();
-					});
-				}
-				else {
-					console.log("User with that email already exists");
+	if(req.body.password==req.body.confirmpassword)
+	{
+		if(req.body.password.length>5)
+		{
+			const hashedPassword = await bcrypt.hash(req.body.password, 10);
+			const scope = res;
+			MongoClient.connect(url, function(err, db) {
+				if (err) throw err;
+				var dbo = null;
+						if(process.env.NODE_ENV == 'production') {
+							dbo = db.db('heroku_fbgvjbpl');
+						}
+						else {
+							dbo = db.db('pokerDB');
+						}
+				dbo.collection("Users").findOne({"email":req.body.email}, function(err, res) {
+					try {
+						if(res==null) {
+							var user = { name: req.body.name, email: req.body.email,password: hashedPassword };
+							dbo.collection("Users").insertOne(user, function(err, result) {
+							if (err) throw err;
+							console.log('Inserted: '+result);
+							scope.send(result);
+							db.close();
+							});
+						}
+						else {
+							console.log("User with that email already exists");
 
-					throw("User already has that email.")
-				}
-			}
-			catch {
-				//console.log(err);
-			}
-		});
-	  });
-
+							return scope.status(400).send({
+								message: "That email already exists."
+							 });
+						}
+					}
+					catch {
+						//console.log(err);
+					}
+				});
+			});
+		}
+		else {
+			console.log('password needs to be 6 characters')
+			return res.status(400).send({
+				message: "Password too short."
+			 });	
+		}
+	}
+	else {
+		console.log('passwords dont match')
+		return res.status(400).send({
+			message: "Passwords don't match."
+		 });
+		}
 	
 }
 catch {

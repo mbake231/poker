@@ -6,6 +6,8 @@ import axios from 'axios';
 export default function Register(props) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmpassword, setConfirmPassword] = useState("");
+
   const [name, setName] = useState("");
 
 
@@ -14,12 +16,19 @@ export default function Register(props) {
   }
 
   function handleSubmit(event) {
-      console.log(email+password);
+
+    var url;
+    if(process.env.NODE_ENV === 'production')
+      url='https://fartmanjack.herokuapp.com/register';
+    else
+      url='http://localhost:3000/register';
+
     event.preventDefault();
-    axios.post('http://localhost:3000/register', {
+    axios.post(url, {
         email:email,
         password:password,
-        name:name
+        name:name,
+        confirmpassword:confirmpassword
     }).then(response => {
         console.log(response.data.ops[0]._id) 
             if(response.data) {
@@ -53,6 +62,14 @@ export default function Register(props) {
           <FormControl
             value={password}
             onChange={e => setPassword(e.target.value)}
+            type="password"
+          />
+          </FormGroup>
+          <FormGroup controlId="confirmpassword" bssize="large">
+          <FormLabel>Confirm Password</FormLabel>
+          <FormControl
+            value={confirmpassword}
+            onChange={e => setConfirmPassword(e.target.value)}
             type="password"
           />
         </FormGroup>

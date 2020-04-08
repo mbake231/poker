@@ -46,7 +46,9 @@ class game {
 
 		for (var i=0;i<this.gameTable.game_size;i++)
 			this.gameTable.seats[i] = "empty";
-
+		this.cardsToReveal = [];
+		for (var i=0;i<this.gameTable.game_size;i++)
+			this.cardsToReveal.push({card1:'private',card2:'private'});
 		this.gameTable.deck = new deck();
 		this.gameTable.gameid = this.makeid(16);
 		this.gameTable.bettingRound.pots[0] =  new pot(0);
@@ -176,7 +178,7 @@ class game {
 			this.gameTable.winner.players=null;
 			this.gameTable.winner.hand=null;
 			this.gameTable.winner.winningPot=null;
-			this.gameTable.board=[];
+			this.gameTable.board=[null,null,null,null,null];
 			this.gameTable.currentPot=0;
 			this.gameTable.bettingRound.lastRaiser=null;
 			this.gameTable.bettingRound.nextActionsAvailable=[];
@@ -193,7 +195,7 @@ class game {
 			this.gameTable.bettingRound.pots[0] = new pot(0);
 			this.gameTable.currentPot=this.gameTable.bettingRound.pots[0];
 
-
+	
 			//clear cards
 			for(var i=0;i<this.gameTable.game_size;i++)
 			{
@@ -202,6 +204,12 @@ class game {
 					this.gameTable.seats[i].card2=null;
 					}
 						
+			}
+
+			//set all hands to private
+			for (var i=0;i<this.gameTable.game_size;i++){
+				this.cardsToReveal[i].card1='private';
+				this.cardsToReveal[i].card2='private';
 			}
 
 			//remove those who were set to leave
@@ -226,12 +234,13 @@ class game {
 
 			//set sitting out for people who have 0 balance
 			for (var i=0;i<this.gameTable.game_size;i++) {
-				if(this.gameTable.seats[i].balance<=this.gameTable.bigBlind) {
-					this.gameTable.seats[i].status='sittingout';
-					this.gameTable.seats[i].sitoutnexthand=true;
-					console.log(this.gameTable.seats[i].userid+" is now sitting out because their balance is less than the big blind.");
-					this.updateHandLog(this.gameTable.seats[i].userid+"  is now sitting out because their balance is less than the big blind.");
-				}
+				if(this.gameTable.seats[i]!='empty')
+					if(this.gameTable.seats[i].hasEnough(this.gameTable.bigBlind)==false) {
+						this.gameTable.seats[i].status='sittingout';
+						this.gameTable.seats[i].sitoutnexthand=true;
+						console.log(this.gameTable.seats[i].userid+" is now sitting out because their balance is less than the big blind.");
+						this.updateHandLog(this.gameTable.seats[i].userid+"  is now sitting out because their balance is less than the big blind.");
+					}
 
 			}
 
@@ -827,14 +836,29 @@ class game {
 				NumberofAllInPlayers++;
 
 		//if we have all ins and the game was folded dead or ended before river, we need to put more cards out
+		//but we are also going to show the cards of the user
+
+
 		console.log('Number all in players:'+NumberofAllInPlayers);
 		if (NumberofAllInPlayers>0 && (this.gameTable.bettingRound.endByFold==true || this.isOnlyOnePlayerNotAllIn()==true)) {
 			console.log("Doing a card run out.");
+
+			//reveal player cards cards
+			for(var i=0;i<this.gameTable.game_size;i++) {
+				if(this.gameTable.seats[i].status=='inhand' || this.gameTable.seats[i].status=='allin') {
+					this.revealCards(this.gameTable.seats[i],true,true);
+					this.sendDataToAllPlayers();
+				}
+			}
+
+			//slowly run out cards	
 			for(var i=0;i<this.gameTable.board.length;i++){
 				if(this.gameTable.board[i]==null) {
 					this.gameTable.board[i]=this.gameTable.deck.dealCard();
 					}
 				}
+		
+
 			}
 		
 		// lets add the board to the check package cuz its same for all
@@ -864,7 +888,7 @@ class game {
 					for(var a=0;a<selectedPot.members.length;a++) {
 
 						if(selectedPot.members[a].status=='inhand' || selectedPot.members[a].status=='allin') {
-
+							
 							packageCards.playerCards.push(
 								{playerId:selectedPot.members[a].hash,
 								cards:[selectedPot.members[a].card1,
@@ -874,7 +898,7 @@ class game {
 					}
 					//2 send the package to get winner
 					var winner = pokerCalc.getHoldemWinner(packageCards,{ compactCards: true});
-				//	console.log("API RESPONSE:  "+JSON.stringify(winner));
+					//console.log("API RESPONSE:  "+JSON.stringify(winner) + 'PACKAGE WAS'+JSON.stringify(packageCards));
 					//3 PAY WINNERS
 					for (var b=0;b<winner.length;b++) {
 						var amtToPay = selectedPot.total/winner.length;
@@ -957,7 +981,7 @@ class game {
 				//pay the man his money
 				lastManStanding.givePot(amtToPay);
 			}
-
+			console.log('SETLING');
 			this.gameTable.isSettled="yes";
 			this.mochatest=true;
 			let scope=this;
@@ -1228,7 +1252,7 @@ class game {
 						this.foldPlayer(player);
 						this.advanceToNextPlayer();
 						this.getNextAction();
-						
+						return true;
 					}
 					this.getNextAction();
 					return true;
@@ -1373,13 +1397,24 @@ class game {
 		for(var i=0; i<this.gameTable.game_size;i++){
 			if(privategameTable.seats[i] != 'empty' 
 				&&  privategameTable.seats[i].card1!=null
-				&&  privategameTable.seats[i].hash!=thisHash) {
+				&&  privategameTable.seats[i].hash!=thisHash) 
+				{
+				if(this.cardsToReveal[i].card1=='private') 
 					privategameTable.seats[i].card1 = "private";
+				if(this.cardsToReveal[i].card2=='private') 
 					privategameTable.seats[i].card2 = "private";
-
 			}
 		}
 		return JSON.stringify(privategameTable);
+	}
+
+	revealCards(player,card1, card2) {
+		if(card1) {
+			this.cardsToReveal[player.seat].card1 = 'reveal'
+		}
+		if(card2) {
+			this.cardsToReveal[player.seat].card2 = 'reveal'
+		}
 	}
 
 	getPublicSeatList() {

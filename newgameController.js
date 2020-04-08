@@ -11,8 +11,8 @@ const games = [];
 
 //TEST
 
-var thisGame = new game();
-games.push(thisGame);
+//var thisGame = new game();
+//games.push(thisGame);
 
 //addNewPlayerToGame('fart',"5e83a80f4aeeda2c0a258d4f",290,'playing',0,"mike");
 //addNewPlayerToGame('fart',"5e83aa2c8391902cc37073b9",400,'playing',1,'sid',"kim");

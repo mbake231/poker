@@ -58,7 +58,8 @@ function validateForm() {
          );
         }
 
-         else {
+         else if (props.info.card1 != 'fold' && props.info.card1 != null)
+         {
             return ( 
                 <div>
                 <Card id={'seat'+props.id} style={{ width: '14rem' }}>
@@ -71,6 +72,27 @@ function validateForm() {
                     <div className="cards">
                         <div id="card1"><img src={'/img/cards/'+props.info.card1+".svg"} width='65px' /></div>
                         <div id="card2"><img src={'/img/cards/'+props.info.card2+".svg"} width='65px' /></div>
+                    </div>
+                </Card>
+                <ChipStack chipstack={chipstack} id={props.id}></ChipStack>
+                </div>
+
+         );
+        }
+        else if (props.info.card1 == 'fold' || props.info.card1 == null)
+         {
+            return ( 
+                <div>
+                <Card id={'seat'+props.id} style={{ width: '14rem' }}>
+                    <Card.Body>
+                        <Card.Title>{props.info.userid}</Card.Title>
+                        <Card.Text>
+                            {"$"+(Number(props.info.balance)/100).toFixed(2)}
+                        </Card.Text>
+                    </Card.Body>
+                    <div className="cards">
+                        <div id="card1"></div>
+                        <div id="card2"></div>
                     </div>
                 </Card>
                 <ChipStack chipstack={chipstack} id={props.id}></ChipStack>
