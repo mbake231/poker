@@ -2,11 +2,9 @@ var deck = require('./deck.js').deck;
 var pot = require('./pot.js').pot;
 var pokerCalc = require('poker-calc');
 var Hand = require('pokersolver').Hand;
-//var gc = require('../newgameController.js');
 var server = require('../server.js');
 
 class game {
-
 	constructor (param) {
 		this.gameTable = {
 			isTest:false,
@@ -44,6 +42,7 @@ class game {
 				lastBet:null
 				}
 		};
+
 
 		for (var i=0;i<this.gameTable.game_size;i++)
 			this.gameTable.seats[i] = "empty";
@@ -816,8 +815,10 @@ class game {
 		this.updateHandLog("Hand over. Settling up.");
 		//stop the timer
 		clearTimeout(this.gameTable.bettingRound.actionOnTimer);
-		//first lets add the board to the check package cuz its same for all
 
+		//remove actionon player so we can clear buttons
+		this.gameTable.bettingRound.actionOn=null;
+		this.sendDataToAllPlayers();
 
 		//check to see if we have any in players 
 		var NumberofAllInPlayers=0;
@@ -835,7 +836,8 @@ class game {
 					}
 				}
 			}
-	
+		
+		// lets add the board to the check package cuz its same for all
 		console.log(this.gameTable.board);
 		var packageCards = {
 			boardCards:this.gameTable.board,
@@ -1420,6 +1422,7 @@ class game {
 }
 
 
-//module.exports=game;
+//module.exports = game;
 exports.game=game;
+//module.exports = game;
 //exports.addPlayer=addPlayer;
