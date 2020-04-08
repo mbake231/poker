@@ -99,6 +99,16 @@ function leaveTableNextHand(gameid,hash){
 
 }
 
+function addChips(gameid,hash,amt){
+    let thisGame = findGameById(gameid);
+    if(thisGame != null)
+        if(thisGame.getPlayerByHash(hash) != false)
+            thisGame.addPlayerChips(hash,amt);
+    else
+        console.log('No game with that ID.');
+
+}
+
 function reconnect(gameid,_id,sid){
     if(gameid!=null && _id != null){
         let thisGame = findGameById(gameid);
@@ -160,3 +170,4 @@ exports.leaveTableNextHand=leaveTableNextHand;
 exports.callClock=callClock;
 exports.startGame=startGame;
 exports.sitBackDown=sitBackDown;
+exports.addChips=addChips;

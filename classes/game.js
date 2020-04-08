@@ -82,8 +82,8 @@ class game {
 	runGame() {
 		this.gameTable.handCount++;
 		if(this.gameTable.handCount>1) {
-			console.log("This is hand "+this.gameTable.handCount);
-			this.setDealer(this.gameTable.dealer.nextPlayer);
+			console.log("This is hand #"+this.gameTable.handCount+".");
+			this.setDealer(this.gameTable.dealer);
 		}
 		
 		this.postBlinds();
@@ -137,7 +137,7 @@ class game {
 			//server.io.to(newSessionId).emit('yourHash',game1.getPlayerByCookie(cookie).hash);
 			if(this.gameTable.isTest==false)
 				this.sendDataToAllPlayers();
-			console.log (this.getPlayerByHash(hash).userid+" RECONNECTED");
+			//console.log (this.getPlayerByHash(hash).userid+" RECONNECTED");
 		}
 		else 
 			console.log('couldnt reconnect player: didnt find clientID');
@@ -180,7 +180,6 @@ class game {
 
 	goToNextHand () {
 			this.gameTable.deck = new deck();
-			this.gameTable.dealer=this.gameTable.dealer.nextPlayer;
 			this.gameTable.winner.players=null;
 			this.gameTable.winner.hand=null;
 			this.gameTable.winner.winningPot=null;
@@ -450,20 +449,22 @@ class game {
 		return counter;
 	}
 
-	//pass me who is the dealer
+	//pass me who was the dealer last game
 	setDealer(player) {
-		//check to make sure theyre not sitting out, if so next guy gets it
-		for(var i=player.seat;i<this.gameTable.game_size;i++) {
+		//find the next seat who is playing
+		for(var i=player.seat+1;i<this.gameTable.game_size;i++) {
 			if(this.gameTable.seats[i].status=='playing') {
-				console.log('The dealer is '+this.gameTable.seats[i].userid)
+				console.log('The dealer is now '+this.gameTable.seats[i].userid+".");
+				this.updateHandLog("The dealer is now "+this.gameTable.seats[i].userid+".");
 				this.gameTable.dealer=this.gameTable.seats[i];
 				return this.gameTable.seats[i];
 			}
 		}
-
+		//if we didnt find it that go around start again
 		for(var i=0;i<this.gameTable.game_size;i++) {
 			if(this.gameTable.seats[i].status=='playing') {
-				console.log('DEAER '+this.gameTable.seats[i])
+				console.log('The dealer is now '+this.gameTable.seats[i]+".");
+				this.updateHandLog("The dealer is now "+this.gameTable.seats[i].userid+".");
 				this.gameTable.dealer=this.gameTable.seats[i];
 				return this.gameTable.seats[i];
 			}
@@ -529,6 +530,17 @@ class game {
 	getBigBlindPlayer() {
 		var bigBlindPayer = this.gameTable.seats[this.getSmallBlindPlayer().seat].nextPlayer;
 		return bigBlindPayer;
+	}
+
+	addPlayerChips (hash,amt) {
+		var playerToAdd = this.getPlayerByHash(hash);
+		playerToAdd.givePot(parseInt(amt));
+		console.log(playerToAdd.userid+" has added $"+(amt/100).toFixed(2)+" in chips.");
+		this.updateHandLog(playerToAdd.userid+" has added $"+(amt/100).toFixed(2)+" in chips. Good luck!");
+		this.sendDataToAllPlayers();
+		this.checkToRestartGame();
+
+
 	}
 
 	getSmallBlindPlayer () {
@@ -709,6 +721,19 @@ class game {
 		
 	}
 
+	checkToRestartGame () {
+		if(this.gameTable.gameRunning==false) {
+			if(this.getNumberPlayersPlaying()>1) {
+				console.log("We have enough players, starting up!")
+				this.updateHandLog("We have enough players, starting up!");
+				if(this.handCount==0)
+					this.startGame();
+				else
+					this.nextHand();
+			}
+		}
+	}
+
 	sitPlayerBackDown(hash) {
 		var playerToSit = this.getPlayerByHash(hash);
 		var sittingSID = playerToSit.sessionid;
@@ -720,17 +745,8 @@ class game {
 			console.log(playerToSit.userid+" has sat back down!");
 			this.updateHandLog(playerToSit.userid+" has sat back down!");
 			this.sendDataToAllPlayers();
-
-			if(this.gameTable.gameRunning==false) {
-				if(this.getNumberPlayersPlaying()>1) {
-					console.log("We have enough players, starting up!")
-					this.updateHandLog("We have enough players, starting up!");
-					if(this.handCount==0)
-						this.startGame();
-					else
-						this.nextHand();
-				}
-			}
+			this.checkToRestartGame();
+			
 		}
 		else
 			console.log('Not enough money!');
@@ -1331,7 +1347,7 @@ class game {
 						
 						
 						this.advanceToNextPlayer();
-						console.log('INSIDE ACTION ON:'+this.gameTable.bettingRound.actionOn.userid);
+						//console.log('INSIDE ACTION ON:'+this.gameTable.bettingRound.actionOn.userid);
 
 						console.log(player.userid+" has called $"+(this.gameTable.bettingRound.currentRaiseToCall/100).toString());
 						this.updateHandLog(player.userid+" has called $"+(this.gameTable.bettingRound.currentRaiseToCall/100).toString());
@@ -1405,7 +1421,7 @@ class game {
     							hash:this.gameTable.seats[i].hash});
     		}
     	}
-    	console.log(JSON.stringify(allPlayers));
+    	//console.log(JSON.stringify(allPlayers));
     	return allPlayers;
     }
 
