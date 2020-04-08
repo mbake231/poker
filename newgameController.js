@@ -58,10 +58,13 @@ function startGame(gameid) {
         console.log('No game with that ID.');
 }
 
-function callClock(gameid) {
+function callClock(gameid,hash) {
     let thisGame = findGameById(gameid);
     if(thisGame != null)
-      thisGame.callClock();
+        if(thisGame.isClockCalled() != true)
+            if(thisGame.getPlayerByHash(hash) != false)
+                if(thisGame.getPlayerByHash(hash).status != 'sittingout' && thisGame.getPlayerByHash(hash).status != 'playing')
+                    thisGame.callClock();
     else
         console.log('No game with that ID.');
 }
@@ -69,7 +72,18 @@ function callClock(gameid) {
 function toggleSitOut(gameid,hash) {
     let thisGame = findGameById(gameid);
     if(thisGame != null)
-      thisGame.getPlayerByHash(hash).toggleSitOut();
+        if(thisGame.getPlayerByHash(hash) != false)
+            thisGame.getPlayerByHash(hash).toggleSitOut();
+    else
+        console.log('No game with that ID.');
+
+}
+
+function sitBackDown(gameid,hash) {
+    let thisGame = findGameById(gameid);
+    if(thisGame != null)
+        if(thisGame.getPlayerByHash(hash) != false)
+            thisGame.sitPlayerBackDown(hash);
     else
         console.log('No game with that ID.');
 
@@ -78,7 +92,8 @@ function toggleSitOut(gameid,hash) {
 function leaveTableNextHand(gameid,hash){
     let thisGame = findGameById(gameid);
     if(thisGame != null)
-      thisGame.leaveTableNextHand(hash);
+        if(thisGame.getPlayerByHash(hash) != false)
+            thisGame.leaveTableNextHand(hash);
     else
         console.log('No game with that ID.');
 
@@ -144,3 +159,4 @@ exports.toggleSitOut=toggleSitOut;
 exports.leaveTableNextHand=leaveTableNextHand;
 exports.callClock=callClock;
 exports.startGame=startGame;
+exports.sitBackDown=sitBackDown;

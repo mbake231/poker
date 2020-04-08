@@ -146,12 +146,15 @@ io.use(passportSocketIo.authorize({
 			});
 
 		socket.on('callClock', function (data) {
-				newgameController.callClock(data.gameid);
-				socket.broadcast.emit('clockCalled',true);
+				newgameController.callClock(data.gameid,data.hash);
 			});
 
 		socket.on('toggleSitOut', function (data) {
 				newgameController.toggleSitOut(data.gameid,data.hash);
+			});
+
+		socket.on('sitBackDown', function (data) {
+				newgameController.sitBackDown(data.gameid,data.hash);
 			});
 
 		socket.on('leaveTable', function (data) {

@@ -26,3 +26,9 @@ ul{padding:0;}
     padding-top: -50px;
     
 }
+
+
+.sittingOut {
+    font-style: italic;
+    color:gray;
+}

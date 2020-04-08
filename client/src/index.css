@@ -19,7 +19,7 @@ code {
 body > #root   {
   width: 1440px;
   height:770px;
-
+  overflow:hidden;
 }
 
 #AppContainer{

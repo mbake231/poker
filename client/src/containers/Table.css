@@ -11,6 +11,16 @@
   margin-left:3px;
 }
 
+#gameMenu{
+  position: absolute;
+  top: 450px;
+  left:50px;
+}
+
+.ghostBtn {
+  visibility: hidden;
+}
+
 #totalPot {
   position: absolute;;
 
@@ -20,10 +30,11 @@
 }
 
 #Chat {
-  position: absolute;
+  position: absolute;;
+ 
   width:400px;
   height:150px;
-  top:610px;
+  top:600px;
   left:50px;
   background-color:#f2f2f2;
   
