@@ -6,6 +6,7 @@ import { Button, FormGroup, FormControl, FormLabel } from "react-bootstrap";
 import InputGroup from 'react-bootstrap/InputGroup'
 import ChipStack from './ChipStack';
 import Badge from 'react-bootstrap/Badge'
+import DealerButton from './DealerButton'
 
 //class PlayerChevron extends Component {
 
@@ -76,6 +77,7 @@ function validateForm() {
                     </div>
                 </Card>
                 <ChipStack chipstack={chipstack} id={props.id}></ChipStack>
+                <DealerButton dealerSeat={props.dealerSeat} id={props.id}></DealerButton>
                 </div>
 
          );
@@ -96,6 +98,7 @@ function validateForm() {
                     </div>
                 </Card>
                 <ChipStack chipstack={chipstack} id={props.id}></ChipStack>
+                <DealerButton dealerSeat={props.dealerSeat} id={props.id}></DealerButton>
                 </div>
 
          );
