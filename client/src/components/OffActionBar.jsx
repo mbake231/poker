@@ -24,6 +24,8 @@ class OffActionBar extends Component {
         this.handleChange= this.handleChange.bind(this);
         this.uncheckAll= this.uncheckAll.bind(this);
         this.componentWillUnmount= this.componentWillUnmount.bind(this);
+        this.componentDidUpdate= this.componentDidUpdate.bind(this);
+
 
 
     }
@@ -37,8 +39,21 @@ class OffActionBar extends Component {
 
     }
 
+    componentDidUpdate() {
+        console.log('UDATE'+this.props.currentRaiseToCall+' vs '+this.state.auto_callCurrentAmt)
 
+        if(this.props.currentRaiseToCall>this.state.auto_callCurrentAmt && this.state.auto_callCurrent==true)
+            this.setState({auto_callCurrent:false});
+
+        if(this.props.lastBet=='raise' && this.state.auto_checkfold==true) {
+            this.uncheckAll();
+            this.setState({auto_fold:true});
+        }
+
+    }
     componentWillUnmount() {
+        console.log(('UNMT'+this.props.currentRaiseToCall +" vs " +this.state.auto_callCurrentAmt))
+
         if(this.state.auto_fold) {
             var data = {gameid:this.props.gameid,
                         hash:this.props.my_id,
@@ -72,14 +87,7 @@ class OffActionBar extends Component {
                     action:'check'};
                 socket.emit('incomingAction', data);
             }
-            else {
-                var data = {gameid:this.props.gameid,
-                    hash:this.props.my_id,
-                    action:'fold'};
-                socket.emit('incomingAction', data);
-            }
         }
-
 
     }
 
@@ -104,6 +112,7 @@ class OffActionBar extends Component {
         }
         else if(e.target.name == 'callCurrent' && this.state.auto_callCurrent==false) {
             this.uncheckAll();
+            console.log(this.props.currentRaiseToCall);
             this.setState({auto_callCurrent:true});
             this.setState({auto_callCurrentAmt:this.props.currentRaiseToCall});
         }
@@ -125,7 +134,7 @@ class OffActionBar extends Component {
                         <Form.Check name='fold' checked={this.state.auto_fold} type="checkbox" label="Fold" onChange={this.handleChange}/>
                     </div>
                     <div className='actionItem' id='offCallBoxes'>
-                        <Form.Check name='callCurrent' checked={this.state.auto_callCurrent} type="checkbox" onChange={this.handleChange} label={"Call $"+ parseInt((this.props.currentRaiseToCall)-parseInt(this.props.my_seat.moneyOnLine)).toString(2)}/>
+                        <Form.Check name='callCurrent' checked={this.state.auto_callCurrent} type="checkbox" onChange={this.handleChange} label={"Call $"+ ((parseInt(this.props.currentRaiseToCall)-parseInt(this.props.my_seat.moneyOnLine))/100).toFixed(2)}/>
                         <Form.Check name='callAny' type="checkbox" checked={this.state.auto_callAny} onChange={this.handleChange} label="Call Any" />
                     </div>
                     <GhostButton></GhostButton>
@@ -141,7 +150,7 @@ class OffActionBar extends Component {
                 </div>
                 <div className='actionItem' id='offCallBoxes'>
                     {this.props.currentRaiseToCall>0 ? (
-                    <Form.Check onChange={this.handleChange} checked={this.state.auto_callCurrent} name='callCurrent' type="checkbox" label={"Call $"+ parseInt((this.props.currentRaiseToCall)-parseInt(this.props.my_seat.moneyOnLine)).toString(2)}/>
+                    <Form.Check onChange={this.handleChange} checked={this.state.auto_callCurrent} name='callCurrent' type="checkbox" label={"Call $"+ ((parseInt(this.props.currentRaiseToCall)-parseInt(this.props.my_seat.moneyOnLine))/100).toFixed(2)}/>
                      ):( <Form.Check className='ghostBtn'></Form.Check>)}
                     <Form.Check onChange={this.handleChange} checked={this.state.auto_callAny} name='callAny' type="checkbox" label="Call Any" />
                 </div>
