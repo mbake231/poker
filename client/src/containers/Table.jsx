@@ -25,7 +25,8 @@ class Table extends Component{
     chat:[],
     clockCalled:false,
     my_status:null,
-    actionOnSeat: null
+    actionOnSeat: null,
+    dealerSeat:null
 
   }
     
@@ -65,6 +66,11 @@ componentDidMount() {
       
 
       }
+    });
+
+    socket.on('logEvent',(event) => {
+      if(event.gameid==this.state.gameid)
+        this.setState({ chat: [...this.state.chat, event.event ]});
     });
 
 
@@ -111,14 +117,14 @@ componentDidMount() {
           }
         }
         
+        //set dealer seat
+        if(data.dealer!=null)
+          this.setState({dealerSeat:data.dealer.seat});
 
         //set call button amts
         if(data.bettingRound.actionOn!=null)
           this.setState({toCallAmt:(data.bettingRound.currentRaiseToCall - data.bettingRound.actionOn.moneyOnLine)})
      
-        //sethandlog
-        this.setState({chat:data.handLog})
-
         //setclock
         this.setState({clockCalled:data.clockCalled})
         
@@ -162,9 +168,9 @@ render () {
       <div id='seatbox'>
         {this.state.seats.map((seat,i) => {
           if(this.state.actionOnSeat==i)
-            return <PlayerChevron id={i} passedClassName={'actionOn'} info={this.state.seats[i]} gameid={this.state.gameid} my_id={this.props.my_id}></PlayerChevron>
+            return <PlayerChevron id={i} dealerSeat={this.state.dealerSeat} passedClassName={'actionOn'} info={this.state.seats[i]} gameid={this.state.gameid} my_id={this.props.my_id}></PlayerChevron>
           else
-            return <PlayerChevron id={i} passedClassName={''} info={this.state.seats[i]} gameid={this.state.gameid} my_id={this.props.my_id}></PlayerChevron>
+            return <PlayerChevron id={i} dealerSeat={this.state.dealerSeat} passedClassName={''} info={this.state.seats[i]} gameid={this.state.gameid} my_id={this.props.my_id}></PlayerChevron>
 
       })}
         </div>

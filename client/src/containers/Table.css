@@ -3,8 +3,8 @@
 #Board{
   position: absolute;;
 
-    left:500px;
-    top:320px;
+    left:520px;
+    top:270px;
     display: flex;
 }
 .boardCard{
@@ -17,6 +17,10 @@
   left:25px;
 }
 
+.isdealerButton {
+  
+}
+
 .ghostBtn {
   visibility: hidden;
 }
@@ -24,8 +28,16 @@
 #totalPot {
   position: absolute;;
 
-    left:630px;
-    top:290px;
+    left:638px;
+    top:240px;
+    display: flex;
+}
+
+#roundPot {
+  position: absolute;;
+
+    left:631px;
+    top:380px;
     display: flex;
 }
 
@@ -58,13 +70,6 @@ flex-direction: column-reverse;
   margin: -12px 0;
 }
 
-#roundPot {
-  position: absolute;;
-
-    left:630px;
-    top:430px;
-    display: flex;
-}
 
 #seatbox{
   margin: 0 auto;
@@ -98,6 +103,12 @@ flex-direction: column-reverse;
   top:205px;
 }
 
+#dealerButton0 {
+  position: absolute;
+  left:550px;
+  top:205px;
+}
+
 #seat1 {
   position: absolute;
   left:720px;
@@ -106,9 +117,16 @@ flex-direction: column-reverse;
 
 #chipstack1 {
   position: absolute;
-  left:760px;
-  top:240px;
+  left:780px;
+  top:200px;
 }
+
+#dealerButton1 {
+  position: absolute;
+  left:750px;
+  top:200px;
+}
+
 
 #seat2 {
   position: absolute;
@@ -125,6 +143,14 @@ flex-direction: column-reverse;
   display:block !important;
 }
 
+#dealerButton2 {
+  position: absolute;
+  width:100px;
+  left:920px;
+  top:220px;
+  display:block !important;
+}
+
 #seat3 {
   position: absolute;
   left:975px;
@@ -135,6 +161,13 @@ flex-direction: column-reverse;
   position: absolute;
   left:910px;
   top:365px;
+
+}
+
+#dealerButton3 {
+  position: absolute;
+  left:930px;
+  top:385px;
 
 }
 
@@ -152,6 +185,13 @@ flex-direction: column-reverse;
   
 }
 
+#dealerButton4 {
+  position: absolute;
+  left:815px;
+  top:425px;
+  
+}
+
 #seat5 {
   position: absolute;
   left:590px;
@@ -160,6 +200,12 @@ flex-direction: column-reverse;
 #chipstack5 {
   position: absolute;
   left:690px;
+  top:460px;
+}
+
+#dealerButton5 {
+  position: absolute;
+  left:660px;
   top:460px;
 }
 
@@ -175,6 +221,12 @@ flex-direction: column-reverse;
   top:425px;
 }
 
+#dealerButton6 {
+  position: absolute;
+  left:475px;
+  top:425px;
+}
+
 #seat7 {
   position: absolute;
   left:185px;
@@ -187,6 +239,12 @@ flex-direction: column-reverse;
   top:365px;
 }
 
+#dealerButton7 {
+  position: absolute;
+  left:390px;
+  top:365px;
+}
+
 #seat8 {
   position: absolute;
   left:205px;
@@ -196,6 +254,12 @@ flex-direction: column-reverse;
 #chipstack8 {
   position: absolute;
   left:435px;
+  top:276px;
+}
+
+#dealerButton8 {
+  position: absolute;
+  left:405px;
   top:276px;
 }
 

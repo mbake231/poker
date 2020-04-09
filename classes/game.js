@@ -18,7 +18,6 @@ class game {
 			handLogSentIndex:0,
 			isSettled: 'no',
 			handLog: [],
-			deck:[],
 			board:[null,null,null,null,null],
 			dealer:null,
 			isTimerGame:false,
@@ -51,7 +50,8 @@ class game {
 		this.cardsToReveal = [];
 		for (var i=0;i<this.gameTable.game_size;i++)
 			this.cardsToReveal.push({card1:'private',card2:'private'});
-		this.gameTable.deck = new deck();
+		this.deck = [];
+		this.deck = new deck();
 		this.gameTable.gameid = this.makeid(16);
 		this.gameTable.bettingRound.pots[0] =  new pot(0);
 		this.gameTable.currentPot=this.gameTable.bettingRound.pots[0];
@@ -69,7 +69,9 @@ class game {
 			console.log("This is the first hand!");
 			var lowestSeat = this.getLowestOccupiedSeat();
 
-			this.setDealer(lowestSeat);
+			//setDealer expect gettng the CURRENT DEALER so it can move it to the next person
+			//if we pass seat 0 then the next seat will be dealer. so we will send seat-1 so next seat is 0 or highter
+			this.setDealer(lowestSeat-1);
 			this.runGame();
 			this.gameRunning=true;
 		}
@@ -110,6 +112,11 @@ class game {
 		server.io.to(sessionid).emit('publicSeatList',this.getPublicSeatList());
 	}
 
+	updateHandLog(event) {
+
+		this.gameTable.handLog.push(event);
+	}
+
 	sendDataToAllPlayers() {
 		//console.log('send data');
 		var sendList = this.getAllPlayerSessionIDs();
@@ -122,7 +129,7 @@ class game {
 					server.io.to(sessionidToSend).emit('update',this.generatePrivatePlayerData(sendList[i].hash));
 	
 								for(var b = 0; b <= handlogThisSession;b++) {
-									server.io.to(sessionidToSend).emit('logEvent',this.getHandLog()[this.gameTable.handLogSentIndex+b] );
+									server.io.to(sessionidToSend).emit('logEvent',{gameid:this.gameTable.gameid,event:this.getHandLog()[this.gameTable.handLogSentIndex+b] });
 								}
 					}
 		}
@@ -159,10 +166,7 @@ class game {
 		return this.gameTable.handLog;
 	}
 
-	updateHandLog(event) {
 
-		this.gameTable.handLog.push(event);
-	}
 	canIDeal () {
 		if (this.getNumberPlayersPlaying()>1)
 			return true;
@@ -179,7 +183,7 @@ class game {
 
 
 	goToNextHand () {
-			this.gameTable.deck = new deck();
+			this.deck = new deck();
 			this.gameTable.winner.players=null;
 			this.gameTable.winner.hand=null;
 			this.gameTable.winner.winningPot=null;
@@ -487,13 +491,13 @@ class game {
 			{
 				console.log("Dealing to seat "+cardGetter.seat+".");
 				this.updateHandLog("Dealing to seat "+cardGetter.seat+".");
-				cardGetter.card1=this.gameTable.deck.dealCard();
+				cardGetter.card1=this.deck.dealCard();
 				cardGetter = this.gameTable.seats[cardGetter.seat].nextPlayer;
 			}
-			//deal card 1
+			//deal card 2
 			while (cardGetter.card2==null && cardGetter.status=='inhand')
 			{
-				cardGetter.card2=this.gameTable.deck.dealCard();
+				cardGetter.card2=this.deck.dealCard();
 				cardGetter = this.gameTable.seats[cardGetter.seat].nextPlayer;
 			}
 
@@ -506,21 +510,21 @@ class game {
 	}
 
 	dealFlop() {
-		var burnCard = this.gameTable.deck.dealCard();
-		this.gameTable.board[0] = this.gameTable.deck.dealCard();
-		this.gameTable.board[1] = this.gameTable.deck.dealCard();
-		this.gameTable.board[2] = this.gameTable.deck.dealCard();
+		var burnCard = this.deck.dealCard();
+		this.gameTable.board[0] = this.deck.dealCard();
+		this.gameTable.board[1] = this.deck.dealCard();
+		this.gameTable.board[2] = this.deck.dealCard();
 
 		
 
 	}
 	dealTurn() {
-		var burnCard = this.gameTable.deck.dealCard();
-		this.gameTable.board[3]=this.gameTable.deck.dealCard();
+		var burnCard = this.deck.dealCard();
+		this.gameTable.board[3]=this.deck.dealCard();
 	}
 	dealRiver() {
-		var burnCard = this.gameTable.deck.dealCard();
-		this.gameTable.board[4] = this.gameTable.deck.dealCard();
+		var burnCard = this.deck.dealCard();
+		this.gameTable.board[4] = this.deck.dealCard();
 	}
 
 	printBoard() {
@@ -738,7 +742,7 @@ class game {
 		var playerToSit = this.getPlayerByHash(hash);
 		var sittingSID = playerToSit.sessionid;
 
-		if(playerToSit.status=='sittingout' && playerToSit.hashEnough(this.gameTable.bigBlind)==true) {
+		if(playerToSit.status=='sittingout' && playerToSit.hasEnough(this.gameTable.bigBlind)==true) {
 			playerToSit.sitBackDown();
 			playerToSit.toggleSitOut(); //set this back to true!
 			this.sendSeatList(sittingSID);
@@ -907,7 +911,7 @@ class game {
 			//slowly run out cards	
 			for(var i=0;i<this.gameTable.board.length;i++){
 				if(this.gameTable.board[i]==null) {
-					this.gameTable.board[i]=this.gameTable.deck.dealCard();
+					this.gameTable.board[i]=this.deck.dealCard();
 					}
 				}
 		
@@ -1458,6 +1462,7 @@ class game {
 
 		privategameTable = JSON.parse(privategameTable);
 
+		//hide or reveal player cards
 		for(var i=0; i<this.gameTable.game_size;i++){
 			if(privategameTable.seats[i] != 'empty' 
 				&&  privategameTable.seats[i].card1!=null
@@ -1481,6 +1486,20 @@ class game {
 				}
 			}
 		}
+
+		//sanitize cards out of br.acitionOn, dealer, nextPlayer
+		if(privategameTable.bettingRound.actionOn!=null) {
+			privategameTable.bettingRound.actionOn.card1 = 'private';
+			privategameTable.bettingRound.actionOn.card2 = 'private';
+
+		}
+
+		if(privategameTable.dealer!=null) {
+			privategameTable.dealer.card1 = 'private';
+			privategameTable.dealer.card2 = 'private';
+
+		}
+
 		return JSON.stringify(privategameTable);
 	}
 
@@ -1524,6 +1543,21 @@ class game {
 
 			}
 		}
+
+		//sanitize cards out of br.acitionOn, dealer, nextPlayer
+		if(publicSeatList.bettingRound.actionOn!=null) {
+			publicSeatList.bettingRound.actionOn.card1 = 'private';
+			publicSeatList.bettingRound.actionOn.card2 = 'private';
+		
+		}
+		
+		if(publicSeatList.dealer!=null) {
+			publicSeatList.dealer.card1 = 'private';
+			publicSeatList.dealer.card2 = 'private';
+		}
+
+
+
 		return JSON.stringify(publicSeatList);
 	}
 
