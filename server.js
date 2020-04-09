@@ -60,11 +60,14 @@ if(process.env.NODE_ENV === 'production') {
 	})
 }
 
-app.use(function(request, response){
-	if(!request.secure){
-	  response.redirect("https://" + request.headers.host + request.url);
-	}
-  });
+if(process.env.NODE_ENV === 'production') {
+	app.use((req, res, next) => {
+	  if (req.header('x-forwarded-proto') !== 'https')
+		res.redirect(`https://${req.header('host')}${req.url}`)
+	  else
+		next()
+	})
+  }
 
 app.use(session({
 	secret: process.env.SECRET || 'F4RT',
