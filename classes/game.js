@@ -40,7 +40,8 @@ class game {
 				totalOnLine:parseInt(0),
 				currentRaiseToCall:parseInt(0),
 				endByFold:false,
-				lastBet:null
+				lastBet:null,
+				bigBlindHash:null
 				}
 		};
 
@@ -85,6 +86,7 @@ class game {
 		this.gameTable.handCount++;
 		if(this.gameTable.handCount>1) {
 			console.log("This is hand #"+this.gameTable.handCount+".");
+			//pass the current dealer so setdealer can find nextdealer
 			this.setDealer(this.gameTable.dealer);
 		}
 		
@@ -197,6 +199,7 @@ class game {
 			this.gameTable.bettingRound.currentRaiseToCall=null;
 			this.gameTable.isSettled='no';
 			this.gameTable.bettingRound.endByFold=false;
+			this.gameTable.bettingRound.bigBlindHash=null;
 			this.newHandLog();
 			//new pots
 			this.gameTable.bettingRound.potsTotal=0;
@@ -555,7 +558,9 @@ class game {
 	postBlinds() {
 		var smallBlindPayer = this.getSmallBlindPlayer();
 		var bigBlindPayer = this.getBigBlindPlayer();
-
+		
+		//store bigblind seat for front end to help with off action bar
+		this.gameTable.bettingRound.bigBlindHash=bigBlindPayer.hash;
 
 		//withdraw and add to line
 		this.gameTable.seats[smallBlindPayer.seat].addMoneyToLine(this.gameTable.smallBlind);
@@ -563,6 +568,7 @@ class game {
 
 		this.gameTable.seats[bigBlindPayer.seat].addMoneyToLine(this.gameTable.bigBlind);
 		this.gameTable.bettingRound.totalOnLine+=this.gameTable.bigBlind;
+
 
 		//set the person under the gun to be next
 		this.setActionOn(this.getUnderTheGunPlayer());

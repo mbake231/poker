@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
 import {
-  Navbar, 
-  NavItem,
   Button,
-  Nav
+  Form
 } from 'react-bootstrap';
 import socket from '../../socket';
 
@@ -26,6 +24,8 @@ class FoldButton extends Component {
         <div>
             <Button className='actionItem' onClick={this.handleClick.bind(this)}>{this.props.text}</Button>
         </div> );
+        
+
     }
 }
  

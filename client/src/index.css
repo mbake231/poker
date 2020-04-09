@@ -29,6 +29,6 @@ body > #root  > #AppContainer {
   margin: 0 auto;
   background-repeat: no-repeat;
      background-size:auto;
-     background-position: calc(50% - 100px) calc(50% - 75px);
+     background-position: calc(50% - 0px) calc(50% - -50px);
      overflow: hidden;
 }
