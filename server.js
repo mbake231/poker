@@ -60,6 +60,12 @@ if(process.env.NODE_ENV === 'production') {
 	})
 }
 
+app.use(function(request, response){
+	if(!request.secure){
+	  response.redirect("https://" + request.headers.host + request.url);
+	}
+  });
+
 app.use(session({
 	secret: process.env.SECRET || 'F4RT',
 	store:sessionStore,
