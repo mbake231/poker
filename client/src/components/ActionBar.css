@@ -11,3 +11,7 @@
     width:175px;
     height:80px
 }
+
+.ghostBtn {
+    display: none;
+  }
