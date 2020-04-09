@@ -22,7 +22,7 @@
 }
 
 .ghostBtn {
-  visibility: hidden;
+  display: none !important;
 }
 
 #totalPot {
@@ -91,13 +91,14 @@ flex-direction: column-reverse;
     top:550px;
   }
 
-  #OffActionBar {
+  #CheckBoxContainer {
     position: absolute;;
     display: inline-block;
+    top:-140px;
   
-    left:500px;
-    top:550px;
+    
   }
+
 
 #seat0 {
   position: absolute;

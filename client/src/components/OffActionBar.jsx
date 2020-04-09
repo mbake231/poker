@@ -23,7 +23,6 @@ class OffActionBar extends Component {
         };
         this.handleChange= this.handleChange.bind(this);
         this.uncheckAll= this.uncheckAll.bind(this);
-        this.componentWillUnmount= this.componentWillUnmount.bind(this);
         this.componentDidUpdate= this.componentDidUpdate.bind(this);
 
 
@@ -40,19 +39,18 @@ class OffActionBar extends Component {
     }
 
     componentDidUpdate() {
-        console.log('UDATE'+this.props.currentRaiseToCall+' vs '+this.state.auto_callCurrentAmt)
-
-        if(this.props.currentRaiseToCall>this.state.auto_callCurrentAmt && this.state.auto_callCurrent==true)
-            this.setState({auto_callCurrent:false});
-
         if(this.props.lastBet=='raise' && this.state.auto_checkfold==true) {
             this.uncheckAll();
             this.setState({auto_fold:true});
         }
 
-    }
-    componentWillUnmount() {
-        console.log(('UNMT'+this.props.currentRaiseToCall +" vs " +this.state.auto_callCurrentAmt))
+        //DO THE DIRTY
+        if(this.props.actionOnMe && (this.state.auto_callCurrent || 
+            this.state.auto_check 
+            ||this.state.auto_callAny 
+            ||this.state.auto_checkfold 
+            ||this.state.auto_fold )) {
+
 
         if(this.state.auto_fold) {
             var data = {gameid:this.props.gameid,
@@ -89,8 +87,12 @@ class OffActionBar extends Component {
             }
         }
 
-    }
+        this.uncheckAll();
 
+
+        }
+
+    }
 
     handleChange(e) {
         //set fold to true
@@ -114,7 +116,6 @@ class OffActionBar extends Component {
             this.uncheckAll();
             console.log(this.props.currentRaiseToCall);
             this.setState({auto_callCurrent:true});
-            this.setState({auto_callCurrentAmt:this.props.currentRaiseToCall});
         }
         else
             this.uncheckAll(); 
@@ -129,7 +130,7 @@ class OffActionBar extends Component {
     if(this.props.my_seat!=null){
         if(this.props.my_seat.moneyOnLine<this.props.currentRaiseToCall) {
             return (
-                <div id='CheckBoxContainer'>
+                <div id='CheckBoxContainer' className={this.props.actionOnMe ? ('ghostBtn'):('')}>
                     <div className='actionItem' id='offCheckFoldBoxes'>
                         <Form.Check name='fold' checked={this.state.auto_fold} type="checkbox" label="Fold" onChange={this.handleChange}/>
                     </div>
@@ -143,7 +144,7 @@ class OffActionBar extends Component {
          }
         else if(this.props.my_seat.moneyOnLine==this.props.currentRaiseToCall && (this.props.lastBet=='check' || this.props.lastBet==null)) {
         return(
-            <div id='CheckBoxContainer'>
+            <div id='CheckBoxContainer' className={this.props.actionOnMe ? ('ghostBtn'):('')}>
                 <div className='actionItem' id='offCheckFoldBoxes'>
                     <Form.Check onChange={this.handleChange} checked={this.state.auto_check} name='check' type="checkbox" label="Check" />
                     <Form.Check onChange={this.handleChange} checked={this.state.auto_checkfold} name='checkfold' type="checkbox" label="Check/Fold" />
@@ -160,7 +161,7 @@ class OffActionBar extends Component {
      }
      else if(this.props.my_seat.moneyOnLine==this.props.currentRaiseToCall && this.props.bettingRound==0 && (this.props.bigBlindHash==this.props.my_id)) {
         return(
-            <div id='CheckBoxContainer'>
+            <div id='CheckBoxContainer' className={this.props.actionOnMe ? ('ghostBtn'):('')}>
                 <div className='actionItem' id='offCheckFoldBoxes'>
                     <Form.Check onChange={this.handleChange} checked={this.state.auto_check} name='check' type="checkbox" label="Check" />
                     <Form.Check onChange={this.handleChange} checked={this.state.auto_checkfold} name='checkfold' type="checkbox" label="Check/Fold" />
