@@ -10,6 +10,9 @@ ul{padding:0;}
     max-height: 200px;
 }
 
+.actionOn {
+    background-color: #01FF70 !important;
+}
 
 .inputGroup {
     display: flex;
