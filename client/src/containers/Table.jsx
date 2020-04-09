@@ -24,7 +24,8 @@ class Table extends Component{
     roundPot:0,
     chat:[],
     clockCalled:false,
-    my_status:null
+    my_status:null,
+    actionOnSeat: null
 
   }
     
@@ -61,10 +62,7 @@ componentDidMount() {
             this.setState({my_seat:null}); 
         }
     });
-        
       
-      
-
 
       }
     });
@@ -82,9 +80,12 @@ componentDidMount() {
           if(data.bettingRound.actionOn.hash==this.props.my_id) {
             this.playAudio(this.yourturn);
             this.setState({actions:data.bettingRound.nextActionsAvailable})
+            this.setState({actionOnSeat:data.bettingRound.actionOn.seat});
           }
-          else
-          this.setState({actions:[]});
+          else {
+            this.setState({actions:[]});
+            this.setState({actionOnSeat:data.bettingRound.actionOn.seat});
+          }
         }
         else {
           this.setState({actions:[]});
@@ -101,7 +102,6 @@ componentDidMount() {
             }
             else if(this.state.seats[ctr]!='empty') {
               if(this.state.seats[ctr].hash == this.props.my_id){
-                console.log('seat set')
                 this.setState({my_seat:this.state.seats[ctr]});
                 ctr=-99;
               }
@@ -157,11 +157,16 @@ playAudio(audio) {
 render () {
 
   return (
+    <div id='pokerBg'>
     <div id='Table' className="Table">
       <div id='seatbox'>
         {this.state.seats.map((seat,i) => {
-            return <PlayerChevron id={i} info={this.state.seats[i]} gameid={this.state.gameid} my_id={this.props.my_id}></PlayerChevron>
-        })}
+          if(this.state.actionOnSeat==i)
+            return <PlayerChevron id={i} passedClassName={'actionOn'} info={this.state.seats[i]} gameid={this.state.gameid} my_id={this.props.my_id}></PlayerChevron>
+          else
+            return <PlayerChevron id={i} passedClassName={''} info={this.state.seats[i]} gameid={this.state.gameid} my_id={this.props.my_id}></PlayerChevron>
+
+      })}
         </div>
       <Pots totalPot={Number(this.state.totalPot)} roundPot={Number(this.state.roundPot)}></Pots>
       <Board board={this.state.board}></Board>
@@ -170,6 +175,7 @@ render () {
       <div id='ActionBar'>
         <ActionBar toCallAmt={Number(this.state.toCallAmt)} actions={this.state.actions} my_id={this.props.my_id} gameid={this.state.gameid}></ActionBar>
       </div> 
+    </div>
     </div>
   );
     }

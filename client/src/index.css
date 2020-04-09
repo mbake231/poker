@@ -16,14 +16,19 @@ code {
 }
 
 
-body > #root   {
+body > #root  > #AppContainer {
   width: 1440px;
   height:770px;
   overflow:hidden;
 }
 
-#AppContainer{
+#pokerBg {
   position: absolute;
+  background-image: url("/img/poker_bg.png");
   width: 100%;
   margin: 0 auto;
+  background-repeat: no-repeat;
+     background-size:auto;
+     background-position: calc(50% - 100px) calc(50% - 75px);
+     overflow: hidden;
 }

@@ -13,8 +13,8 @@
 
 #gameMenu{
   position: absolute;
-  top: 400px;
-  left:50px;
+  top: 350px;
+  left:25px;
 }
 
 .ghostBtn {
@@ -34,8 +34,8 @@
  
   width:400px;
   height:150px;
-  top:600px;
-  left:50px;
+  top:550px;
+  left:25px;
   background-color:#f2f2f2;
   
 }
@@ -83,7 +83,7 @@ flex-direction: column-reverse;
     display: inline-block;
   
     left:500px;
-    top:600px;
+    top:550px;
   }
 
 #seat0 {
@@ -119,8 +119,10 @@ flex-direction: column-reverse;
 
 #chipstack2 {
   position: absolute;
+  width:100px;
   left:870px;
-  top:300px;
+  top:260px;
+  display:block !important;
 }
 
 #seat3 {
@@ -138,41 +140,39 @@ flex-direction: column-reverse;
 
 #seat4 {
   position: absolute;
-  left:920px;
-  top:485px;
+  left:850px;
+  top:455px;
   
 }
 
 #chipstack4 {
   position: absolute;
-  left:855px;
-  top:475px;
+  left:825px;
+  top:425px;
   
 }
-
-
 
 #seat5 {
   position: absolute;
   left:590px;
-  top:570px;
+  top:500px;
 }
 #chipstack5 {
   position: absolute;
-  left:670px;
-  top:530px;
+  left:690px;
+  top:460px;
 }
 
 #seat6 {
   position: absolute;
-  left:250px;
-  top:485px;
+  left:300px;
+  top:455px;
 }
 
 #chipstack6 {
   position: absolute;
-  left:485px;
-  top:515px;
+  left:505px;
+  top:425px;
 }
 
 #seat7 {
@@ -195,7 +195,7 @@ flex-direction: column-reverse;
 
 #chipstack8 {
   position: absolute;
-  left:455px;
-  top:296px;
+  left:435px;
+  top:276px;
 }
 

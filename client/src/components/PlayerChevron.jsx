@@ -63,7 +63,7 @@ function validateForm() {
          {
             return ( 
                 <div>
-                <Card id={'seat'+props.id} style={{ width: '14rem' }}>
+                <Card className={''+props.passedClassName} id={'seat'+props.id} style={{ width: '14rem' }}>
                     <Card.Body>
                         <Card.Title>{props.info.userid}</Card.Title>
                         <Card.Text>
