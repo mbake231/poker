@@ -3,12 +3,16 @@ import {
   Navbar, 
   NavItem,
   Button,
-  Nav
+  Nav,
+  Form
 } from 'react-bootstrap';
 import socket from '../../socket';
 
 class CallButton extends Component {
 
+componentDidMount() {
+    console.log('to call'+this.props.toCallAmt)
+}
 
  
  handleClick(e) {
@@ -26,8 +30,11 @@ class CallButton extends Component {
     render() { 
         return (
         <div>
-            <Button className='actionItem' onClick={this.handleClick.bind(this)}>{'Call $'+(Number(this.props.toCallAmt)/100).toFixed(2)}</Button>
+            <Button className='actionItem' onClick={this.handleClick.bind(this)}>{'Call $'+(parseInt(this.props.currentRaiseToCall-this.props.my_seat.moneyOnLine)/100).toFixed(2)}</Button>
         </div> );
+        
+
+        
     }
 }
  

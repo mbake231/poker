@@ -3,7 +3,8 @@ import {
   Navbar, 
   NavItem,
   Button,
-  Nav
+  Nav,
+  Form
 } from 'react-bootstrap';
 import socket from '../../socket';
 
@@ -22,18 +23,16 @@ class FoldButton extends Component {
 
 
     render() { 
-        if(this.props.text=='Fold')
         return (
         <div>
             <Button className='actionItem' onClick={this.handleClick.bind(this)}>{this.props.text}</Button>
         </div> );
-        else
-        return (
-            <div>
-                <Button className='actionItem ghostBtn' onClick={this.handleClick.bind(this)}>{this.props.text}</Button>
-            </div> );
+        }
 
-    }
+       
+    
+
+
 }
  
 export default FoldButton;

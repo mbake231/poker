@@ -5,6 +5,7 @@ import ActionBar from "../components/ActionBar"
 import Board from "../components/Board"
 import Chat from "../components/Chat"
 import GameMenu from "../components/GameMenu"
+import OffActionBar from "../components/OffActionBar"
 
 import Pots from "../components/Pots"
 import socket from '../socket'
@@ -15,18 +16,22 @@ class Table extends Component{
   super();
   this.state = {
     gameid:null,
-    actions:[],
+    my_actions:[],
     seats: [],
     my_seat: null,
     board: [],
-    toCallAmt:0,
+    currentRaiseToCall:0,
     totalPot:0,
     roundPot:0,
     chat:[],
     clockCalled:false,
     my_status:null,
     actionOnSeat: null,
-    dealerSeat:null
+    actionOnMe:false,
+    dealerSeat:null,
+    lastBet: null,
+    bettingRound:null,
+    bigBlindHash:null
 
   }
     
@@ -85,23 +90,26 @@ componentDidMount() {
         if(data.bettingRound.actionOn!=null){
           if(data.bettingRound.actionOn.hash==this.props.my_id) {
             this.playAudio(this.yourturn);
-            this.setState({actions:data.bettingRound.nextActionsAvailable})
+            this.setState({my_actions:data.bettingRound.nextActionsAvailable})
             this.setState({actionOnSeat:data.bettingRound.actionOn.seat});
+            this.setState({actionOnMe:true});
           }
           else {
-            this.setState({actions:[]});
+            this.setState({my_actions:[]});
             this.setState({actionOnSeat:data.bettingRound.actionOn.seat});
+            this.setState({actionOnMe:false});
           }
         }
         else {
-          this.setState({actions:[]});
+          this.setState({my_actions:[]});
+          this.setState({actionOnMe:false});
         }
+
 
         //set my seat
         if(this.props.my_id!=null && this.state.seats.length!=0){
           var ctr=0;
           while(ctr>=0) {
-            console.log(ctr);
             if(ctr > this.state.gameData.game_size) {
               ctr=-99;
               this.setState({my_seat:null});
@@ -121,10 +129,15 @@ componentDidMount() {
         if(data.dealer!=null)
           this.setState({dealerSeat:data.dealer.seat});
 
-        //set call button amts
-        if(data.bettingRound.actionOn!=null)
-          this.setState({toCallAmt:(data.bettingRound.currentRaiseToCall - data.bettingRound.actionOn.moneyOnLine)})
-     
+      
+       
+        //set betting round stuff
+        if(data.bettingRound.actionOn!=null){
+          this.setState({currentRaiseToCall:data.bettingRound.currentRaiseToCall})
+          this.setState({lastBet:data.bettingRound.lastBet});
+          this.setState({bigBlindHash:data.bettingRound.bigBlindHash});
+          this.setState({bettingRound:data.bettingRound.round});
+        }
         //setclock
         this.setState({clockCalled:data.clockCalled})
         
@@ -164,24 +177,29 @@ render () {
 
   return (
     <div id='pokerBg'>
-    <div id='Table' className="Table">
-      <div id='seatbox'>
-        {this.state.seats.map((seat,i) => {
-          if(this.state.actionOnSeat==i)
-            return <PlayerChevron id={i} dealerSeat={this.state.dealerSeat} passedClassName={'actionOn'} info={this.state.seats[i]} gameid={this.state.gameid} my_id={this.props.my_id}></PlayerChevron>
-          else
-            return <PlayerChevron id={i} dealerSeat={this.state.dealerSeat} passedClassName={''} info={this.state.seats[i]} gameid={this.state.gameid} my_id={this.props.my_id}></PlayerChevron>
+      <div id='Table' className="Table">
+        <div id='seatbox'>
+          {this.state.seats.map((seat,i) => {
+            if(this.state.actionOnSeat==i)
+              return <PlayerChevron id={i} dealerSeat={this.state.dealerSeat} passedClassName={'actionOn'} info={this.state.seats[i]} gameid={this.state.gameid} my_id={this.props.my_id}></PlayerChevron>
+            else
+              return <PlayerChevron id={i} dealerSeat={this.state.dealerSeat} passedClassName={''} info={this.state.seats[i]} gameid={this.state.gameid} my_id={this.props.my_id}></PlayerChevron>
 
-      })}
-        </div>
-      <Pots totalPot={Number(this.state.totalPot)} roundPot={Number(this.state.roundPot)}></Pots>
-      <Board board={this.state.board}></Board>
-      <GameMenu gameid={this.state.gameid} my_id={this.props.my_id} my_seat={this.state.my_seat} clockCalled={this.state.clockCalled}></GameMenu>
-      <Chat chat={this.state.chat}></Chat>
-      <div id='ActionBar'>
-        <ActionBar toCallAmt={Number(this.state.toCallAmt)} actions={this.state.actions} my_id={this.props.my_id} gameid={this.state.gameid}></ActionBar>
-      </div> 
-    </div>
+        })}
+          </div>
+        <Pots totalPot={Number(this.state.totalPot)} roundPot={Number(this.state.roundPot)}></Pots>
+        <Board board={this.state.board}></Board>
+        <GameMenu gameid={this.state.gameid} my_id={this.props.my_id} my_seat={this.state.my_seat} clockCalled={this.state.clockCalled}></GameMenu>
+        <Chat chat={this.state.chat}></Chat>
+        {this.state.actionOnMe ? (
+        <div id='ActionBar'>
+          <ActionBar my_seat={this.state.my_seat} lastBet={this.state.lastBet} currentRaiseToCall={parseInt(this.state.currentRaiseToCall)} my_actions={this.state.my_actions} my_id={this.props.my_id} gameid={this.state.gameid}></ActionBar>
+        </div>)
+        :
+        (<div id='OffActionBar'>
+          <OffActionBar bettingRound={this.state.bettingRound} bigBlindHash={this.state.bigBlindHash} my_seat={this.state.my_seat} lastBet={this.state.lastBet} currentRaiseToCall={parseInt(this.state.currentRaiseToCall)} my_actions={this.state.my_actions} my_id={this.props.my_id} gameid={this.state.gameid}></OffActionBar>
+        </div> )}
+      </div>
     </div>
   );
     }

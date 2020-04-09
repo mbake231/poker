@@ -91,6 +91,14 @@ flex-direction: column-reverse;
     top:550px;
   }
 
+  #OffActionBar {
+    position: absolute;;
+    display: inline-block;
+  
+    left:500px;
+    top:550px;
+  }
+
 #seat0 {
   position: absolute;
   left:470px;
@@ -200,7 +208,7 @@ flex-direction: column-reverse;
 #chipstack5 {
   position: absolute;
   left:690px;
-  top:460px;
+  top:450px;
 }
 
 #dealerButton5 {
