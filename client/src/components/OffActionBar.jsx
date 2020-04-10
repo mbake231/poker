@@ -114,7 +114,6 @@ class OffActionBar extends Component {
         }
         else if(e.target.name == 'callCurrent' && this.state.auto_callCurrent==false) {
             this.uncheckAll();
-            console.log(this.props.currentRaiseToCall);
             this.setState({auto_callCurrent:true});
         }
         else
