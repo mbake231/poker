@@ -118,13 +118,13 @@ flex-direction: column-reverse;
 
 #seat0 {
   position: absolute;
-  left:470px;
+  left:510px;
   top:80px;
 }
 
 #chipstack0 {
   position: absolute;
-  left:580px;
+  left:600px;
   top:205px;
 }
 
@@ -136,13 +136,13 @@ flex-direction: column-reverse;
 
 #seat1 {
   position: absolute;
-  left:720px;
+  left:770px;
   top:80px;
 }
 
 #chipstack1 {
   position: absolute;
-  left:780px;
+  left:770px;
   top:200px;
 }
 
@@ -155,7 +155,7 @@ flex-direction: column-reverse;
 
 #seat2 {
   position: absolute;
-  left:950px;
+  left:990px;
   top:195px;
 }
 
@@ -163,7 +163,7 @@ flex-direction: column-reverse;
 #chipstack2 {
   position: absolute;
   width:100px;
-  left:870px;
+  left:890px;
   top:260px;
   display:block !important;
 }
@@ -178,13 +178,13 @@ flex-direction: column-reverse;
 
 #seat3 {
   position: absolute;
-  left:975px;
+  left:1015px;
   top:330px;
 }
 
 #chipstack3 {
   position: absolute;
-  left:910px;
+  left:920px;
   top:365px;
 
 }
@@ -198,14 +198,14 @@ flex-direction: column-reverse;
 
 #seat4 {
   position: absolute;
-  left:850px;
+  left:890px;
   top:455px;
   
 }
 
 #chipstack4 {
   position: absolute;
-  left:825px;
+  left:865px;
   top:425px;
   
 }
@@ -219,7 +219,7 @@ flex-direction: column-reverse;
 
 #seat5 {
   position: absolute;
-  left:590px;
+  left:630px;
   top:500px;
 }
 #chipstack5 {
@@ -236,13 +236,13 @@ flex-direction: column-reverse;
 
 #seat6 {
   position: absolute;
-  left:300px;
+  left:340px;
   top:455px;
 }
 
 #chipstack6 {
   position: absolute;
-  left:505px;
+  left:555px;
   top:425px;
 }
 
@@ -254,31 +254,31 @@ flex-direction: column-reverse;
 
 #seat7 {
   position: absolute;
-  left:185px;
+  left:235px;
   top:330px;
 }
 
 #chipstack7 {
   position: absolute;
-  left:420px;
+  left:480px;
   top:365px;
 }
 
 #dealerButton7 {
   position: absolute;
-  left:390px;
+  left:430px;
   top:365px;
 }
 
 #seat8 {
   position: absolute;
-  left:205px;
+  left:245px;
   top:196px;
 }
 
 #chipstack8 {
   position: absolute;
-  left:435px;
+  left:475px;
   top:276px;
 }
 
