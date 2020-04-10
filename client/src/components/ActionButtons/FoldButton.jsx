@@ -25,7 +25,7 @@ class FoldButton extends Component {
     render() { 
         return (
         <div>
-            <Button className='actionItem' onClick={this.handleClick.bind(this)}>{this.props.text}</Button>
+            <Button className='actionItem' onClick={this.handleClick.bind(this)}>Fold</Button>
         </div> );
         }
 
