@@ -21,8 +21,8 @@ render() {
   return (
     <div className="Home">
       <div className="lander">
-        <h1>Neighborhood</h1>
-        <p>Play game with friends even when they're not in the neighborhood.</p>
+        <h1>Start the Local Game</h1>
+        <p>Play games with friends like they were local.</p>
       </div>
       <Button block bssize="large" onClick={this.handleClick.bind(this)}>Start a Texas Hold'em Table</Button>
     </div>

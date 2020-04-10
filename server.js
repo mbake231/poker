@@ -198,42 +198,6 @@ io.use(passportSocketIo.authorize({
 
 
 
-app.get('/',function(req,res)
-{
-	
-	res.redirect('/createTable');
-
-
-});
-
-app.get('/table',function(req,res)
-{
-	
-	res.render('table',
-		{user:req.user})
-
-});
-
-app.get('/createTable',function(req,res)
-{
-	res.render('createTable')
-
-});
-
-app.post('/createTable',function(req,res)
-{
-	var id = newgameController.newGame();
-	res.redirect('/table?game='+id);
-
-});
-
-
-app.get('/login',function(req,res)
-{
-	res.render('login')
-
-});
-
 app.post('/login',
 function(req,res,next) {
 
@@ -254,14 +218,6 @@ passport.authenticate('local'),
 
 }
 );
-
-
-
-app.get('/register',function(req,res)
-{
-	res.render('register')
-
-});
 
 app.post('/register',async (req,res) => {
 try {
@@ -326,7 +282,7 @@ catch {
 
 });
 
-app.get('/logout', async (req, res) => {
+app.post('/logout', async (req, res) => {
 	await req.logout();
 	req.session = null;
 	res.clearCookie("connect.sid")

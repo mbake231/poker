@@ -81,7 +81,6 @@ componentDidMount() {
     socket.on('incomingChat',(event) => {
       if(event.gameid==this.state.gameid)
         this.setState({ chat: [...this.state.chat, event.message ]});
-        console.log("hi"+event.message);
     });
 
 
@@ -92,7 +91,7 @@ componentDidMount() {
         this.setState({gameData:data});
         this.setState({seats: data.seats});
         this.setState({board:data.board});
-        console.log(data);
+        //console.log(data);
         if(data.bettingRound.actionOn!=null){
           if(data.bettingRound.actionOn.hash==this.props.my_id) {
             try {this.playAudio(this.yourturn);} catch (e){}

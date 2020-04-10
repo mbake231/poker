@@ -33,91 +33,29 @@ class App extends Component {
     else
       url='http://localhost:3000/login';
 
-  
       const response = await axios.post(url, {
                    email:email,
                   password:password
                   },{withCredentials: true});
     
-                  //this.setState({my_id:response.data.username}, () => {
                     this.handShake();
                     window.location.reload(false);
-               //   });
 
-    
-
-    /*axios.post(url, {
-        email:email,
-        password:password
-    },{withCredentials: true}).then(response => {
-        console.log(response);
-        console.log(response.data.username);
-            if(response.data.username) {
-                console.log('successful login '+response.data.username);
-            }
-         
-            else {
-                console.log("Sign in error")
-            }
-        }).then(response => {
-            this.setState({my_id:response.data.username });
-
-        })*/
   }
 
   handShake() { 
     socket.emit('handshake', 'give me my id');
-    
   }
 
   componentDidMount() {
     this.handShake();
 
-  
-
     socket.on('handshake', (_id) => {
       //console.log("incoming update " + privateData);
         console.log("My ID is:"+_id);
         this.setState({my_id:_id})
-      });
-    
-    //get id
- 
-      /*  this.handShake();
-      //SETUP TEST GAME
-      var gameid;
-      socket.emit('createGame', 'no data');
-      socket.on('createGame', (game_id) => {
-          console.log("Game ID is:"+game_id);
-          this.setState({game_id:game_id})
-          gameid=game_id;
-        });
-
-        var register = {
-          gameHash: 'fart',
-          userid: '5e83a80f4aeeda2c0a258d4f',
-          balance: 100,
-          status: 'playing',
-          seat: 0
-        };
-        socket.emit('register', register);
-         register = {
-          gameHash: 'fart',
-          userid: '5e83aa2c8391902cc37073b9',
-          balance: 100,
-          status: 'playing',
-          seat: 1
-        };
-        socket.emit('register', register);
-
-
-   
-     */
-
-
-    
+      });  
   }
-
 
 
   render() {
