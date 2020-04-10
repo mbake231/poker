@@ -18,7 +18,7 @@
 }
 
 .emptySeatWhileSititing {
-  opacity: 0.5;
+  opacity: 0.3;
 }
 
 .ghostBtn {
@@ -104,7 +104,7 @@ flex-direction: column-reverse;
     display: inline-block;
   
     left:500px;
-    top:550px;
+    top:590px;
   }
 
   #CheckBoxContainer {

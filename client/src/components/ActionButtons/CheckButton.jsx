@@ -22,7 +22,7 @@ class FoldButton extends Component {
     render() { 
         return (
         <div>
-            <Button className='actionItem' onClick={this.handleClick.bind(this)}>{this.props.text}</Button>
+            <Button className='actionItem' variant="dark" onClick={this.handleClick.bind(this)}>{this.props.text}</Button>
         </div> );
         
 

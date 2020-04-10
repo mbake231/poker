@@ -15,3 +15,8 @@
     display: none;
     pointer-events: none;
 }
+
+.ghostBtnSpace {
+    visibility: hidden;
+    pointer-events: none;
+}

@@ -27,7 +27,7 @@ import './ActionButtons.css'
 
         return (
         <div id='raiseModule'>
-            <Button className='actionItem' disabled={!validateForm()} onClick={handleClick}>{'Raise $'+amt}</Button>
+            <Button variant='dark' className='actionItem' disabled={!validateForm()} onClick={handleClick}>{'Raise $'+amt}</Button>
             <InputGroup className="raiseBtn raiseInput mb-3">
                 <InputGroup.Prepend>
                 <InputGroup.Text>$</InputGroup.Text>
