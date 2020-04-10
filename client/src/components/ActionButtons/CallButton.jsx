@@ -30,7 +30,7 @@ componentDidMount() {
     render() { 
         return (
         <div>
-            <Button className='actionItem' onClick={this.handleClick.bind(this)}>{'Call $'+(parseInt(this.props.currentRaiseToCall-this.props.my_seat.moneyOnLine)/100).toFixed(2)}</Button>
+            <Button variant='dark' className='actionItem' onClick={this.handleClick.bind(this)}>{'Call $'+(parseInt(this.props.currentRaiseToCall-this.props.my_seat.moneyOnLine)/100).toFixed(2)}</Button>
         </div> );
         
 

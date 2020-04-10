@@ -13,7 +13,7 @@ class GhostButton extends Component {
     render() { 
         return (
         <div>
-            <Button className='actionItem ghostBtn'></Button>
+            <Button className='actionItem ghostBtnSpace'></Button>
         </div> );
     }
 }
