@@ -884,6 +884,7 @@ class game {
 
 	settleTheHand() {
 		console.log("Hand over. Settling up.");
+		var delay=0;
 		this.updateHandLog("Hand over. Settling up.");
 		//stop the timer
 		clearTimeout(this.gameTable.bettingRound.actionOnTimer);
@@ -918,8 +919,10 @@ class game {
 			for(var i=0;i<this.gameTable.board.length;i++){
 				if(this.gameTable.board[i]==null) {
 					this.gameTable.board[i]=this.deck.dealCard();
+					delay+=1500;
 					}
 				}
+				this.sendDataToAllPlayers();
 		
 
 			}
@@ -1051,8 +1054,13 @@ class game {
 			this.gameTable.isSettled="yes";
 			this.mochatest=true;
 			let scope=this;
+
 			if(this.gameTable.isTest==false)
-				setTimeout(function(){ scope.nextHand(); }, 4000);
+				if(this.getNumberPlayersAllIn()>0)
+					setTimeout(function(){ scope.nextHand(); }, 6000+delay);
+				else
+					setTimeout(function(){ scope.nextHand(); }, 4000);
+
 		}
 
 

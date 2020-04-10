@@ -188,7 +188,9 @@ render () {
         })}
           </div>
         <Pots totalPot={Number(this.state.totalPot)} roundPot={Number(this.state.roundPot)}></Pots>
-        <Board board={this.state.board}></Board>
+        {this.state.board[0]!=null ? (
+        <Board board={this.state.board}></Board>) :
+        (<div></div>)}
         <GameMenu gameid={this.state.gameid} my_id={this.props.my_id} my_seat={this.state.my_seat} clockCalled={this.state.clockCalled}></GameMenu>
         <Chat chat={this.state.chat}></Chat>
         {this.state.actionOnMe ? (
