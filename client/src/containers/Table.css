@@ -111,9 +111,10 @@ flex-direction: column-reverse;
     position: absolute;;
     display: inline-block;
     top:-140px;
-  
-    
+    padding-left: 250px;
   }
+
+
 
 
 #seat0 {
