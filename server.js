@@ -186,6 +186,10 @@ io.use(passportSocketIo.authorize({
 		socket.on('reconnectionAttempt', function (data) {
 			newgameController.reconnect(data.gameid,socket.request.user._id,socket.id);
 			});
+
+		socket.on('chatMessage', function (data) {
+			newgameController.incomingChat(data.gameid,data.hash,data.message);
+		})
 	}//if
 	else
 		console.log("I hear you but I can't listen to you.");

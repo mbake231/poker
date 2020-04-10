@@ -139,14 +139,16 @@ function  addNewPlayerToGame (gameid,_id,balance,status,seat,sessionid) {
 
 }
 
-function incomingAction(gameid,user,action,amt){
-    if(gameid!=null && user!=null) {
-        var game = findGameById(gameid);
-        var userActing = game.getPlayerByHash(user);
-        game.doAction(userActing, action, amt);
-    }
+function incomingAction(gameid,hash,action,amt){
+    let thisGame = findGameById(gameid);
+    if(thisGame != null)
+        var userActing = thisGame.getPlayerByHash(hash);
+        if(userActing != false && thisGame.isSettled()==false){
+            thisGame.doAction(userActing, action, amt);
+        }
     else
-        console.log("Can't find game or user, data is null");
+        console.log('No game with that ID.');
+
 }
 
 function sendSeatList(gameid,sessionid) {
@@ -159,7 +161,17 @@ function sendSeatList(gameid,sessionid) {
 
 }
 
+function incomingChat (gameid, hash, message) {
+    let thisGame = findGameById(gameid);
+    if(thisGame != null)
+        if(thisGame.getPlayerByHash(hash) != false)
+            thisGame.sendChat(hash,message);
+    else
+        console.log('No game with that ID.');
+}
 
+
+exports.incomingChat=incomingChat;
 exports.sendSeatList=sendSeatList;
 exports.newGame=newGame;
 exports.addNewPlayerToGame = addNewPlayerToGame;

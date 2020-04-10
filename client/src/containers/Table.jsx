@@ -78,6 +78,12 @@ componentDidMount() {
         this.setState({ chat: [...this.state.chat, event.event ]});
     });
 
+    socket.on('incomingChat',(event) => {
+      if(event.gameid==this.state.gameid)
+        this.setState({ chat: [...this.state.chat, event.message ]});
+        console.log("hi"+event.message);
+    });
+
 
     socket.on('update', (privateData) => {
       //console.log("incoming update " + privateData);
@@ -89,7 +95,7 @@ componentDidMount() {
         console.log(data);
         if(data.bettingRound.actionOn!=null){
           if(data.bettingRound.actionOn.hash==this.props.my_id) {
-            this.playAudio(this.yourturn);
+            try {this.playAudio(this.yourturn);} catch (e){}
             this.setState({my_actions:data.bettingRound.nextActionsAvailable})
             this.setState({actionOnSeat:data.bettingRound.actionOn.seat});
             this.setState({actionOnMe:true});
@@ -140,6 +146,8 @@ componentDidMount() {
         }
         //setclock
         this.setState({clockCalled:data.clockCalled})
+
+        //incoming chat
         
         //set pot sizes
         this.setState({totalPot:data.bettingRound.potsTotal});
@@ -148,18 +156,17 @@ componentDidMount() {
         //play audio
         if(data.bettingRound!=null) {
           if(data.bettingRound.lastBet=='raise')
-           this.playAudio(this.raise);
+           try{this.playAudio(this.raise);} catch (e){}
           if(data.bettingRound.lastBet=='call')
-           this.playAudio(this.check);
+          try{this.playAudio(this.check);} catch (e){}
           if(data.bettingRound.lastBet=='check')
-            this.playAudio(this.check);
+          try{this.playAudio(this.check);} catch (e){}
         }
 
       });
 }
 
 playAudio(audio) {
-  console.log('playin');
   const audioPromise = audio.play()
   if (audioPromise !== undefined) {
     audioPromise
@@ -181,9 +188,9 @@ render () {
         <div id='seatbox'>
           {this.state.seats.map((seat,i) => {
             if(this.state.actionOnSeat==i)
-              return <PlayerChevron id={i} dealerSeat={this.state.dealerSeat} passedClassName={'actionOn'} info={this.state.seats[i]} gameid={this.state.gameid} my_id={this.props.my_id}></PlayerChevron>
+              return <PlayerChevron id={i} dealerSeat={this.state.dealerSeat} my_seat={this.state.my_seat} passedClassName={'actionOn'} info={this.state.seats[i]} gameid={this.state.gameid} my_id={this.props.my_id}></PlayerChevron>
             else
-              return <PlayerChevron id={i} dealerSeat={this.state.dealerSeat} passedClassName={''} info={this.state.seats[i]} gameid={this.state.gameid} my_id={this.props.my_id}></PlayerChevron>
+              return <PlayerChevron id={i} dealerSeat={this.state.dealerSeat} my_seat={this.state.my_seat} passedClassName={''} info={this.state.seats[i]} gameid={this.state.gameid} my_id={this.props.my_id}></PlayerChevron>
 
         })}
           </div>
@@ -192,7 +199,7 @@ render () {
         <Board board={this.state.board}></Board>) :
         (<div></div>)}
         <GameMenu gameid={this.state.gameid} my_id={this.props.my_id} my_seat={this.state.my_seat} clockCalled={this.state.clockCalled}></GameMenu>
-        <Chat chat={this.state.chat}></Chat>
+        <Chat chat={this.state.chat} my_id={this.props.my_id} gameid={this.state.gameid}></Chat>
         {this.state.actionOnMe ? (
         <div id='ActionBar'>
           <ActionBar my_seat={this.state.my_seat} lastBet={this.state.lastBet} currentRaiseToCall={parseInt(this.state.currentRaiseToCall)} my_actions={this.state.my_actions} my_id={this.props.my_id} gameid={this.state.gameid}></ActionBar>
