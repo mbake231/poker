@@ -15,33 +15,9 @@ export default function Login(props) {
   function handleSubmit(event) {
 
     event.preventDefault();
-    console.log('clicked!');
     props.login(email,password);
     props.close();
 
-    /*
-    var url;
-    if(process.env.NODE_ENV === 'production')
-      url='https://fartmanjack.herokuapp.com/login';
-    else
-      url='http://localhost:3000/login';
-
-
-    axios.post(url, {
-        email:email,
-        password:password
-    },{withCredentials: true}).then(response => {
-        console.log(response) 
-            if(response.data.username) {
-                console.log('successful login')
-                socket.emit('handshake','nodate');
-                props.close();
-            }else {
-                console.log("Sign in error")
-            }
-        }
-    )
-*/
 }
   return (
     <div className="Login">

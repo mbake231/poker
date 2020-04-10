@@ -8,6 +8,7 @@ import {
   Button,
   Nav
 } from 'react-bootstrap';
+import axios from 'axios';
 
 class MyNav extends Component {
 
@@ -21,6 +22,28 @@ class MyNav extends Component {
    this.showModal();
  }
 
+ handleClick() {
+   console.log('click');
+ }
+
+ logOutClick() {
+  var url;
+  if(process.env.NODE_ENV === 'production')
+    url='https://fartmanjack.herokuapp.com/logout';
+  else
+    url='http://localhost:3000/logout';
+
+    const response =  axios.post(url, {},{withCredentials: true});
+    setTimeout(
+      function() {
+        window.location.reload();
+      }
+      .bind(this),
+      500
+  );
+
+ }
+
 
 
     render() { 
@@ -30,13 +53,13 @@ class MyNav extends Component {
       }
       else {
         button = <div>
-                    Hi,{this.props.my_id} <a href="/logout">Logout</a>
+                    Welcome in! <Button variant="outline-primary" onClick={this.logOutClick}>Logout</Button>
                 </div>
       }
         return (
         <Navbar>
             <LoginModal ref={this.loginModalRef} login={this.props.login.bind(this)} ></LoginModal>
-            <Navbar.Brand href="#home">Clint Do-Me Son's Poker Dojo</Navbar.Brand>
+            <Navbar.Brand href="#home">The Local Game</Navbar.Brand>
             <Navbar.Toggle />
               <Navbar.Collapse className="justify-content-end">
                 {button}
