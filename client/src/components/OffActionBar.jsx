@@ -126,7 +126,7 @@ class OffActionBar extends Component {
 
     render() { 
         //action off me, and there is an outstanding bet i havent called
-    if(this.props.my_seat!=null){
+    if(this.props.my_seat!=null && this.props.bettingRound!=null){
         if(this.props.my_seat.moneyOnLine<this.props.currentRaiseToCall) {
             return (
                 <div id='CheckBoxContainer' className={this.props.actionOnMe ? ('ghostBtn'):('')}>

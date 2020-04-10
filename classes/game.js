@@ -57,6 +57,8 @@ class game {
 		this.gameTable.bettingRound.pots[0] =  new pot(0);
 		this.gameTable.currentPot=this.gameTable.bettingRound.pots[0];
 		this.newHandLog();
+		this.chat = [];
+		this.chatSentIndex=0;
 		if(param=='test')
 			this.gameTable.isTest=true;
 	}
@@ -124,6 +126,7 @@ class game {
 		var sendList = this.getAllPlayerSessionIDs();
 		var sessionidToSend;
 		var handlogThisSession = (this.getHandLog().length) - this.gameTable.handLogSentIndex;
+		var chatSendThisSession = (this.chat.length - this.chatSentIndex);
 		for (var i=0; i<sendList.length;i++)
 		{
 				sessionidToSend=sendList[i].sessionid;
@@ -133,9 +136,13 @@ class game {
 								for(var b = 0; b <= handlogThisSession;b++) {
 									server.io.to(sessionidToSend).emit('logEvent',{gameid:this.gameTable.gameid,event:this.getHandLog()[this.gameTable.handLogSentIndex+b] });
 								}
+								for(var c = 0; c <= chatSendThisSession;c++) {
+									server.io.to(sessionidToSend).emit('incomingChat',{gameid:this.gameTable.gameid,message:this.chat[this.chatSentIndex+c] });
+								}
 					}
 		}
 		this.gameTable.handLogSentIndex+=handlogThisSession;
+		this.chatSentIndex+=chatSendThisSession;
 	}
 
 	reconnect(hash,newSessionId) {
@@ -1584,10 +1591,13 @@ class game {
 		return false;
 	}
 
+	sendChat(hash,message) {
+		var transmission = this.getPlayerByHash(hash).userid + ": "+message;
+		this.chat.push(transmission);
+		this.sendDataToAllPlayers();
+	}
+
 }
 
 
-//module.exports = game;
 exports.game=game;
-//module.exports = game;
-//exports.addPlayer=addPlayer;

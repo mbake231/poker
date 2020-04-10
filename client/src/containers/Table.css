@@ -17,8 +17,8 @@
   left:25px;
 }
 
-.isdealerButton {
-  
+.emptySeatWhileSititing {
+  opacity: 0.5;
 }
 
 .ghostBtn {
@@ -40,8 +40,16 @@
     top:380px;
     display: flex;
 }
+#ChatInput {
+  position: absolute;;
+ 
+  width:400px;
+  height:150px;
+  top: 150px;
 
+}
 #Chat {
+ 
   position: absolute;;
  
   width:400px;
@@ -49,14 +57,22 @@
   top:550px;
   left:25px;
   background-color:#f2f2f2;
-  
 }
 
-.chatList {
-  overflow: auto;
+.chatBuffer {
+  visibility: hidden;
+}
+
+#ChatThread {
+  display: flex;
+  flex-direction: column-reverse;
+  
+  overflow-y: scroll;
   list-style-type: none;
   height:150px;
+
 }
+
 
 .chipStack {
   position: absolute;

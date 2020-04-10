@@ -39,7 +39,7 @@ function validateForm() {
       
   }
 
-        if(props.info=='empty') {
+        if(props.info=='empty' && props.my_seat==null) {
             return ( 
                 <Card id={'seat'+props.id} style={{ width: '14rem' }}>
                     <Card.Body>
@@ -54,6 +54,16 @@ function validateForm() {
                         </div>
                         <Card.Text>
                         </Card.Text>
+                    </Card.Body>
+                </Card>
+
+         );
+        }
+        if(props.info=='empty' && props.my_seat!=null) {
+            return ( 
+                <Card id={'seat'+props.id} style={{ width: '14rem' }} className='emptySeatWhileSititing'>
+                    <Card.Body>
+                        
                     </Card.Body>
                 </Card>
 
