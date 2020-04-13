@@ -6,6 +6,8 @@ import Board from "../components/Board"
 import Chat from "../components/Chat"
 import GameMenu from "../components/GameMenu"
 import OffActionBar from "../components/OffActionBar"
+import BlockUi from 'react-block-ui';
+import 'react-block-ui/style.css';
 
 import Pots from "../components/Pots"
 import socket from '../socket'
@@ -31,7 +33,8 @@ class Table extends Component{
     dealerSeat:null,
     lastBet: null,
     bettingRound:null,
-    bigBlindHash:null
+    bigBlindHash:null,
+    blocking: false
 
   }
     
@@ -84,6 +87,28 @@ componentDidMount() {
       if(event.gameid==this.state.gameid)
         this.setState({ chat: [...this.state.chat, event.message ]});
     });
+
+    if(!socket.connected)
+      this.setState({blocking: true});
+
+    socket.on('disconnect', (event) => {
+      this.setState({blocking: true});
+      console.log('Disconnected.')
+    });
+
+    socket.on('reconnect', (event) => {
+      this.setState({blocking: false});
+      console.log('Connected.')
+
+    });
+
+    socket.on('connect', (event) => {
+      this.setState({blocking: false});
+      console.log('Connected.')
+
+    });
+
+
 
 
     socket.on('update', (privateData) => {
@@ -185,6 +210,7 @@ render () {
 
   return (
     <div id='pokerBg'>
+      <BlockUi tag="div" blocking={this.state.blocking} message="Reconnecting, your game is saved.">
       <div id='Table' className="Table">
         <div id='seatbox'>
           {this.state.seats.map((seat,i) => {
@@ -210,6 +236,7 @@ render () {
           <OffActionBar bettingRound={this.state.bettingRound} bigBlindHash={this.state.bigBlindHash} my_seat={this.state.my_seat} lastBet={this.state.lastBet} currentRaiseToCall={parseInt(this.state.currentRaiseToCall)} my_actions={this.state.my_actions} my_id={this.props.my_id} gameid={this.state.gameid} actionOnMe={this.state.actionOnMe}></OffActionBar>
         </div> 
       </div>
+      </BlockUi>
     </div>
   );
     }
