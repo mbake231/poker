@@ -99,7 +99,7 @@ class game {
 			//restore next players
 			for(var i=0;i<this.gameTable.game_size;i++) {
 				if(this.gameTable.seats[i]!='empty')
-				this.gameTable.seats[i].nextPlayer=this.getPlayerByHash(this.gameTable.seats[i].nextPlayer);	
+					this.gameTable.seats[i].nextPlayer=this.getPlayerByHash(this.gameTable.seats[i].nextPlayer);	
 			}
 
 			//rebuild the pots
@@ -126,7 +126,8 @@ class game {
 			this.gameTable.bettingRound.nextActionsAvailable=rebuild.round_information.nextActionsAvailable;
 			this.gameTable.bettingRound.lastRaiser=rebuild.round_information.lastRaiser;
 			this.gameTable.bettingRound.potsTotal=rebuild.round_information.potsTotal;
-			this.gameTable.bettingRound.actionOn=this.getPlayerByHash(rebuild.round_information.actionOn.hash)
+			if(rebuild.round_information.actionOn != null)
+				this.gameTable.bettingRound.actionOn=this.getPlayerByHash(rebuild.round_information.actionOn.hash)
 			this.gameTable.bettingRound.round=rebuild.round_information.round;
 			this.gameTable.bettingRound.currentRaiseToCall=rebuild.round_information.currentRaiseToCall;
 			this.gameTable.bettingRound.lastBet=rebuild.round_information.lastBet;
