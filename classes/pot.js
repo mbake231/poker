@@ -1,11 +1,20 @@
 var numMembers=0;
 
 class pot {
-	constructor (total) {
-		this.total=parseInt(total);
-		this.members=[];
-		this.winners=[];
-		this.numMembers=0;
+	constructor (total, rebuild) {
+		if(rebuild==null) {
+			this.total=parseInt(total);
+			this.members=[];
+			this.winners=[];
+			this.numMembers=0;
+		}
+		else
+			{
+				this.total=parseInt(rebuild.total);
+				this.members=rebuild.members;
+				this.winners=rebuild.winners;
+				this.numMembers=rebuild.members;
+			}
 
 	}
 

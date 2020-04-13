@@ -3,14 +3,16 @@ var pot = require('./pot.js').pot;
 var pokerCalc = require('poker-calc');
 var Hand = require('pokersolver').Hand;
 var server = require('../server.js');
+var saveGameController = require ('../SavedGameController.js')
+var player = require ('./player.js').player;
 
 class game {
-	constructor (param) {
+	constructor (isTest, rebuild) {
 		this.gameTable = {
 			isTest:false,
 			gameid:null,
 			game_size:9,
-			 seats:[],
+			seats:[],
 			numseats:0,
 			gameRunning:false,
 			handCount:0,
@@ -58,9 +60,79 @@ class game {
 		this.gameTable.currentPot=this.gameTable.bettingRound.pots[0];
 		this.newHandLog();
 		this.chat = [];
+		//mongo id
+		this.save_id;
 		this.chatSentIndex=0;
-		if(param=='test')
+		if(isTest=='test')
 			this.gameTable.isTest=true;
+		this.saveThisGame();
+
+
+
+		if(rebuild!=null){
+			
+			this.gameTable.game_size = rebuild.game_data.game_size;
+			this.gameTable.gameid = rebuild.game_data.gameid;
+			//rebuild the players & add to seat
+			for(var i=0;i<this.gameTable.game_size;i++) {
+				if(rebuild.seats[i]!='empty') {
+					//convet next player hashes to player objs
+					let rebuiltPlayer = new player(rebuild.seats[i].hash,
+												rebuild.seats[i].balance,
+												rebuild.seats[i].status,
+												'no_sid',
+												'');
+					//rebuiltPlayer.setUserName(rebuiltPlayer.hash);
+					rebuiltPlayer.moneyOnLine=parseInt(rebuild.seats[i].moneyOnLine);
+					rebuiltPlayer.card1=rebuild.seats[i].card1;
+					rebuiltPlayer.card2=rebuild.seats[i].card2;
+					rebuiltPlayer.sitoutnexthand=rebuild.seats[i].sitoutnexthand;
+					rebuiltPlayer.leavenexthand=rebuild.seats[i].leavenexthand;
+					rebuiltPlayer.nextPlayer = rebuild.seats[i].nextPlayer;
+					this.addPlayer(rebuiltPlayer, i	);
+
+				}
+				else	
+					this.gameTable.seats[i]='empty';
+			}
+
+			//restore next players
+			for(var i=0;i<this.gameTable.game_size;i++) {
+				if(this.gameTable.seats[i]!='empty')
+				this.gameTable.seats[i].nextPlayer=this.getPlayerByHash(this.gameTable.seats[i].nextPlayer);	
+			}
+
+			//rebuild the pots
+			for(var i=0;i<rebuild.round_information.pots.length;i++) {
+				let potData = {total:rebuild.round_information.pots[i].total,
+					members:rebuild.round_information.pots[i].members,
+					winners:rebuild.round_information.pots[i].winners,
+					numMembers:rebuild.round_information.pots[i].numMembers}
+				let rebuiltPot = new pot(null,potData);
+				this.gameTable.bettingRound.pots.push(rebuiltPot);
+			}
+			this.gameTable.currentPot=this.gameTable.bettingRound.pots[this.gameTable.bettingRound.pots.length-1];
+
+			//set game data
+			if(rebuild.game_data.dealer!=null)
+				this.gameTable.dealer = this.getPlayerByHash(rebuild.game_data.dealer.hash)
+			this.gameTable.board= rebuild.game_data.board;
+			this.gameTable.deck = rebuild.game_data.deck;
+			this.gameTable.game_size = rebuild.game_data.game_size;
+			this.gameTable.hand_count= rebuild.game_data.hand_count;
+			this.gameTable.isTimerGamer=rebuild.game_data.isTimerGamer;
+			this.gameTable.smallBlind=rebuild.game_data.smallBlind;
+			this.gameTable.bigBlind=rebuild.game_data.bigBlind;
+			this.gameTable.bettingRound.nextActionsAvailable=rebuild.round_information.nextActionsAvailable;
+			this.gameTable.bettingRound.lastRaiser=rebuild.round_information.lastRaiser;
+			this.gameTable.bettingRound.potsTotal=rebuild.round_information.potsTotal;
+			this.gameTable.bettingRound.actionOn=this.getPlayerByHash(rebuild.round_information.actionOn.hash)
+			this.gameTable.bettingRound.round=rebuild.round_information.round;
+			this.gameTable.bettingRound.currentRaiseToCall=rebuild.round_information.currentRaiseToCall;
+			this.gameTable.bettingRound.lastBet=rebuild.round_information.lastBet;
+			this.gameTable.bettingRound.bigBlindHash=rebuild.round_information.bigBlindHash;
+			this.sendDataToAllPlayers();
+		}
 	}
 
 	getHandCount() {
@@ -146,7 +218,7 @@ class game {
 	}
 
 	reconnect(hash,newSessionId) {
-		//console.log("TRYING TO RECONNECT: "+hash);
+		console.log("TRYING TO RECONNECT: "+hash);
 		if (this.getPlayerByHash(hash) != false) {
 	
 			this.getPlayerByHash(hash).updateSessionId(newSessionId);
@@ -331,7 +403,7 @@ class game {
 
 	getPlayerByHash(myhash) {
 		for (var i=0;i<this.gameTable.game_size;i++){
-			if(String(this.gameTable.seats[i].hash)==String(myhash)) {
+			if((this.gameTable.seats[i].hash)==(myhash)) {
 				return this.gameTable.seats[i];
 			}
 		}
@@ -1295,6 +1367,37 @@ class game {
 		this.gameTable.bettingRound.actionOn=this.gameTable.seats[this.gameTable.bettingRound.actionOn.seat].nextPlayer;
 	}
 
+	saveThisGame() {
+	
+
+		var saveFormat =  JSON.stringify(this,function( key, value) {
+			//remove circular stuff
+ 			if(key == 'nextPlayer') { 
+				 
+    			return value.hash;
+  			} 
+  			if(key == 'previousPlayer') { 
+    			return value.hash;
+  			} 
+  			if(key == 'actionOnTimer') { 
+    			return "removedForStringify";
+  			} 
+  			else {
+    			return value;
+  			};
+		});
+
+		saveFormat = JSON.parse(saveFormat);
+		var that = this;
+		saveGameController.saveThisGame(saveFormat, function(id) {
+			
+			that.save_id=id;
+			console.log('myid'+id);
+		});
+		
+
+	}
+
 	doAction(player,action,amt) {
 		clearTimeout(this.gameTable.bettingRound.actionOnTimer);
 		var foldCounter=0;
@@ -1309,6 +1412,7 @@ class game {
 					console.log(player.userid+" has checked.");
 					this.updateHandLog(player.userid+" has checked.");
 					this.getNextAction();
+					this.saveThisGame();
 					return true;
 				
 				}
@@ -1334,6 +1438,7 @@ class game {
 						//to make new pots if someone folded and didnt call with different MOL sizes
 						this.addMoneyLineToPot();
 						this.settleTheHand();
+						this.saveThisGame();
 						return true;
 					}
 					else{
@@ -1341,9 +1446,11 @@ class game {
 						this.foldPlayer(player);
 						this.advanceToNextPlayer();
 						this.getNextAction();
+						this.saveThisGame();
 						return true;
 					}
 					this.getNextAction();
+					this.saveThisGame();
 					return true;
 
 				}
@@ -1399,6 +1506,7 @@ class game {
 						return false;
 					}
 					this.getNextAction();
+					this.saveThisGame();
 					return true;
 				}
 				else if (action=='raise') {
@@ -1417,6 +1525,7 @@ class game {
 						if(player.balance==0)
 							this.putPlayerAllIn(player);
 						this.getNextAction();
+						this.saveThisGame();
 						return true;
 					}
 					else {

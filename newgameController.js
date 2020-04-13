@@ -6,7 +6,7 @@ var player = require('./classes/player.js').player;
 var game = require('./classes/game.js').game;
 var Promise = require("bluebird");
 var Promise=require('bluebird');
-
+var SavedGameController = require ('./SavedGameController.js')
 const games = [];
 
 //TEST
@@ -33,13 +33,14 @@ incomingAction('fart','5e83aa2c8391902cc37073b9','call');
 
 
 
-function newGame(smallBlind,bigBlind,isTimerGame,timerLength,maxPlayers) {
-    var thisGame = new game();
+function newGame(isTest,buildData) {
+    var thisGame = new game(isTest,buildData);
 
     games.push(thisGame);
     console.log("New game made ID:"+findGameById(thisGame.getGameId()).getGameId());
     return thisGame.getGameId();
 }
+
 
 function findGameById(id) {
     for (var i = 0; i<games.length;i++) {
@@ -151,15 +152,39 @@ function incomingAction(gameid,hash,action,amt){
 
 }
 
+async function findArchivedGameById (gameid) {
+    
+    db.findArchivedGameById(gameid, function () {
+
+    });
+}
+
 function sendSeatList(gameid,sessionid) {
     
-    let thisGame = findGameById(gameid);
+   let thisGame = findGameById(gameid);
     if(thisGame != null)
         server.io.to(sessionid).emit('publicSeatList',thisGame.getPublicSeatList());
-    else
-        console.log('No game with that ID.');
-
+    else {
+        console.log('No active game with that ID, looking through db.');
+        db.findArchivedGameById(gameid, function (res){
+            if(res != null){
+             
+               SavedGameController.rebuildSavedGame(res);
+            }
+        })
+        //try again
+        //var that = this;
+        setTimeout(
+            function() {
+                let thisGame = findGameById(gameid);
+                server.io.to(sessionid).emit('publicSeatList',thisGame.getPublicSeatList());
+                }.bind(this),
+            2000);
+    }
 }
+
+
+
 
 function incomingChat (gameid, hash, message) {
     let thisGame = findGameById(gameid);
@@ -169,7 +194,6 @@ function incomingChat (gameid, hash, message) {
     else
         console.log('No game with that ID.');
 }
-
 
 exports.incomingChat=incomingChat;
 exports.sendSeatList=sendSeatList;
