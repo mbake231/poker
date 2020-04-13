@@ -5,9 +5,9 @@ const LocalStrategy = require('passport-local').Strategy;
 ObjectId = require('mongodb').ObjectID;
 var mongoose = require('mongoose');
 
-//var mongoDB = process.env.MONGODB_URI+'/heroku_fbgvjbpl/' || "mongodb://localhost:27017/"
+var mongooseURL = process.env.MONGODB_URI || "mongodb://localhost:27017/pokerDB"
 
-mongoose.connect(url, { useNewUrlParser: true });
+mongoose.connect(mongooseURL, { useNewUrlParser: true });
 var mongooseConnection = mongoose.connection;
 mongooseConnection.on('error', console.error.bind(console, 'MongoDB connection error:'));
 

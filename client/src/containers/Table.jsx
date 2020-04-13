@@ -8,7 +8,7 @@ import GameMenu from "../components/GameMenu"
 import OffActionBar from "../components/OffActionBar"
 import BlockUi from 'react-block-ui';
 import 'react-block-ui/style.css';
-
+import WinningChipStack from '../components/WinningChipStack'
 import Pots from "../components/Pots"
 import socket from '../socket'
 
@@ -34,7 +34,9 @@ class Table extends Component{
     lastBet: null,
     bettingRound:null,
     bigBlindHash:null,
-    blocking: false
+    blocking: false.actionOnMe,
+    pots:[],
+    isSettled: 'no'
 
   }
     
@@ -88,22 +90,22 @@ componentDidMount() {
         this.setState({ chat: [...this.state.chat, event.message ]});
     });
 
-    if(!socket.connected)
-      this.setState({blocking: true});
+    //if(!socket.connected)
+      //this.setState({blocking: true});
 
     socket.on('disconnect', (event) => {
-      this.setState({blocking: true});
+     // this.setState({blocking: true});
       console.log('Disconnected.')
     });
 
     socket.on('reconnect', (event) => {
-      this.setState({blocking: false});
+     // this.setState({blocking: false});
       console.log('Connected.')
 
     });
 
     socket.on('connect', (event) => {
-      this.setState({blocking: false});
+     // this.setState({blocking: false});
       console.log('Connected.')
 
     });
@@ -137,6 +139,13 @@ componentDidMount() {
           this.setState({actionOnMe:false});
         }
 
+        //issettled
+        if(this.state.isSettled == 'yes' && data.isSettled=='no') {
+          try {this.playAudio(this.shuffle);} catch (e){}
+          this.setState({isSettled:data.isSettled})
+        }
+        else
+          this.setState({isSettled:data.isSettled})
 
         //set my seat
         if(this.props.my_id!=null && this.state.seats.length!=0){
@@ -162,6 +171,8 @@ componentDidMount() {
           this.setState({dealerSeat:data.dealer.seat});
 
       
+        //set pots
+        this.setState({pots:data.bettingRound.pots});
        
         //set betting round stuff
         if(data.bettingRound.actionOn!=null){
@@ -221,7 +232,20 @@ render () {
 
         })}
           </div>
-        <Pots totalPot={Number(this.state.totalPot)} roundPot={Number(this.state.roundPot)}></Pots>
+        <Pots isSettled={this.state.isSettled} totalPot={Number(this.state.totalPot)} roundPot={Number(this.state.roundPot)}></Pots>
+        {this.state.pots.map((pots,i) => {
+              return (<div>{
+          this.state.pots[i].winners.map((winners,x) => {
+            if(this.state.pots[i].winners[x]!=null) {
+             return (
+                    <WinningChipStack winningSeat={this.state.pots[i].winners[x].winner.seat} amtWon={(Number(this.state.pots[i].total)/Number(this.state.pots[i].winners.length))}></WinningChipStack>
+                    )
+            }
+
+          })
+        }</div>)
+        })}
+          
         {this.state.board[0]!=null ? (
         <Board board={this.state.board}></Board>) :
         (<div></div>)}

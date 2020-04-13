@@ -31,7 +31,6 @@ export default function PlayerChevron(props) {
 
         }
     }
-  //  console.log(stack);
       if(props.chipstack>0)
         return (
             <ul id={'chipstack'+props.id} className='chipStack'>
@@ -42,7 +41,7 @@ export default function PlayerChevron(props) {
                 <Badge className='stackAmt' variant='light'>{'$'+(parseInt(props.chipstack)/100).toFixed(2)}</Badge>
             </ul>
             );
-        else
+        else 
             return (<div></div>);
     }
 
