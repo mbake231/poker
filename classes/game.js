@@ -133,6 +133,10 @@ class game {
 			this.gameTable.bettingRound.lastBet=rebuild.round_information.lastBet;
 			this.gameTable.bettingRound.bigBlindHash=rebuild.round_information.bigBlindHash;
 			this.sendDataToAllPlayers();
+
+			//check to see if game is stuck on settled
+			if(this.gameTable.isSettled=='yes' || this.gameTable.bettingRound.actionOn==null)
+				this.nextHand();
 		}
 	}
 
@@ -1139,7 +1143,7 @@ class game {
 				if(this.getNumberPlayersAllIn()>0)
 					setTimeout(function(){ scope.nextHand(); }, 6000+delay);
 				else
-					setTimeout(function(){ scope.nextHand(); }, 4000);
+					setTimeout(function(){ scope.nextHand(); }, 6000);
 
 		}
 
@@ -1393,7 +1397,6 @@ class game {
 		saveGameController.saveThisGame(saveFormat, function(id) {
 			
 			that.save_id=id;
-			console.log('myid'+id);
 		});
 		
 

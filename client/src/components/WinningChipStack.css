@@ -1,0 +1,54 @@
+#winningChips {
+    position: absolute;
+    left: 680px;
+    top:240px;
+    transition: transform;
+    transition-duration: 500ms;
+
+}
+
+.slideTo0 {
+    transform: translate(-90px, -50px);
+
+}
+
+.slideTo1 {
+    transform: translate(160px, -50px);
+
+}
+
+.slideTo2 {
+    transform: translate(210px, 10px);
+
+
+}
+
+.slideTo3{
+    transform: translate(160px, 170px);
+
+}
+
+.slideTo4{
+    transform: translate(160px, 170px);
+
+}
+
+.slideTo5{
+    transform: translate(30px, 200px);
+
+}
+
+.slideTo6 {
+    transform: translate(-120px, 180px);
+
+}
+
+.slideTo7 {
+    transform: translate(-230px, 120px);
+
+}
+
+.slideTo8 {
+    transform: translate(-210px, 0px);
+    
+}

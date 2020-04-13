@@ -5,10 +5,10 @@ import Badge from 'react-bootstrap/Badge'
         
       
         
-        if(props.totalPot>0)
+        if(props.totalPot+props.roundPot>0 && props.isSettled=='no')
         return (
         <div id='pots'>
-            <Badge id='totalPot' variant="primary">{'Total Pot: $'+(Number(props.totalPot)/100).toFixed(2)}</Badge>
+            <Badge id='totalPot' variant="primary">{'Total Pot: $'+((Number(props.totalPot)+Number(props.roundPot))/100).toFixed(2)}</Badge>
             <Badge id='roundPot' variant="success">{'This Round: $'+(Number(props.roundPot)/100).toFixed(2)}</Badge>
 
         </div> );

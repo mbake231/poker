@@ -74,7 +74,7 @@ function createDocument(thisGame,savedSeats,cb) {
 
         if (err) console.log("save failed err:"+err); 
         
-        else console.log("succesfully saved"); 
+        else console.log("succesfully saved"+doc); 
         
         });
     

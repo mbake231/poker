@@ -34,7 +34,7 @@ incomingAction('fart','5e83aa2c8391902cc37073b9','call');
 
 
 function newGame(isTest,buildData) {
-    var thisGame = new game(isTest,buildData);
+    var thisGame = new game(false,buildData);
 
     games.push(thisGame);
     console.log("New game made ID:"+findGameById(thisGame.getGameId()).getGameId());
@@ -142,11 +142,12 @@ function  addNewPlayerToGame (gameid,_id,balance,status,seat,sessionid) {
 
 function incomingAction(gameid,hash,action,amt){
     let thisGame = findGameById(gameid);
-    if(thisGame != null)
+    if(thisGame != null) {
         var userActing = thisGame.getPlayerByHash(hash);
         if(userActing != false && thisGame.isSettled()==false){
             thisGame.doAction(userActing, action, amt);
         }
+    }
     else
         console.log('No game with that ID.');
 
