@@ -1,7 +1,7 @@
+var SavedGameSchema = require ('./models/SavedGame.js')
 var Promise=require('bluebird');
 var MongoClient = Promise.promisifyAll(require('mongodb')).MongoClient;
 var url = process.env.MONGODB_URI || "mongodb://localhost:27017/";
-var mongoose = require('mongoose');
 var express=require('express');
 var bodyParser = require('body-parser');
 var crypto = require('crypto');
@@ -15,11 +15,11 @@ var session = require('express-session');
 var passportSocketIo = require('passport.socketio');
 var MongoStore=require('connect-mongo')(session);
 var sessionStore = new MongoStore({url: process.env.MONGODB_URI || "mongodb://localhost:27017/"});
-var db = require('./db.js');
 var initializePassport = require ('./passport-config.js');
 var path = require('path');
-
 var io = require('socket.io')(http);
+var mongoose = require('mongoose');
+var db = require('./db.js');
 
 const PORT = process.env.PORT || 3000;
 
@@ -144,10 +144,10 @@ io.use(passportSocketIo.authorize({
 		//	
 		//listen for start game
 		socket.on('createGame', function (data) {
-				var newid=newgameController.newGame();
-				console.log(data);
-				socket.emit('createGame',newid);
-			});
+			var newid=newgameController.newGame();
+			console.log(data);
+			socket.emit('createGame',newid);
+		});
 
 		//listen for start game
 		socket.on('startGame', function (data) {
