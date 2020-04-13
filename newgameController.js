@@ -177,7 +177,8 @@ function sendSeatList(gameid,sessionid) {
         setTimeout(
             function() {
                 let thisGame = findGameById(gameid);
-                server.io.to(sessionid).emit('publicSeatList',thisGame.getPublicSeatList());
+                if(thisGame != null)
+                    server.io.to(sessionid).emit('publicSeatList',thisGame.getPublicSeatList());
                 }.bind(this),
             2000);
     }
