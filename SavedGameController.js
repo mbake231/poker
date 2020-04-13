@@ -72,7 +72,7 @@ function createDocument(thisGame,savedSeats,cb) {
     
     SavedGameModel.findOneAndUpdate({"game_data.gameid":thisGame.gameTable.gameid}, thisSavedGame, {upsert:true}, function(err, doc){ 
 
-        if (err) console.log(err); 
+        if (err) console.log("save failed err:"+err); 
         
         else console.log("succesfully saved"); 
         

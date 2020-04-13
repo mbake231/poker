@@ -5,9 +5,9 @@ const LocalStrategy = require('passport-local').Strategy;
 ObjectId = require('mongodb').ObjectID;
 var mongoose = require('mongoose');
 
-//var mongoDB = process.env.MONGODB_URI+'/heroku_fbgvjbpl' || "mongodb://localhost:27017/pokerDB"
+//var mongoDB = process.env.MONGODB_URI+'/heroku_fbgvjbpl/' || "mongodb://localhost:27017/"
 
-mongoose.connect("mongodb://localhost:27017/pokerDB", { useNewUrlParser: true });
+mongoose.connect(url, { useNewUrlParser: true });
 var mongooseConnection = mongoose.connection;
 mongooseConnection.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
@@ -53,8 +53,10 @@ async function findArchivedGameById(gameid, cb) {
 				if (err) throw err;
 			
 				db.close();
-				console.log(game._id);
-				return cb(game._id);
+				if(game!=null)
+					return cb(game._id);
+				else
+					console.log('Mongo could not find archived game');
 
 				
 			});
