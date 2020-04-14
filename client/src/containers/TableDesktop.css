@@ -11,6 +11,10 @@
       overflow: hidden;
  }
 
+ #mobile-overlay {
+    display:none;
+}
+
 #Board{
     position: absolute;;
   
