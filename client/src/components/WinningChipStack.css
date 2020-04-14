@@ -1,7 +1,7 @@
 #winningChips {
     position: absolute;
     left: 680px;
-    top:240px;
+    top:220px;
     transition: transform;
     transition-duration: 500ms;
 

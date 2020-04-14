@@ -127,7 +127,7 @@ class OffActionBar extends Component {
     render() { 
         //action off me, and there is an outstanding bet i havent called
     if(this.props.my_seat!=null && this.props.bettingRound!=null){
-        if(this.props.my_seat.moneyOnLine<this.props.currentRaiseToCall) {
+        if(this.props.my_seat.moneyOnLine<this.props.currentRaiseToCall && this.props.my_status!='folded') {
             return (
                 <div id='CheckBoxContainer' className={this.props.actionOnMe ? ('ghostBtn'):('')}>
                     <div className='actionItem' id='offCheckFoldBoxes'>
@@ -141,7 +141,7 @@ class OffActionBar extends Component {
                 </div>
             );
          }
-        else if(this.props.my_seat.moneyOnLine==this.props.currentRaiseToCall && (this.props.lastBet=='check' || this.props.lastBet==null)) {
+        else if((this.props.my_seat.moneyOnLine==this.props.currentRaiseToCall && (this.props.lastBet=='check' || this.props.lastBet==null)) && this.props.my_status!='folded') {
         return(
             <div id='CheckBoxContainer' className={this.props.actionOnMe ? ('ghostBtn'):('')}>
                 <div className='actionItem' id='offCheckFoldBoxes'>
@@ -158,7 +158,7 @@ class OffActionBar extends Component {
             </div>
         );
      }
-     else if(this.props.my_seat.moneyOnLine==this.props.currentRaiseToCall && this.props.bettingRound==0 && (this.props.bigBlindHash==this.props.my_id)) {
+     else if(this.props.my_status!='folded'&&(this.props.my_seat.moneyOnLine==this.props.currentRaiseToCall && this.props.bettingRound==0 && (this.props.bigBlindHash==this.props.my_id))) {
         return(
             <div id='CheckBoxContainer' className={this.props.actionOnMe ? ('ghostBtn'):('')}>
                 <div className='actionItem' id='offCheckFoldBoxes'>

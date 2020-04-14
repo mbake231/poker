@@ -40,7 +40,7 @@ class WinningChipStack extends Component {
 
             }
             .bind(scope),
-            75);
+            20);
     }
 
 

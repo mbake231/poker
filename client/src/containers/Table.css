@@ -96,6 +96,13 @@ flex-direction: column-reverse;
   height:700px;
 }
 
+.cardfolded {
+
+    opacity: 0.40;
+    width:90%;
+    padding-top: 18px;;
+  
+}
 .stackAmt{
   position: absolute;
   left:40px;
@@ -168,7 +175,7 @@ flex-direction: column-reverse;
   width:100px;
   left:890px;
   top:260px;
-  display:block !important;
+
 }
 
 #dealerButton2 {
