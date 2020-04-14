@@ -27,8 +27,8 @@
   
   #chipstack0 {
     position: absolute;
-    left:100px;
-    top:240px;
+    left:300px;
+    top:140px;
   }
 
  #seat1 {
@@ -39,8 +39,8 @@
   
   #chipstack1 {
     position: absolute;
-    left:60px;
-    top:190px;
+    left:460px;
+    top:130px;
   }
 
   #seat2 {
@@ -51,8 +51,8 @@
   
   #chipstack2 {
     position: absolute;
-    left:60px;
-    top:190px;
+    left:555px;
+    top:150px;
   }
   #totalPot {
     position: absolute;;
@@ -94,8 +94,8 @@
   
   #chipstack4 {
     position: absolute;
-    left:60px;
-    top:190px;
+    left:520px;
+    top:290px;
   }
 
   #seat5 {
@@ -106,8 +106,8 @@
   
   #chipstack5 {
     position: absolute;
-    left:60px;
-    top:190px;
+    left:360px;
+    top:310px;
   }
 
   #seat6 {
@@ -118,8 +118,8 @@
   
   #chipstack6 {
     position: absolute;
-    left:60px;
-    top:190px;
+    left:260px;
+    top:260px;
   }
 
   #seat7 {
@@ -176,8 +176,8 @@
   
   #chipstack8 {
     position: absolute;
-    left:60px;
-    top:190px;
+    left:230px;
+    top:160px;
   }
 
   #Chat{
