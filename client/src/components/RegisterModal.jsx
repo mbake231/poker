@@ -17,7 +17,7 @@ class RegisterModal extends React.Component {
 }
 
 handleRegShow() {
-    console.log(this.state)
+  
     this.setState({ show: true })
 }
 handleClose(){
@@ -32,7 +32,7 @@ render() {
                <Modal.Title>Register</Modal.Title>
              </Modal.Header>
              <Modal.Body>
-               <Register></Register>
+               <Register close={this.handleClose.bind(this)}></Register>
              </Modal.Body>
           </Modal>
         </div>
