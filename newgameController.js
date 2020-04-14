@@ -33,8 +33,8 @@ incomingAction('fart','5e83aa2c8391902cc37073b9','call');
 
 
 
-function newGame(isTest,buildData) {
-    var thisGame = new game(false,buildData);
+function newGame(isTest,buildData, bigblind,smallblind) {
+    var thisGame = new game(false,buildData,bigblind,smallblind);
 
     games.push(thisGame);
     console.log("New game made ID:"+findGameById(thisGame.getGameId()).getGameId());

@@ -20,10 +20,17 @@ class App extends Component {
       my_id: null,
       gameData: {},
       seats: [],
-      my_name: null
+      my_name: null,
+      loginModalOpen: false
       
     };
     this.login = this.login.bind(this);
+    this.toggleLoginModal = this.toggleLoginModal.bind(this);
+  }
+
+  toggleLoginModal() {
+    this.setState({loginModalOpen:!this.state.loginModalOpen});
+    console.log('fart');
   }
 
   async login(email,password) {
@@ -62,14 +69,14 @@ class App extends Component {
     return (
 
       <div id="AppContainer">
-        <MyNav my_id={this.state.my_id} my_name={this.state.my_name} login={this.login.bind(this)}>
+        <MyNav my_id={this.state.my_id} my_name={this.state.my_name} loginModalOpen={this.state.loginModalOpen} toggleLoginModal={this.toggleLoginModal.bind(this)} login={this.login.bind(this)}>
             <Link to="/">Scratch</Link>
         </MyNav>
         
         <Switch>
             <Route path="/" exact exact exact render={(props) =><Home {...props} />} />
             <Route path="/login" exact component={Login} />
-            <Route path="/table/*" exact render={(props) => <Table my_id={this.state.my_id} 
+            <Route path="/table/*" exact render={(props) => <Table my_id={this.state.my_id} toggleLoginModal={this.toggleLoginModal.bind(this)} 
             {...props}  />} />
         </Switch>
     </div>

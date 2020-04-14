@@ -32,6 +32,7 @@ function saveThisGame(thisGame,cb) {
 
 function createDocument(thisGame,savedSeats,cb) {
 
+    var date = Date.now();
     var thisSavedGame = ({  //new SavedGameModel({
 
         game_data: {
@@ -60,7 +61,8 @@ function createDocument(thisGame,savedSeats,cb) {
             lastBet: thisGame.gameTable.bettingRound.lastBet,
             bigBlindHash: thisGame.gameTable.bettingRound.bigBlindHash
           },
-          seats: savedSeats
+          seats: savedSeats,
+          lastUpdated: date
 
     })
 /*
@@ -70,11 +72,11 @@ function createDocument(thisGame,savedSeats,cb) {
     });*/
 
     
-    SavedGameModel.findOneAndUpdate({"game_data.gameid":thisGame.gameTable.gameid}, thisSavedGame, {upsert:true}, function(err, doc){ 
+    SavedGameModel.findOneAndUpdate({"game_data.gameid":thisGame.gameTable.gameid}, thisSavedGame, {upsert:true, timestamps:true}, function(err, doc){ 
 
         if (err) console.log("save failed err:"+err); 
         
-        else console.log("succesfully saved"+doc); 
+       // else //console.log("succesfully saved"); 
         
         });
     

@@ -61,7 +61,7 @@ export default function Chat(props) {
                         
                         />
                         <InputGroup.Append>
-                        <Button variant="outline-secondary" type='submit' disabled={!validateForm()} >Send</Button>
+                        <Button variant="light" type='submit' disabled={!validateForm()} >Send</Button>
                         </InputGroup.Append>
                     </InputGroup>
                     </form>

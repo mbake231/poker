@@ -14,16 +14,15 @@ class LoginModal extends React.Component {
   }
 
   handleShow() {
-    console.log(this.state);
-    this.setState({ show: true });
+    this.props.toggleLoginModal();
   }
   handleClose() {
-    this.setState({ show: false });
+    this.props.toggleLoginModal();
   }
   render() {
     return (
       <div>
-        <Modal show={this.state.show} onHide={this.handleClose}>
+        <Modal show={this.props.loginModalOpen} onHide={this.handleClose}>
           <Modal.Header closeButton>
             <Modal.Title>Welcome!</Modal.Title>
           </Modal.Header>

@@ -29,7 +29,8 @@ var SavedGameSchema = new Schema({
     lastBet: String,
     bigBlindHash: String
   },
-  seats: []
+  seats: [],
+  lastUpdated: Date
 
   
 });
