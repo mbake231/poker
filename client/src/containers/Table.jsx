@@ -171,6 +171,10 @@ componentDidMount() {
             ctr++;
           }
         }
+
+        if(this.state.my_seat!=null)
+          this.setState({my_status:this.state.my_seat.status})
+
         
         //set dealer seat
         if(data.dealer!=null)
@@ -234,9 +238,9 @@ render () {
         <div id='seatbox'>
           {this.state.seats.map((seat,i) => {
             if(this.state.actionOnSeat==i)
-              return <PlayerChevron id={i} toggleLoginModal={this.props.toggleLoginModal.bind(this)} dealerSeat={this.state.dealerSeat} my_seat={this.state.my_seat} passedClassName={'actionOn'} info={this.state.seats[i]} gameid={this.state.gameid} my_id={this.props.my_id}></PlayerChevron>
+              return <PlayerChevron id={i} my_status={this.state.my_status} toggleLoginModal={this.props.toggleLoginModal.bind(this)} dealerSeat={this.state.dealerSeat} my_seat={this.state.my_seat} passedClassName={'actionOn'} info={this.state.seats[i]} gameid={this.state.gameid} my_id={this.props.my_id}></PlayerChevron>
             else
-              return <PlayerChevron id={i} toggleLoginModal={this.props.toggleLoginModal.bind(this)} dealerSeat={this.state.dealerSeat} my_seat={this.state.my_seat} passedClassName={''} info={this.state.seats[i]} gameid={this.state.gameid} my_id={this.props.my_id}></PlayerChevron>
+              return <PlayerChevron id={i} my_status={this.state.my_status} toggleLoginModal={this.props.toggleLoginModal.bind(this)} dealerSeat={this.state.dealerSeat} my_seat={this.state.my_seat} passedClassName={''} info={this.state.seats[i]} gameid={this.state.gameid} my_id={this.props.my_id}></PlayerChevron>
 
         })}
           </div>
@@ -265,7 +269,7 @@ render () {
         </div>)
         :(<div></div>)}
         <div id='OffActionBar'>
-          <OffActionBar bettingRound={this.state.bettingRound} bigBlindHash={this.state.bigBlindHash} my_seat={this.state.my_seat} lastBet={this.state.lastBet} currentRaiseToCall={parseInt(this.state.currentRaiseToCall)} my_actions={this.state.my_actions} my_id={this.props.my_id} gameid={this.state.gameid} actionOnMe={this.state.actionOnMe}></OffActionBar>
+          <OffActionBar bettingRound={this.state.bettingRound} bigBlindHash={this.state.bigBlindHash} my_seat={this.state.my_seat} lastBet={this.state.lastBet} currentRaiseToCall={parseInt(this.state.currentRaiseToCall)} my_actions={this.state.my_actions} my_id={this.props.my_id} gameid={this.state.gameid} actionOnMe={this.state.actionOnMe} my_status={this.state.my_status}></OffActionBar>
         </div> 
       </div>
       </BlockUi>

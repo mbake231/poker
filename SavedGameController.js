@@ -86,7 +86,6 @@ function createDocument(thisGame,savedSeats,cb) {
 async function rebuildSavedGame(_id) {
     
     var foundGame = await db.getSavedGame(_id,function(buildData) {
-        console.log(buildData)
     gc.newGame('no test',buildData);
     });
     

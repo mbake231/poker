@@ -99,10 +99,15 @@ class game {
 					this.gameTable.seats[i]='empty';
 			}
 
+			if(rebuild.game_data.dealer!=null)
+				this.gameTable.dealer = this.getPlayerByHash(rebuild.game_data.dealer.hash)
+
 			//restore next players
 			for(var i=0;i<this.gameTable.game_size;i++) {
-				if(this.gameTable.seats[i]!='empty')
+				if(this.gameTable.seats[i].status=='inhand') {
 					this.gameTable.seats[i].nextPlayer=this.getPlayerByHash(this.gameTable.seats[i].nextPlayer);	
+					console.log(this.gameTable.seats[i].hash +"goes to"+this.gameTable.seats[i].nextPlayer);
+				}
 			}
 
 			//rebuild the pots
@@ -117,8 +122,7 @@ class game {
 			this.gameTable.currentPot=this.gameTable.bettingRound.pots[this.gameTable.bettingRound.pots.length-1];
 
 			//set game data
-			if(rebuild.game_data.dealer!=null)
-				this.gameTable.dealer = this.getPlayerByHash(rebuild.game_data.dealer.hash)
+
 			this.gameTable.board= rebuild.game_data.board;
 			this.gameTable.deck = rebuild.game_data.deck;
 			this.gameTable.game_size = rebuild.game_data.game_size;
@@ -1126,6 +1130,7 @@ class game {
 					//set winner
 					this.gameTable.bettingRound.pots[i].winners.push({winner:lastManStanding,
 											winningHand:"everyone folding."});
+					
 					//total winning
 					amtToPay=+this.gameTable.bettingRound.pots[i].total;
 					
@@ -1136,10 +1141,11 @@ class game {
 				//pay the man his money
 				console.log('We gave seat '+lastManStanding.seat+ ' $'+amtToPay);
 				lastManStanding.givePot(parseInt(amtToPay));
+				
 			}
 			console.log('Game is now settled.');
 			this.gameTable.isSettled="yes";
-			this.mochatest=true;
+			this.sendDataToAllPlayers();
 			let scope=this;
 
 			if(this.gameTable.isTest==false)
@@ -1381,17 +1387,19 @@ class game {
 		var saveFormat =  JSON.stringify(this,function( key, value) {
 			//remove circular stuff
  			if(key == 'nextPlayer') { 
-				 
-    			return value.hash;
+				if(value!=null) 
+    				return value.hash;
   			} 
   			if(key == 'previousPlayer') { 
-    			return value.hash;
+				if(value!=null) 
+					return value.hash;
   			} 
   			if(key == 'actionOnTimer') { 
     			return "removedForStringify";
   			} 
   			else {
-    			return value;
+				if(value!=null) 
+    				return value;
   			};
 		});
 
@@ -1618,8 +1626,8 @@ class game {
 			}
 			else if(privategameTable.seats[i].hash==thisHash) {
 				if(privategameTable.seats[i].status=='folded') {
-					privategameTable.seats[i].card1 = privategameTable.seats[i].card1+'fold';
-					privategameTable.seats[i].card2 = privategameTable.seats[i].card2+'fold';
+					privategameTable.seats[i].card1 = privategameTable.seats[i].card1;
+					privategameTable.seats[i].card2 = privategameTable.seats[i].card2;
 				}
 			}
 		}
