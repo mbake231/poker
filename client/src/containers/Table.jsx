@@ -232,6 +232,7 @@ render () {
 
   return (
     <div id='pokerBg'>
+      <div id='mobile-overlay'><br /><br /><br /><br /><br /><br /><br />Use a desktop or tablet for the best experience, or if not available, rotate your phone.<br /><br /><br /><img src='/img/rotate.png' width='50%'/></div>
       <BlockUi id='blocker' tag="div" blocking={this.state.blocking} message="Reconnecting, your game is saved.">
       <CreateTableModal open={this.state.createTableModal} />
       <div id='Table' className="Table">
