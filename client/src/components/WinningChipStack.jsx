@@ -35,11 +35,12 @@ class WinningChipStack extends Component {
         var scope=this;
         setTimeout(
             function() {
-                try {scope.playAudio(scope.raise);} catch (e){console.log(e)}
                 this.setState({slide:'slideTo'+this.props.winningSeat});
+                try {scope.playAudio(scope.raise);} catch (e){console.log(e)}
+
             }
             .bind(scope),
-            150);
+            75);
     }
 
 

@@ -68,6 +68,8 @@
   flex-direction: column-reverse;
   
   overflow-y: scroll;
+  overflow-x: scroll;
+
   list-style-type: none;
   height:150px;
 
@@ -103,7 +105,7 @@ flex-direction: column-reverse;
     position: absolute;;
     display: inline-block;
   
-    left:500px;
+    left:370px;
     top:590px;
   }
 
@@ -126,7 +128,7 @@ flex-direction: column-reverse;
 #chipstack0 {
   position: absolute;
   left:600px;
-  top:205px;
+  top:190px;
 }
 
 #dealerButton0 {
@@ -280,7 +282,7 @@ flex-direction: column-reverse;
 #chipstack8 {
   position: absolute;
   left:475px;
-  top:276px;
+  top:255px;
 }
 
 #dealerButton8 {
