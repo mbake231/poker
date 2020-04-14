@@ -6,16 +6,16 @@ import socket from '../socket'
 
 export default function Login(props) {
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [loginpassword, setPassword] = useState("");
 
   function validateForm() {
-    return email.length > 0 && password.length > 0;
+    return email.length > 0 && loginpassword.length > 0;
   }
 
   function handleSubmit(event) {
 
     event.preventDefault();
-    props.login(email,password);
+    props.login(email,loginpassword);
     props.close();
 
 }
@@ -27,16 +27,16 @@ export default function Login(props) {
           <FormControl
             autoFocus
             type="email"
-            value={email}
+            value={props.defaultEmail!='' ? (props.defaultEmail):(email)}
             onChange={e => setEmail(e.target.value)}
           />
         </FormGroup>
-        <FormGroup controlId="password" bssize="large">
+        <FormGroup controlId="loginpassword" bssize="large">
           <FormLabel>Password</FormLabel>
           <FormControl
-            value={password}
+            value={loginpassword}
             onChange={e => setPassword(e.target.value)}
-            type="password"
+            type="loginpassword"
           />
         </FormGroup>
         <Button block bssize="large" disabled={!validateForm()} type="submit">

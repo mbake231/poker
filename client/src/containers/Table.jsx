@@ -12,6 +12,8 @@ import WinningChipStack from '../components/WinningChipStack'
 import Pots from "../components/Pots"
 import socket from '../socket'
 import CreateTableModal from '../components/CreateTableModal'
+import Alert from 'react-bootstrap/Alert'
+
 
 class Table extends Component{
   constructor() {
@@ -37,9 +39,11 @@ class Table extends Component{
     blocking: false.actionOnMe,
     pots:[],
     isSettled: 'no',
-    createTableModal: false
+    createTableModal: false,
+    alertShow:true
 
   }
+  this.toggleAlert=this.toggleAlert.bind(this);
     
   };
    
@@ -214,6 +218,10 @@ componentDidMount() {
     }
 }
 
+toggleAlert() {
+  this.setState({alertShow:false});
+}
+
 playAudio(audio) {
   const audioPromise = audio.play()
   if (audioPromise !== undefined) {
@@ -236,6 +244,10 @@ render () {
       <BlockUi id='blocker' tag="div" blocking={this.state.blocking} message="Reconnecting, your game is saved.">
       <CreateTableModal open={this.state.createTableModal} />
       <div id='Table' className="Table">
+      <Alert variant="success" show={this.state.alertShow} onClose={this.toggleAlert}  dismissible>
+        <Alert.Heading>Now invite your friends!</Alert.Heading>
+          Send them your private link so they can join: {window.location.href}
+      </Alert>
         <div id='seatbox'>
           {this.state.seats.map((seat,i) => {
             if(this.state.actionOnSeat==i)
