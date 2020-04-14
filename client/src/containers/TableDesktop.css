@@ -1,0 +1,312 @@
+#Table {
+
+  
+    width: 1440px;
+    height:770px;
+    margin: 0 auto;
+     background-image: url('/img/table_solo2.png') !important;
+     background-repeat: no-repeat;
+     background-size:auto;
+     background-position: calc(50% - 0px) calc(50% - 75px);
+      overflow: hidden;
+ }
+
+#Board{
+    position: absolute;;
+  
+      left:520px;
+      top:270px;
+      display: flex;
+  }
+  .boardCard{
+    margin-left:3px;
+  }
+  
+  #gameMenu{
+    position: absolute;
+    top: 350px;
+    left:25px;
+  }
+  
+  .emptySeatWhileSititing {
+    opacity: 0.3;
+  }
+  
+  .ghostBtn {
+    display: none !important;
+  }
+  
+  #totalPot {
+    position: absolute;;
+  
+      left:638px;
+      top:240px;
+      display: flex;
+  }
+  
+  #roundPot {
+    position: absolute;;
+  
+      left:631px;
+      top:380px;
+      display: flex;
+  }
+  #ChatInput {
+    position: absolute;;
+   
+    width:400px;
+    height:150px;
+    top: 125px;
+  
+  }
+  #Chat {
+   
+    position: absolute;;
+   
+    width:400px;
+    height:125px;
+    top:545px;
+    left:25px;
+    background-color:#f2f2f2;
+  }
+  
+  .chatBuffer {
+    visibility: hidden;
+  }
+  
+  #ChatThread {
+    display: flex;
+    flex-direction: column-reverse;
+    
+    overflow-y: scroll;
+    overflow-x: scroll;
+  
+    list-style-type: none;
+    height:150px;
+  
+  }
+  
+  
+  .chipStack {
+    position: absolute;
+  
+    list-style-type: none;
+    display: flex;
+  flex-direction: column-reverse;
+  }
+  
+  .chip {
+    margin: -12px 0;
+  }
+  
+  
+  #seatbox{
+    margin: 0 auto;
+  
+    width: 900px;
+    height:700px;
+  }
+  
+  .cardfolded {
+  
+      opacity: 0.40;
+      width:90%;
+      padding-top: 18px;;
+    
+  }
+  .stackAmt{
+    position: absolute;
+    left:40px;
+  }
+  
+  #ActionBar {
+      position: absolute;;
+      display: inline-block;
+    
+      left:370px;
+      top:590px;
+    }
+  
+    #CheckBoxContainer {
+      position: absolute;;
+      display: inline-block;
+      top:-140px;
+      padding-left: 250px;
+    }
+  
+  
+  
+  
+  #seat0 {
+    position: absolute;
+    left:510px;
+    top:80px;
+  }
+  
+  #chipstack0 {
+    position: absolute;
+    left:600px;
+    top:190px;
+  }
+  
+  #dealerButton0 {
+    position: absolute;
+    left:550px;
+    top:205px;
+  }
+  
+  #seat1 {
+    position: absolute;
+    left:770px;
+    top:80px;
+  }
+  
+  #chipstack1 {
+    position: absolute;
+    left:770px;
+    top:200px;
+  }
+  
+  #dealerButton1 {
+    position: absolute;
+    left:750px;
+    top:200px;
+  }
+  
+  
+  #seat2 {
+    position: absolute;
+    left:990px;
+    top:195px;
+  }
+  
+  
+  #chipstack2 {
+    position: absolute;
+    width:100px;
+    left:890px;
+    top:260px;
+  
+  }
+  
+  #dealerButton2 {
+    position: absolute;
+    width:100px;
+    left:920px;
+    top:220px;
+    display:block !important;
+  }
+  
+  #seat3 {
+    position: absolute;
+    left:1015px;
+    top:330px;
+  }
+  
+  #chipstack3 {
+    position: absolute;
+    left:920px;
+    top:365px;
+  
+  }
+  
+  #dealerButton3 {
+    position: absolute;
+    left:930px;
+    top:385px;
+  
+  }
+  
+  #seat4 {
+    position: absolute;
+    left:890px;
+    top:455px;
+    
+  }
+  
+  #chipstack4 {
+    position: absolute;
+    left:865px;
+    top:425px;
+    
+  }
+  
+  #dealerButton4 {
+    position: absolute;
+    left:815px;
+    top:425px;
+    
+  }
+  
+  #seat5 {
+    position: absolute;
+    left:630px;
+    top:500px;
+  }
+  #chipstack5 {
+    position: absolute;
+    left:690px;
+    top:450px;
+  }
+  
+  #dealerButton5 {
+    position: absolute;
+    left:660px;
+    top:460px;
+  }
+  
+  #seat6 {
+    position: absolute;
+    left:340px;
+    top:455px;
+  }
+  
+  #chipstack6 {
+    position: absolute;
+    left:555px;
+    top:425px;
+  }
+  
+  #dealerButton6 {
+    position: absolute;
+    left:475px;
+    top:425px;
+  }
+  
+  #seat7 {
+    position: absolute;
+    left:235px;
+    top:330px;
+  }
+  
+  #chipstack7 {
+    position: absolute;
+    left:480px;
+    top:365px;
+  }
+  
+  #dealerButton7 {
+    position: absolute;
+    left:430px;
+    top:365px;
+  }
+  
+  #seat8 {
+    position: absolute;
+    left:245px;
+    top:196px;
+  }
+  
+  #chipstack8 {
+    position: absolute;
+    left:475px;
+    top:255px;
+  }
+  
+  #dealerButton8 {
+    position: absolute;
+    left:405px;
+    top:276px;
+  }
+  
+  
