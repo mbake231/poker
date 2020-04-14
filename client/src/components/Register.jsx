@@ -8,7 +8,7 @@ export default function Register(props) {
   const [password, setPassword] = useState("");
   const [confirmpassword, setConfirmPassword] = useState("");
 
-  const [name, setName] = useState("");
+  const [dname, setDName] = useState("");
 
 
   function validateForm() {
@@ -17,40 +17,43 @@ export default function Register(props) {
   }
 
   function handleSubmit(event) {
+    
+    event.preventDefault();
+    var cb = props.postRegLogin;
+    registerUser(cb, function(response) {
+        cb(response.email);
+    });
+}
 
-    var url;
+function registerUser (data, callback){
+  var url;
     if(process.env.NODE_ENV === 'production')
       url='https://www.thelocalgame.com/register';
     else
       url='http://localhost:3000/register';
 
-    event.preventDefault();
-    axios.post(url, {
-        email:email,
-        password:password,
-        name:name,
-        confirmpassword:confirmpassword
-    }).then(response => {
-        console.log(response.data.ops[0]._id) 
-            if(response.data) {
-                console.log('reg login')
-            }else {
-                console.log("Reg error")
-            }
-        }
-    )
-    props.close();
+
+  axios.post(url,{
+    email:email,
+    password:password,
+    name:dname,
+    confirmpassword:confirmpassword
+  }).then(response =>{
+    callback(response.data.ops[0]);
+  }).catch(err =>{
+    console.log(err);
+  })
 }
 
   return (
     <div className="Register">
       <form onSubmit={handleSubmit}>
-        <FormGroup controlId="name" bssize="large">
+        <FormGroup controlId="dname" bssize="large">
         <FormLabel>Display Name</FormLabel>
           <FormControl
             autoFocus
-            value={name}
-            onChange={e => setName(e.target.value)}
+            value={dname}
+            onChange={e => setDName(e.target.value)}
           />
           <FormLabel className='mt-3'>Email</FormLabel>
           <FormControl
