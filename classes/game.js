@@ -7,7 +7,7 @@ var saveGameController = require ('../SavedGameController.js')
 var player = require ('./player.js').player;
 
 class game {
-	constructor (isTest, rebuild, passedBigBlind, passedSmallBlind) {
+	constructor (isTest, rebuild, passedSmallBlind,passedBigBlind) {
 		this.gameTable = {
 			isTest:false,
 			gameid:null,
