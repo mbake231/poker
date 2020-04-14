@@ -36,7 +36,7 @@ class App extends Component {
   async login(email,password) {
     var url;
     if(process.env.NODE_ENV === 'production')
-      url='https://fartmanjack.herokuapp.com/login';
+      url='https://www.thelocalgame.com/login';
     else
       url='http://localhost:3000/login';
 

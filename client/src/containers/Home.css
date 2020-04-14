@@ -14,5 +14,21 @@
 
   .Home {
     margin: 0 auto;
-    width:80%;
+   
+    background-image: url("/img/town.png");
+    background-position: calc(100% - -20px) calc(100% - 50px); 
+    height:100%;
+    background-repeat: no-repeat;
+    width:100%;
+    background-size: auto;
+    
+
   }
+
+  .homeBtn {
+    width:70% !important;
+    margin: 0 auto;
+
+  }
+
+  

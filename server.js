@@ -46,7 +46,7 @@ app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 //app.use(cors());
 if(process.env.NODE_ENV === 'production') {
-	app.use(cors({origin:'https://fartmanjack.herokuapp.com:'+process.env.PORT ,credentials: true}));
+	app.use(cors({origin:'https://www.thelocalgame.com:'+process.env.PORT ,credentials: true}));
 }
 else {
 	app.use(cors({origin: 'http://localhost:8000',credentials: true}));

@@ -20,7 +20,7 @@ export default function Register(props) {
 
     var url;
     if(process.env.NODE_ENV === 'production')
-      url='https://fartmanjack.herokuapp.com/register';
+      url='https://www.thelocalgame.com/register';
     else
       url='http://localhost:3000/register';
 

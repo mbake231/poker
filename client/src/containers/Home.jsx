@@ -9,7 +9,7 @@ class Home extends Component{
  handleClick(e) {
   e.preventDefault();
   
- // socket.emit('createGame', 'nodata');
+ // 
 
  // socket.on('createGame',gameid => {
     this.props.history.push('/table/createTable');
@@ -21,10 +21,10 @@ render() {
   return (
     <div className="Home">
       <div className="lander">
-        <h1>Start the Local Game</h1>
-        <p>Play games with friends like they were local.</p>
+        <h1>Start a Local Poker Game</h1>
+        <p>Play poker with friends even if they're miles away.</p>
       </div>
-      <Button block bssize="large" onClick={this.handleClick.bind(this)}>Start a Texas Hold'em Table</Button>
+      <Button className='homeBtn' block bssize="large" onClick={this.handleClick.bind(this)}>Start a Texas Hold'em Table</Button>
     </div>
   );
 }
