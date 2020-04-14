@@ -39,6 +39,7 @@ export default function Register(props) {
             }
         }
     )
+    props.close();
 }
 
   return (
