@@ -232,7 +232,7 @@ render () {
 
   return (
     <div id='pokerBg'>
-      <BlockUi tag="div" blocking={this.state.blocking} message="Reconnecting, your game is saved.">
+      <BlockUi id='blocker' tag="div" blocking={this.state.blocking} message="Reconnecting, your game is saved.">
       <CreateTableModal open={this.state.createTableModal} />
       <div id='Table' className="Table">
         <div id='seatbox'>

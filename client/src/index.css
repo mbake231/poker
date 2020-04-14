@@ -1,3 +1,6 @@
+@import url("./indexDesktop.css") only screen and (min-width: 1001px);
+@import url("./indexMobile.css") only screen and (max-width: 1000px);
+
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
@@ -22,15 +25,3 @@ body > #root  > #AppContainer {
   
 }
 
-#pokerBg {
-  width: 1440px;
-  height:770px;
-  position: absolute;
-  background-image: url("/img/poker_bg2.png");
-  width: 100%;
-  margin: 0 auto;
-  background-repeat: no-repeat;
-     background-size:auto;
-     background-position: calc(50% - 0px) calc(50% - -50px);
-     overflow: hidden;
-}
