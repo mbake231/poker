@@ -12,7 +12,8 @@ export default function Register(props) {
 
 
   function validateForm() {
-    return email.length > 0 && password.length > 0 && password.length > 0;
+    return email.length > 0 && password.length > 5 && confirmpassword.length > 5
+    && confirmpassword==password;
   }
 
   function handleSubmit(event) {
@@ -43,14 +44,14 @@ export default function Register(props) {
   return (
     <div className="Register">
       <form onSubmit={handleSubmit}>
-        <FormGroup controlId="email" bssize="large">
+        <FormGroup controlId="name" bssize="large">
         <FormLabel>Display Name</FormLabel>
           <FormControl
             autoFocus
             value={name}
             onChange={e => setName(e.target.value)}
           />
-          <FormLabel>Email</FormLabel>
+          <FormLabel className='mt-3'>Email</FormLabel>
           <FormControl
             type="email"
             value={email}
@@ -58,7 +59,7 @@ export default function Register(props) {
           />
         </FormGroup>
         <FormGroup controlId="password" bssize="large">
-          <FormLabel>Password</FormLabel>
+          <FormLabel>Password (6 characters or longer)</FormLabel>
           <FormControl
             value={password}
             onChange={e => setPassword(e.target.value)}

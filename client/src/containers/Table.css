@@ -45,7 +45,7 @@
  
   width:400px;
   height:150px;
-  top: 150px;
+  top: 125px;
 
 }
 #Chat {
@@ -53,8 +53,8 @@
   position: absolute;;
  
   width:400px;
-  height:150px;
-  top:550px;
+  height:125px;
+  top:545px;
   left:25px;
   background-color:#f2f2f2;
 }

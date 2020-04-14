@@ -11,6 +11,10 @@ import {
 import axios from 'axios';
 
 class MyNav extends Component {
+  constructor(){
+    super();
+    this.onLoginClick=this.onLoginClick.bind(this)
+  }
 
 
   loginModalRef = ({handleShow}) => {
@@ -18,8 +22,8 @@ class MyNav extends Component {
  }
 
  
- onLoginClick = () => {
-   this.showModal();
+ onLoginClick  ()  {
+   this.props.toggleLoginModal();
  }
 
  handleClick() {
@@ -58,7 +62,7 @@ class MyNav extends Component {
       }
         return (
         <Navbar>
-            <LoginModal ref={this.loginModalRef} login={this.props.login.bind(this)} ></LoginModal>
+            <LoginModal ref={this.loginModalRef} loginModalOpen={this.props.loginModalOpen} toggleLoginModal={this.props.toggleLoginModal.bind(this)} login={this.props.login.bind(this)} ></LoginModal>
             <Navbar.Brand href="#home">The Local Game</Navbar.Brand>
             <Navbar.Toggle />
               <Navbar.Collapse className="justify-content-end">

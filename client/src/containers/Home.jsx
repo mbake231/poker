@@ -9,11 +9,11 @@ class Home extends Component{
  handleClick(e) {
   e.preventDefault();
   
-  socket.emit('createGame', 'nodata');
+ // socket.emit('createGame', 'nodata');
 
-  socket.on('createGame',gameid => {
-    this.props.history.push('/table/'+gameid);
-  })
+ // socket.on('createGame',gameid => {
+    this.props.history.push('/table/createTable');
+ // })
 
 }
 

@@ -39,7 +39,7 @@ class WinningChipStack extends Component {
                 this.setState({slide:'slideTo'+this.props.winningSeat});
             }
             .bind(scope),
-            250);
+            150);
     }
 
 

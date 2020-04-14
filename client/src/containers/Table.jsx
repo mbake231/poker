@@ -11,7 +11,7 @@ import 'react-block-ui/style.css';
 import WinningChipStack from '../components/WinningChipStack'
 import Pots from "../components/Pots"
 import socket from '../socket'
-
+import CreateTableModal from '../components/CreateTableModal'
 
 class Table extends Component{
   constructor() {
@@ -36,7 +36,8 @@ class Table extends Component{
     bigBlindHash:null,
     blocking: false.actionOnMe,
     pots:[],
-    isSettled: 'no'
+    isSettled: 'no',
+    createTableModal: false
 
   }
     
@@ -55,6 +56,11 @@ componentDidMount() {
       this.yourturn.load()
 
       var gameid = window.location.pathname.slice(7)
+
+      if(gameid=='createTable')
+        this.setState({createTableModal:true});
+    
+      else {
 
       this.setState({gameid:gameid}, (res) => {
         socket.emit('seatList', this.state.gameid);
@@ -201,6 +207,7 @@ componentDidMount() {
         }
 
       });
+    }
 }
 
 playAudio(audio) {
@@ -222,13 +229,14 @@ render () {
   return (
     <div id='pokerBg'>
       <BlockUi tag="div" blocking={this.state.blocking} message="Reconnecting, your game is saved.">
+      <CreateTableModal open={this.state.createTableModal} />
       <div id='Table' className="Table">
         <div id='seatbox'>
           {this.state.seats.map((seat,i) => {
             if(this.state.actionOnSeat==i)
-              return <PlayerChevron id={i} dealerSeat={this.state.dealerSeat} my_seat={this.state.my_seat} passedClassName={'actionOn'} info={this.state.seats[i]} gameid={this.state.gameid} my_id={this.props.my_id}></PlayerChevron>
+              return <PlayerChevron id={i} toggleLoginModal={this.props.toggleLoginModal.bind(this)} dealerSeat={this.state.dealerSeat} my_seat={this.state.my_seat} passedClassName={'actionOn'} info={this.state.seats[i]} gameid={this.state.gameid} my_id={this.props.my_id}></PlayerChevron>
             else
-              return <PlayerChevron id={i} dealerSeat={this.state.dealerSeat} my_seat={this.state.my_seat} passedClassName={''} info={this.state.seats[i]} gameid={this.state.gameid} my_id={this.props.my_id}></PlayerChevron>
+              return <PlayerChevron id={i} toggleLoginModal={this.props.toggleLoginModal.bind(this)} dealerSeat={this.state.dealerSeat} my_seat={this.state.my_seat} passedClassName={''} info={this.state.seats[i]} gameid={this.state.gameid} my_id={this.props.my_id}></PlayerChevron>
 
         })}
           </div>

@@ -26,6 +26,7 @@ function validateForm() {
   function handleClick(e) {
     e.preventDefault();
 
+    if(props.my_id!=null) {
         const register = {
 			gameHash: props.gameid,
 			userid: props.my_id,
@@ -35,7 +36,11 @@ function validateForm() {
 		}
         socket.emit('register', register);
         socket.emit('startGame',{gameid:props.gameid});
+    }
+    else {
+        props.toggleLoginModal();
 
+    }
       
   }
 

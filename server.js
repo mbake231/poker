@@ -130,6 +130,11 @@ io.use(passportSocketIo.authorize({
 		newgameController.sendSeatList(gameid,socket.id);
 	});
 
+	socket.on('createGame', function (data) {
+		var newid=newgameController.newGame(false, null, data.smallblind,data.bigblind);
+		socket.emit('createGame',newid);
+	});
+
 	if(socket.request.user && socket.request.user.logged_in!=false) {
 
 		socket.on('register', function (regDetails) {
@@ -143,11 +148,7 @@ io.use(passportSocketIo.authorize({
 				});
 		//	
 		//listen for start game
-		socket.on('createGame', function (data) {
-			var newid=newgameController.newGame();
-			console.log(data);
-			socket.emit('createGame',newid);
-		});
+
 
 		//listen for start game
 		socket.on('startGame', function (data) {

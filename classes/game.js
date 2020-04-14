@@ -7,7 +7,7 @@ var saveGameController = require ('../SavedGameController.js')
 var player = require ('./player.js').player;
 
 class game {
-	constructor (isTest, rebuild) {
+	constructor (isTest, rebuild, passedBigBlind, passedSmallBlind) {
 		this.gameTable = {
 			isTest:false,
 			gameid:null,
@@ -28,8 +28,8 @@ class game {
 				hand:null,
 				winningPot:0},
 			currentPot:null,
-			smallBlind:parseInt(100),  //add to constructor
-			bigBlind:parseInt(200),
+			smallBlind:parseInt(20),  //add to constructor
+			bigBlind:parseInt(40),
 			bettingRound: {
 				lastRaiser:null,
 				potsTotal:parseInt(0),
@@ -47,7 +47,10 @@ class game {
 				}
 		};
 
-
+		if(passedBigBlind!=null & passedSmallBlind!=null){
+			this.gameTable.smallBlind = parseInt(passedSmallBlind);
+			this.gameTable.bigBlind = parseInt(passedBigBlind);
+		}
 		for (var i=0;i<this.gameTable.game_size;i++)
 			this.gameTable.seats[i] = "empty";
 		this.cardsToReveal = [];
