@@ -14,7 +14,7 @@ import CallButton from './ActionButtons/CallButton';
 import RaiseButton from './ActionButtons/RaiseButton';
 import GhostButton from './ActionButtons/GhostButton';
 
-import './ActionBar.css'
+import './ActionBar_v1.css'
 
 
 class ActionBar extends Component {

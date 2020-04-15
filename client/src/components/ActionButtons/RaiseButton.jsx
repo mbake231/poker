@@ -2,7 +2,7 @@ import React, { useState,Component } from 'react';
 import InputGroup from 'react-bootstrap/InputGroup'
 import socket from '../../socket';
 import { Button, FormGroup, FormControl, FormLabel } from "react-bootstrap";
-import './ActionButtons.css'
+import './ActionButtons_v1.css'
 
     export default function RaiseButton(props) {
         const [amt, setAmt] = useState("");

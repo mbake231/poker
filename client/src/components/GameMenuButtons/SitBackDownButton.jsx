@@ -5,10 +5,7 @@ import {
 import socket from '../../socket';
 
 class SitDownAgain extends Component {
-    constructor() {
-        super();
-       
-  }
+    
 
 
  
