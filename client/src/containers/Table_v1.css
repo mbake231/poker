@@ -1,0 +1,12 @@
+@import url("./TableDesktop_v1.css") only screen and (min-width: 767px);
+
+@import url("./TableMobile_v1.css") only screen and (max-width: 766px);
+
+#blocker {
+  height: 100%;
+  width: 100%;
+}
+
+.emptySeat {
+  background-color: lightgrey !important;
+}
