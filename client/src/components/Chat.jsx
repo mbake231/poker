@@ -48,7 +48,7 @@ export default function Chat(props) {
                         </ScrollableFeed>
                     </div>
                     <div id='ChatInput'>
-                    <form onSubmit={handleClick} autComplete='false' >
+                    <form onSubmit={handleClick} autoComplete='off' >
                     <InputGroup className="mb-3">
                         <FormControl
                         autoCorrect="false" 
