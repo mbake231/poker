@@ -1,10 +1,18 @@
-import React, { Component } from 'react';
+import React, { Component,useState } from 'react';
 import ReactDOM from 'react-dom';
 import Badge from 'react-bootstrap/Badge'
-
+import socket from '../socket'
 
 
 export default function PlayerChevron(props) {
+
+    const [move, triggerMove] = useState("");
+
+
+    socket.on('endOfRound', (data) => {
+        if(data.gameid==props.gameid)
+            triggerMove('slideToPot')
+      });
 
     var chipsAvailable = [5000*100,1000*100,500*100,100*100,25*100,20*100,10*100,5*100,2.5*100,1*100,0.5*100,0.25*100,0.1*100,0.01*100]
     var stack = [];
@@ -33,7 +41,7 @@ export default function PlayerChevron(props) {
     }
       if(props.chipstack>0)
         return (
-            <ul id={'chipstack'+props.id} className='chipStack'>
+            <ul id={'chipstack'+props.id} className={'chipStack ' + move+props.id}>
                 {stack.map((chip,i) => {              
                     return <li className='chip' ><img src={'/img/chip.png'} /></li>
 

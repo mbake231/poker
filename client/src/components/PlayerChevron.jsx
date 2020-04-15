@@ -91,7 +91,13 @@ function validateForm() {
                         <div id="card2"><img className={'card'+props.my_status} src={'/img/cards/'+props.info.card2+".svg"} width='65px' /></div>
                     </div>
                 </Card>
-                <ChipStack chipstack={chipstack} id={props.id}></ChipStack>
+                {props.my_seat!=null ? (
+                    props.my_seat.moneyOnLine>0 ? (
+                        <ChipStack gameid={props.gameid} chipstack={chipstack} id={props.id}></ChipStack>
+
+                    ):(<div></div>)
+
+                ):(<div></div>)}
                 <DealerButton dealerSeat={props.dealerSeat} id={props.id}></DealerButton>
                 </div>
 
@@ -114,7 +120,15 @@ function validateForm() {
                         <div id="card2"><img  src={'/img/cards/'+props.info.card2+".svg"} width='65px' /></div>
                     </div>
                 </Card>
-                <ChipStack chipstack={chipstack} id={props.id}></ChipStack>
+                {props.my_seat!=null ? (
+                    props.my_seat.moneyOnLine>0 ? (
+                        <ChipStack gameid={props.gameid} chipstack={chipstack} id={props.id}></ChipStack>
+
+                    ):(<div></div>)
+
+                ):(<div></div>)}
+                
+                
                 <DealerButton dealerSeat={props.dealerSeat} id={props.id}></DealerButton>
                 </div>
 
@@ -135,7 +149,6 @@ function validateForm() {
                         <Badge variant="dark">Sitting Out</Badge>
                     </div>
                 </Card>
-                <ChipStack chipstack={chipstack} id={props.id}></ChipStack>
                 <DealerButton dealerSeat={props.dealerSeat} id={props.id}></DealerButton>
                 </div>
 
