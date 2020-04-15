@@ -9,6 +9,70 @@ ul{padding:0;}
     justify-content: center;
     max-height: 200px;
 }
+.slideToPot0 {
+
+    transition: transform;
+    transition-duration: 300ms;
+    transform: translate(50px, 50px);
+
+}
+.slideToPot1 {
+
+    transition: transform;
+    transition-duration: 300ms;
+    transform: translate(-20px, 50px);
+
+}
+.slideToPot2 {
+
+    transition: transform;
+    transition-duration: 300ms;
+    transform: translate(-200px, 0px);
+
+}
+.slideToPot3 {
+
+    transition: transform;
+    transition-duration: 300ms;
+    transform: translate(-205px, -140px);
+
+}
+.slideToPot4 {
+
+    transition: transform;
+    transition-duration: 300ms;
+    transform: translate(-200px, -150px);
+
+}
+
+.slideToPot5 {
+
+    transition: transform;
+    transition-duration: 300ms;
+    transform: translate(0px, -200px);
+
+}
+.slideToPot6 {
+
+    transition: transform;
+    transition-duration: 300ms;
+    transform: translate(180px, -180px);
+
+}
+.slideToPot7 {
+
+    transition: transform;
+    transition-duration: 300ms;
+    transform: translate(200px, -40px);
+
+}
+.slideToPot8 {
+
+    transition: transform;
+    transition-duration: 300ms;
+    transform: translate(200px, -20px);
+
+}
 
 .actionOn {
     background-color: #01FF70 !important;

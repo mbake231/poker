@@ -10,9 +10,6 @@ import socket from '../../socket';
 
 class CallButton extends Component {
 
-componentDidMount() {
-    console.log('to call'+this.props.toCallAmt)
-}
 
  
  handleClick(e) {

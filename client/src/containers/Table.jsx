@@ -41,7 +41,6 @@ class Table extends Component{
     isSettled: 'no',
     createTableModal: false,
     alertShow:true
-
   }
   this.toggleAlert=this.toggleAlert.bind(this);
     
@@ -122,7 +121,6 @@ componentDidMount() {
 
 
 
-
     socket.on('update', (privateData) => {
       //console.log("incoming update " + privateData);
 
@@ -175,6 +173,7 @@ componentDidMount() {
             ctr++;
           }
         }
+       
 
         if(this.state.my_seat!=null)
           this.setState({my_status:this.state.my_seat.status})
@@ -209,7 +208,7 @@ componentDidMount() {
           if(data.bettingRound.lastBet=='raise')
            try{this.playAudio(this.raise);} catch (e){}
           if(data.bettingRound.lastBet=='call')
-          try{this.playAudio(this.check);} catch (e){}
+          try{this.playAudio(this.call);} catch (e){}
           if(data.bettingRound.lastBet=='check')
           try{this.playAudio(this.check);} catch (e){}
         }
@@ -251,9 +250,9 @@ render () {
         <div id='seatbox'>
           {this.state.seats.map((seat,i) => {
             if(this.state.actionOnSeat==i)
-              return <PlayerChevron id={i} my_status={this.state.my_status} toggleLoginModal={this.props.toggleLoginModal.bind(this)} dealerSeat={this.state.dealerSeat} my_seat={this.state.my_seat} passedClassName={'actionOn'} info={this.state.seats[i]} gameid={this.state.gameid} my_id={this.props.my_id}></PlayerChevron>
+              return <PlayerChevron  id={i} my_status={this.state.my_status} toggleLoginModal={this.props.toggleLoginModal.bind(this)} dealerSeat={this.state.dealerSeat} my_seat={this.state.my_seat} passedClassName={'actionOn'} info={this.state.seats[i]} gameid={this.state.gameid} my_id={this.props.my_id}></PlayerChevron>
             else
-              return <PlayerChevron id={i} my_status={this.state.my_status} toggleLoginModal={this.props.toggleLoginModal.bind(this)} dealerSeat={this.state.dealerSeat} my_seat={this.state.my_seat} passedClassName={''} info={this.state.seats[i]} gameid={this.state.gameid} my_id={this.props.my_id}></PlayerChevron>
+              return <PlayerChevron  id={i} my_status={this.state.my_status} toggleLoginModal={this.props.toggleLoginModal.bind(this)} dealerSeat={this.state.dealerSeat} my_seat={this.state.my_seat} passedClassName={''} info={this.state.seats[i]} gameid={this.state.gameid} my_id={this.props.my_id}></PlayerChevron>
 
         })}
           </div>

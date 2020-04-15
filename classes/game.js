@@ -713,57 +713,106 @@ class game {
 	goToNextRound() {
 
 		if(this.isOnlyOnePlayerNotAllIn()==true) {
+			this.sendDataToAllPlayers();
 			this.gameTable.bettingRound.round=4;
-			this.addMoneyLineToPot();
-			this.clearRoundData();
-			this.settleTheHand();
+			this.sendPlayersEndofRound();
+			var scope=this;
+
+			setTimeout(
+				function() {
+					scope.addMoneyLineToPot();
+					scope.clearRoundData();
+					//set action to small blind
+					scope.settleTheHand();
+					scope.sendDataToAllPlayers();
+				},
+				1500);
 		}
 
 		if (this.gameTable.bettingRound.round==3) {
+			this.sendDataToAllPlayers();
 			this.gameTable.bettingRound.round++;
+			this.sendPlayersEndofRound();
+			var scope=this;
 
-			//this.gameTable.currentPot+=this.gameTable.bettingRound.totalOnLine;
-			this.addMoneyLineToPot();
-			this.clearRoundData();
-			this.settleTheHand();
+			setTimeout(
+				function() {
+					scope.addMoneyLineToPot();
+					scope.clearRoundData();
+					//set action to small blind
+					scope.settleTheHand();
+					scope.sendDataToAllPlayers();
+				},
+				1500);
 
 		}
 		if (this.gameTable.bettingRound.round==2) {
+			this.sendDataToAllPlayers();
 			this.gameTable.bettingRound.round++;
-			//this.gameTable.currentPot+=this.gameTable.bettingRound.totalOnLine;
-			this.addMoneyLineToPot();
-			this.dealRiver();
-			this.clearRoundData();
-			//set action to small blind
-			this.setActionOn(this.whoShouldStartRound());
+			this.sendPlayersEndofRound();
+			var scope=this;
+
+
+			setTimeout(
+				function() {
+					scope.addMoneyLineToPot();
+					scope.dealRiver();
+					scope.clearRoundData();
+					//set action to small blind
+					scope.setActionOn(scope.whoShouldStartRound());
+					scope.sendDataToAllPlayers();
+				},
+				1500);
+
 
 		}
 		if (this.gameTable.bettingRound.round==1) {
-
+			this.sendDataToAllPlayers();
 			this.gameTable.bettingRound.round++;
-			//this.gameTable.currentPot+=this.gameTable.bettingRound.totalOnLine;
-			this.addMoneyLineToPot();
-			this.dealTurn();
-			this.clearRoundData();
-			//set action to small blind
-			this.setActionOn(this.whoShouldStartRound());
-		//	console.log("ROUND "+this.gameTable.bettingRound.round+" STARTER "+this.whoShouldStartRound().userid+" RIGHT?" +this.getActionOnPlayer().userid);
+			this.sendPlayersEndofRound();
+			var scope=this;
 
+
+			setTimeout(
+				function() {
+					scope.addMoneyLineToPot();
+					scope.dealTurn();
+					scope.clearRoundData();
+					//set action to small blind
+					scope.setActionOn(scope.whoShouldStartRound());
+					scope.sendDataToAllPlayers();
+				},
+				1500);
 
 		}
 		if (this.gameTable.bettingRound.round==0) {
+			this.sendDataToAllPlayers();
 			this.gameTable.bettingRound.round++;
-			//this.gameTable.currentPot+=this.gameTable.bettingRound.totalOnLine;
-			this.addMoneyLineToPot();
-			this.dealFlop();
-			this.clearRoundData();
-			//set action to small blind
-			this.setActionOn(this.whoShouldStartRound());
-		//	console.log("ROUND "+this.gameTable.bettingRound.round+" STARTER "+this.whoShouldStartRound().userid+" RIGHT?" +this.getActionOnPlayer().userid);
-
+			this.sendPlayersEndofRound();
+			var scope=this;
+			
+			setTimeout(
+				function() {
+					scope.addMoneyLineToPot();
+					scope.dealFlop();
+					scope.clearRoundData();
+					//set action to small blind
+					scope.setActionOn(scope.whoShouldStartRound());
+					scope.sendDataToAllPlayers();
+				},
+				1500);
+	
 		}
 		
 		
+	}
+
+	sendPlayersEndofRound() {
+		var sendlist = this.getAllPlayerSessionIDs();
+		var data = {gameid:this.gameTable.gameid};
+		for(var i=0; i<=sendlist.length-1;i++) {
+			server.io.to(sendlist[i].sessionid).emit('endOfRound', data);
+		}
 	}
 
 	whoShouldStartRound() {
@@ -1258,6 +1307,7 @@ class game {
 			if(this.gameTable.isTimerGame==true)
 				this.actionOnTimer();
 			this.goToNextRound();
+			return true;
 		}
 
 		//IM THE ONLY GUY IN THE  HAND AND I NEED TO DECIDE IF I WANT TO CALL AN ALL IN
@@ -1272,12 +1322,14 @@ class game {
 		else if(this.isOnlyOnePlayerNotAllIn()==true && this.getActionOnPlayer().hash==this.gameTable.bettingRound.lastRaiser.hash) {
 			this.addMoneyLineToPot();
 			this.settleTheHand();
+			return true;
 		}
 
 		//IM THE ONLY GUY IN THE  HAND AND MY MOL IS HIGHer OR EQUAL TO CURRENT RAISE
 		else if(this.isOnlyOnePlayerNotAllIn()==true && this.getActionOnPlayer().moneyOnLine>=this.gameTable.bettingRound.currentRaiseToCall) {
 			this.addMoneyLineToPot();
 			this.settleTheHand();
+			return true;
 		}
 
 
@@ -1292,6 +1344,7 @@ class game {
 			else {
 				this.addMoneyLineToPot();
 				this.settleTheHand();
+				return true;
 			}
 		}
 
@@ -1299,11 +1352,16 @@ class game {
 		else if(this.gameTable.bettingRound.lastBet=='call' && this.getActionOnPlayer().moneyOnLine==this.gameTable.bettingRound.currentRaiseToCall){
 			console.log("Betting round over,all bets in");
 			this.updateHandLog("Betting round over,all bets in");
-			if(this.gameTable.bettingRound.round<4)
+			if(this.gameTable.bettingRound.round<4) {
+			
 				this.goToNextRound();
+				return true;
+
+			}
 			else {
 				this.addMoneyLineToPot();
 				this.settleTheHand();
+				return true;
 			}
 		}
 
