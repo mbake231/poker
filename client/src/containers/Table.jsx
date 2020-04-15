@@ -36,11 +36,13 @@ class Table extends Component{
     lastBet: null,
     bettingRound:null,
     bigBlindHash:null,
-    blocking: false.actionOnMe,
+    blocking: false,
     pots:[],
     isSettled: 'no',
     createTableModal: false,
-    alertShow:true
+    alertShow:true,
+    numPlayersInHand: null,
+    my_seat_num:null
   }
   this.toggleAlert=this.toggleAlert.bind(this);
     
@@ -57,6 +59,8 @@ componentDidMount() {
       this.shuffle.load()
       this.yourturn = new Audio('/audio/yourturn.wav')
       this.yourturn.load()
+      this.flip = new Audio('/audio/flipcard.wav');
+      this.flip.load();
 
       var gameid = window.location.pathname.slice(7)
 
@@ -79,8 +83,10 @@ componentDidMount() {
       this.setState({gameData:data});  
       this.setState({seats: data.seats}, () => {
         if(this.state.my_seat!=null){
-          if(this.state.my_seat.hash!=this.state.seats[this.state.my_seat.seat].hash)
+          if(this.state.my_seat.hash!=this.state.seats[this.state.my_seat.seat].hash) {
             this.setState({my_seat:null}); 
+            this.setState({my_seat_num:null});
+          }
         }
     });
       
@@ -117,6 +123,11 @@ componentDidMount() {
       console.log('Connected.')
 
     });
+
+    socket.on('flippedCard', (event) => {
+      // this.setState({blocking: false});
+      try {this.playAudio(this.flip);} catch (e){}
+     });
 
 
 
@@ -161,10 +172,13 @@ componentDidMount() {
             if(ctr > this.state.gameData.game_size) {
               ctr=-99;
               this.setState({my_seat:null});
+              this.setState({my_seat_num:null})
+
             }
             else if(this.state.seats[ctr]!='empty') {
               if(this.state.seats[ctr].hash == this.props.my_id){
                 this.setState({my_seat:this.state.seats[ctr]});
+                this.setState({my_seat_num:ctr})
                 ctr=-99;
               }
               
@@ -173,7 +187,10 @@ componentDidMount() {
           }
         }
        
-
+        //numplayers in hand
+        this.setState({numPlayersInHand:data.numPlayersInHand});
+        
+        //status
         if(this.state.my_seat!=null)
           this.setState({my_status:this.state.my_seat.status})
 
@@ -249,9 +266,9 @@ render () {
         <div id='seatbox'>
           {this.state.seats.map((seat,i) => {
             if(this.state.actionOnSeat==i)
-              return <PlayerChevron  id={i} roundPot={Number(this.state.roundPot)} my_status={this.state.my_status} toggleLoginModal={this.props.toggleLoginModal.bind(this)} dealerSeat={this.state.dealerSeat} my_seat={this.state.my_seat} passedClassName={'actionOn'} info={this.state.seats[i]} gameid={this.state.gameid} my_id={this.props.my_id}></PlayerChevron>
+              return <PlayerChevron my_seat_num={this.state.my_seat_num}  id={i} roundPot={Number(this.state.roundPot)} my_status={this.state.my_status} toggleLoginModal={this.props.toggleLoginModal.bind(this)} dealerSeat={this.state.dealerSeat} my_seat={this.state.my_seat} passedClassName={'actionOn'} info={this.state.seats[i]} gameid={this.state.gameid} my_id={this.props.my_id}></PlayerChevron>
             else
-              return <PlayerChevron  id={i} roundPot={Number(this.state.roundPot)} my_status={this.state.my_status} toggleLoginModal={this.props.toggleLoginModal.bind(this)} dealerSeat={this.state.dealerSeat} my_seat={this.state.my_seat} passedClassName={''} info={this.state.seats[i]} gameid={this.state.gameid} my_id={this.props.my_id}></PlayerChevron>
+              return <PlayerChevron my_seat_num={this.state.my_seat_num} id={i} roundPot={Number(this.state.roundPot)} my_status={this.state.my_status} toggleLoginModal={this.props.toggleLoginModal.bind(this)} dealerSeat={this.state.dealerSeat} my_seat={this.state.my_seat} passedClassName={''} info={this.state.seats[i]} gameid={this.state.gameid} my_id={this.props.my_id}></PlayerChevron>
 
         })}
           </div>

@@ -185,7 +185,22 @@ function sendSeatList(gameid,sessionid) {
     }
 }
 
+function showPlayerCard (gameid, hash, cardToShow) {
+    let thisGame = findGameById(gameid);
+    if(thisGame != null)
+        if(thisGame.getPlayerByHash(hash) != false)
+            if(cardToShow=='card1') {
+                thisGame.revealCards(thisGame.getPlayerByHash(hash),true,false);
+                thisGame.sendDataToAllPlayers();
+            }
+            else {
+                thisGame.revealCards(thisGame.getPlayerByHash(hash),false,true);
+                thisGame.sendDataToAllPlayers();
+            }
 
+    else
+        console.log('No game with that ID.');
+}
 
 
 function incomingChat (gameid, hash, message) {
@@ -209,3 +224,4 @@ exports.callClock=callClock;
 exports.startGame=startGame;
 exports.sitBackDown=sitBackDown;
 exports.addChips=addChips;
+exports.showPlayerCard=showPlayerCard;

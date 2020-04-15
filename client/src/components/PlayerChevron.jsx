@@ -7,6 +7,8 @@ import InputGroup from 'react-bootstrap/InputGroup'
 import ChipStack from './ChipStack';
 import Badge from 'react-bootstrap/Badge'
 import DealerButton from './DealerButton'
+import PlayerCards from './PlayerCards'
+
 
 //class PlayerChevron extends Component {
 
@@ -14,6 +16,9 @@ import DealerButton from './DealerButton'
     export default function PlayerChevron(props) {
         const [amt, setAmt] = useState("");
         const [chipstack, setChipStack] = useState(0);
+        const [card1Shown, setcard1Shown] = useState('');
+        const [card2Shown, setcard2Shown] = useState('');
+
 
    useEffect(()=> {
         setChipStack(props.info.moneyOnLine);
@@ -22,6 +27,7 @@ import DealerButton from './DealerButton'
 function validateForm() {
            return amt.length > 0 && isNaN(amt)==false;
      }
+
 
   function handleClick(e) {
     e.preventDefault();
@@ -86,10 +92,8 @@ function validateForm() {
                             {"$"+(Number(props.info.balance)/100).toFixed(2)}
                         </Card.Text>
                     </Card.Body>
-                    <div className="cards">
-                        <div id="card1"><img className={'card'+props.my_status} src={'/img/cards/'+props.info.card1+".svg"} width='65px' /></div>
-                        <div id="card2"><img className={'card'+props.my_status} src={'/img/cards/'+props.info.card2+".svg"} width='65px' /></div>
-                    </div>
+                    {props.info.card1!=null ? (<PlayerCards my_id={props.my_id} gameid={props.gameid} id={props.id} my_seat_num={props.my_seat_num} my_status={props.my_status} info={props.info} />
+                    ):(<div></div>)}
                 </Card>
                 {props.my_seat!=null ? (
                     props.roundPot>0 ? (
@@ -115,10 +119,8 @@ function validateForm() {
                             {"$"+(Number(props.info.balance)/100).toFixed(2)}
                         </Card.Text>
                     </Card.Body>
-                    <div className="cards">
-                        <div id="card1"><img  src={'/img/cards/'+props.info.card1+".svg"} width='65px' /></div>
-                        <div id="card2"><img  src={'/img/cards/'+props.info.card2+".svg"} width='65px' /></div>
-                    </div>
+                    {props.info.card1!=null ? (<PlayerCards my_id={props.my_id} gameid={props.gameid} id={props.id} my_seat_num={props.my_seat_num} my_status={props.my_status} info={props.info} />
+                    ):(<div></div>)}
                 </Card>
                 {props.my_seat!=null ? (
                     props.roundPot>0 ? (
@@ -145,9 +147,8 @@ function validateForm() {
                             {"$"+(Number(props.info.balance)/100).toFixed(2)}
                         </Card.Text>
                     </Card.Body>
-                    <div className="cards">
-                        <Badge variant="dark">Sitting Out</Badge>
-                    </div>
+                    {props.info.card1!=null ? (<PlayerCards my_id={props.my_id} gameid={props.gameid} id={props.id} my_seat_num={props.my_seat_num} my_status={props.my_status} info={props.info} />
+                    ):(<div></div>)}
                 </Card>
                 <DealerButton dealerSeat={props.dealerSeat} id={props.id}></DealerButton>
                 </div>
