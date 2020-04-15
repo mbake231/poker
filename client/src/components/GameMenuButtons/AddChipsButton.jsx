@@ -18,11 +18,10 @@ class AddChipsButton extends React.Component {
   }
 
   handleShow() {
-    console.log(this.state);
-    this.setState({ show: true });
+      this.props.toggleAddChipsModal();
   }
   handleClose() {
-    this.setState({ show: false });
+    this.props.toggleAddChipsModal();
   }
 
    validateForm() {
@@ -52,13 +51,14 @@ render(){
       <Button className='mb-2' block bssize="large" variant='info' onClick={this.handleShow}>
                 Add Chips
       </Button>
-      <Modal show={this.state.show} onHide={this.handleClose}>
+      <Modal show={this.props.addChipsModalOpen} onHide={this.handleClose}>
           <Modal.Header closeButton>
             <Modal.Title>Add Chips</Modal.Title>
           </Modal.Header>
               <Modal.Body>
+                You can add chips anytime you want throughout the game.<br/>
               <form onSubmit={this.handleSubmit}>
-              <FormGroup controlId="amt" bssize="large">
+              <FormGroup className='mt-3' controlId="amt" bssize="large">
               <InputGroup onChange={e => this.setChips(e.target.value)} className="mb-3">
                     <InputGroup.Prepend>
                       <InputGroup.Text>$</InputGroup.Text>

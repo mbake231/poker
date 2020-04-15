@@ -36,12 +36,13 @@ function validateForm() {
         const register = {
 			gameHash: props.gameid,
 			userid: props.my_id,
-			balance: (Number(amt*100)).toFixed(2),
+			balance: 0,
 			status: 'playing',
 			seat: props.id
 		}
         socket.emit('register', register);
         socket.emit('startGame',{gameid:props.gameid});
+        props.toggleAddChipsModal();
     }
     else {
         props.toggleLoginModal();
@@ -52,16 +53,11 @@ function validateForm() {
 
         if(props.info=='empty' && props.my_seat==null) {
             return ( 
-                <Card id={'seat'+props.id} style={{ width: '14rem' }}>
+                <Card id={'seat'+props.id} className='emptySeat' style={{ width: '14rem' }}>
                     <Card.Body>
                         <div className='inputGroup'>
-                        <Button disabled={!validateForm()} onClick={handleClick}>Sit</Button>
-                        <InputGroup className="mb-3">
-                            <InputGroup.Prepend>
-                            <InputGroup.Text>$</InputGroup.Text>
-                            </InputGroup.Prepend>
-                            <FormControl aria-label="Amount" onChange={e => setAmt(e.target.value)} />
-                        </InputGroup>
+                        <Button  onClick={handleClick}>Sit here</Button>
+                        
                         </div>
                         <Card.Text>
                         </Card.Text>
