@@ -72,7 +72,6 @@ componentDidMount() {
       
 
       socket.on('publicSeatList', (publicData) => {
-        console.log('public'+publicData);
 
       const data = JSON.parse(publicData);
       if(data.gameid==this.state.gameid) {
@@ -131,10 +130,10 @@ componentDidMount() {
         console.log(data);
         if(data.bettingRound.actionOn!=null){
           if(data.bettingRound.actionOn.hash==this.props.my_id) {
-            try {this.playAudio(this.yourturn);} catch (e){}
             this.setState({my_actions:data.bettingRound.nextActionsAvailable})
             this.setState({actionOnSeat:data.bettingRound.actionOn.seat});
             this.setState({actionOnMe:true});
+            try {this.playAudio(this.yourturn);} catch (e){}
           }
           else {
             this.setState({my_actions:[]});
