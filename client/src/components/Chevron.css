@@ -1,5 +1,48 @@
 ul{padding:0;}
 
+#card1 .showCard {
+        position: absolute;
+        height:100%;
+        width:50%;
+        top:0px;
+        background-color: white;
+        visibility:hidden;
+        text-align: center;
+        opacity: .8;
+        }
+
+        #card2 .showCard {
+            position: absolute;
+        height:70%;
+        width:50%;
+        top:0px;
+        background-color: white;
+        visibility:hidden;
+        text-align: center;
+        opacity: .8;
+            }
+
+#card1:hover .showCard {
+        visibility:visible;
+    }
+    #card2:hover .showCard {
+        visibility:visible;
+    }
+
+
+.card1Shown{
+            margin-top: -20px;
+        }
+.card2Shown{
+    margin-top: -20px;
+
+}
+
+#card2:hover .showCard {
+        visibility:visible;
+    }
+
+
 .cards {
     position: absolute;
     margin-left: 45%;

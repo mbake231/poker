@@ -191,6 +191,11 @@ io.use(passportSocketIo.authorize({
 		socket.on('chatMessage', function (data) {
 			newgameController.incomingChat(data.gameid,data.hash,data.message);
 		})
+
+		socket.on('showMyCard', function (data) {
+			newgameController.showPlayerCard(data.gameid,data.hash,data.cardToShow);
+			socket.broadcast.emit('flippedCard','nodata');
+		})
 	}//if
 	else
 		console.log("I hear you but I can't listen to you.");

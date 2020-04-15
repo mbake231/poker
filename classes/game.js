@@ -13,7 +13,7 @@ class game {
 			gameid:null,
 			game_size:9,
 			seats:[],
-			numseats:0,
+			numPlayersInHand:0,
 			gameRunning:false,
 			handCount:0,
 			clockCalled: false,
@@ -207,6 +207,7 @@ class game {
 
 	sendDataToAllPlayers() {
 		//console.log('send data');
+		this.numPlayersInHand=this.getNumberPlayersInHand();
 		var sendList = this.getAllPlayerSessionIDs();
 		var sessionidToSend;
 		var handlogThisSession = (this.getHandLog().length) - this.gameTable.handLogSentIndex;
