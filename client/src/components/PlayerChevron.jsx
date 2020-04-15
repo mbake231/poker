@@ -92,7 +92,7 @@ function validateForm() {
                     </div>
                 </Card>
                 {props.my_seat!=null ? (
-                    props.my_seat.moneyOnLine>0 ? (
+                    props.roundPot>0 ? (
                         <ChipStack gameid={props.gameid} chipstack={chipstack} id={props.id}></ChipStack>
 
                     ):(<div></div>)
@@ -121,7 +121,7 @@ function validateForm() {
                     </div>
                 </Card>
                 {props.my_seat!=null ? (
-                    props.my_seat.moneyOnLine>0 ? (
+                    props.roundPot>0 ? (
                         <ChipStack gameid={props.gameid} chipstack={chipstack} id={props.id}></ChipStack>
 
                     ):(<div></div>)
