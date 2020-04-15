@@ -1,5 +1,12 @@
 ul{padding:0;}
 
+.pieTimer {
+    position: absolute;
+    top:10px;
+    left:-30px;
+    
+}
+
 #card1 .showCard {
         position: absolute;
         height:100%;

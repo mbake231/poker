@@ -36,7 +36,7 @@ class game {
 				pots:[],
 				actionOn:null,
 				actionOnTimer:null,
-				actionOnTimeLimit:5,
+				actionOnTimeLimit:10,
 				nextActionsAvailable:[],
 				round:0,
 				totalOnLine:parseInt(0),
@@ -1277,7 +1277,7 @@ class game {
 					scope.sendDataToAllPlayers();
 
 			}
-			, 1000*this.gameTable.bettingRound.actionOnTimeLimit);
+			, (1000*this.gameTable.bettingRound.actionOnTimeLimit)+1500);
 	}
 
 	getNextAction () {

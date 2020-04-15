@@ -8,7 +8,7 @@ import ChipStack from './ChipStack';
 import Badge from 'react-bootstrap/Badge'
 import DealerButton from './DealerButton'
 import PlayerCards from './PlayerCards'
-
+import PieTimer from './PieTimer'
 
 //class PlayerChevron extends Component {
 
@@ -114,7 +114,11 @@ function validateForm() {
                 <div>
                 <Card className={''+props.passedClassName} id={'seat'+props.id} style={{ width: '14rem' }}>
                     <Card.Body>
-                        <Card.Title>{props.info.userid}</Card.Title>
+                        <Card.Title>{props.info.userid}
+                        {props.clockCalled==true && props.passedClassName=='actionOn'
+                        ? (<PieTimer />):(<div></div>)}
+                        
+                        </Card.Title>
                         <Card.Text>
                             {"$"+(Number(props.info.balance)/100).toFixed(2)}
                         </Card.Text>
@@ -147,8 +151,7 @@ function validateForm() {
                             {"$"+(Number(props.info.balance)/100).toFixed(2)}
                         </Card.Text>
                     </Card.Body>
-                    {props.info.card1!=null ? (<PlayerCards my_id={props.my_id} gameid={props.gameid} id={props.id} my_seat_num={props.my_seat_num} my_status={props.my_status} info={props.info} />
-                    ):(<div></div>)}
+                    <PlayerCards my_id={props.my_id} gameid={props.gameid} id={props.id} my_seat_num={props.my_seat_num} my_status={props.my_status} info={props.info} />
                 </Card>
                 <DealerButton dealerSeat={props.dealerSeat} id={props.id}></DealerButton>
                 </div>
