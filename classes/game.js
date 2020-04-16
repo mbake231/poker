@@ -220,7 +220,7 @@ class game {
 
 	sendDataToAllPlayers() {
 		//console.log('send data');
-		this.numPlayersInHand=this.getNumberPlayersInHand();
+		this.gameTable.numPlayersInHand=this.getNumberPlayersInHand();
 		var sendList = this.getAllPlayerSessionIDs();
 		var sessionidToSend;
 		var handlogThisSession = (this.getHandLog().length) - this.gameTable.handLogSentIndex;
@@ -543,10 +543,12 @@ class game {
 	}
 
 	getNumberPlayersInHand () {
-		let counter=0;
+		var counter=0;
 		for (var i=0;i<this.gameTable.game_size;i++) {
-			if(this.gameTable.seats[i].status=="inhand")
+			if(this.gameTable.seats[i].status=="inhand") {
+				console.log('hello')
 				counter++;
+			}
 		}
 		return counter;
 
