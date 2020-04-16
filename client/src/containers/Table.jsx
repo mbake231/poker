@@ -57,6 +57,9 @@ toggleAddChipsModal () {
 }
    
 componentDidMount() {
+      if(isTablet || isMobile)
+        console.log('IM an iPad or Phone');
+
       if(!isTablet && !isMobile) {
       this.call = new Audio('/audio/call.wav')
       this.call.load()
@@ -164,6 +167,7 @@ componentDidMount() {
             this.setState({my_actions:data.bettingRound.nextActionsAvailable})
             this.setState({actionOnSeat:data.bettingRound.actionOn.seat});
             this.setState({actionOnMe:true});
+          if(!isTablet && !isMobile)
             try {this.playAudio(this.yourturn);} catch (e){}
           }
           else {
@@ -236,8 +240,10 @@ componentDidMount() {
         }
         //setclock
         this.setState({clockCalled:data.clockCalled}, () => {
-          if(this.state.actionOnMe && this.state.clockCalled)
-            try{this.playAudio(this.timer);} catch (e){}
+          if(this.state.actionOnMe && this.state.clockCalled) {
+            if(!isTablet && !isMobile)
+              try{this.playAudio(this.timer);} catch (e){}
+          }
 
       });
       
