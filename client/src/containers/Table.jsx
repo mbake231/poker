@@ -13,8 +13,10 @@ import Pots from "../components/Pots"
 import socket from '../socket'
 import CreateTableModal from '../components/CreateTableModal'
 import Alert from 'react-bootstrap/Alert'
-
-
+import {
+  isTablet,
+  isMobile
+} from "react-device-detect";
 class Table extends Component{
   constructor() {
   super();
@@ -55,6 +57,7 @@ toggleAddChipsModal () {
 }
    
 componentDidMount() {
+      if(!isTablet && !isMobile) {
       this.call = new Audio('/audio/call.wav')
       this.call.load()
       this.check = new Audio('/audio/check.wav')
@@ -71,7 +74,7 @@ componentDidMount() {
       this.timer.load();
       this.seventwowinner = new Audio('/audio/seventwowinner.wav');
       this.seventwowinner.load();
-
+      }
       var gameid = window.location.pathname.slice(7)
 
       if(gameid=='createTable')
@@ -124,7 +127,8 @@ componentDidMount() {
 
     socket.on('sevenTwoWinner', (event) => {
       // this.setState({blocking: true});
-      try {this.playAudio(this.seventwowinner);} catch (e){}
+      if(!isTablet && !isMobile)
+        try {this.playAudio(this.seventwowinner);} catch (e){}
      });
 
     socket.on('reconnect', (event) => {
@@ -141,7 +145,8 @@ componentDidMount() {
 
     socket.on('flippedCard', (event) => {
       // this.setState({blocking: false});
-      try {this.playAudio(this.flip);} catch (e){}
+      if(!isTablet && !isMobile)
+        try {this.playAudio(this.flip);} catch (e){}
      });
 
 
@@ -174,7 +179,8 @@ componentDidMount() {
 
         //issettled
         if(this.state.isSettled == 'yes' && data.isSettled=='no') {
-          try {this.playAudio(this.shuffle);} catch (e){}
+          if(!isTablet && !isMobile)
+            try {this.playAudio(this.shuffle);} catch (e){}
           this.setState({isSettled:data.isSettled})
         }
         else
@@ -245,10 +251,13 @@ componentDidMount() {
         //play audio
         if(data.bettingRound!=null) {
           if(data.bettingRound.lastBet=='raise')
-           try{this.playAudio(this.raise);} catch (e){}
+          if(!isTablet && !isMobile)
+          try{this.playAudio(this.raise);} catch (e){}
           if(data.bettingRound.lastBet=='call')
+          if(!isTablet && !isMobile)
           try{this.playAudio(this.call);} catch (e){}
           if(data.bettingRound.lastBet=='check')
+          if(!isTablet && !isMobile)
           try{this.playAudio(this.check);} catch (e){}
         }
 
