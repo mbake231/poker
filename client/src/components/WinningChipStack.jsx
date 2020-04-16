@@ -31,16 +31,17 @@ class WinningChipStack extends Component {
 
     componentDidMount() {
         
-
+        this.setState({slide:'slideTo'+this.props.winningSeat});
+        try {this.playAudio(this.raise);} catch (e){console.log(e)}
+        /*
         var scope=this;
         setTimeout(
             function() {
-                this.setState({slide:'slideTo'+this.props.winningSeat});
-                try {scope.playAudio(scope.raise);} catch (e){console.log(e)}
+                
 
             }
             .bind(scope),
-            20);
+            20);*/
     }
 
 

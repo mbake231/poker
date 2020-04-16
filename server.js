@@ -131,7 +131,7 @@ io.use(passportSocketIo.authorize({
 	});
 
 	socket.on('createGame', function (data) {
-		var newid=newgameController.newGame(false, null, data.smallblind,data.bigblind);
+		var newid=newgameController.newGame(false, null, data.smallblind,data.bigblind,data.playSeventwo);
 		socket.emit('createGame',newid);
 	});
 
@@ -176,7 +176,6 @@ io.use(passportSocketIo.authorize({
 			});
 
 		socket.on('incomingAction', function (data) {
-				console.log(data);
 				newgameController.incomingAction(data.gameid,data.hash,data.action,parseInt(data.amt));			
 			});
 

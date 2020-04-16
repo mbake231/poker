@@ -7,7 +7,7 @@ var saveGameController = require ('../SavedGameController.js')
 var player = require ('./player.js').player;
 
 class game {
-	constructor (isTest, rebuild, passedSmallBlind,passedBigBlind) {
+	constructor (isTest, rebuild, passedSmallBlind,passedBigBlind,seventwogame) {
 		this.gameTable = {
 			isTest:false,
 			gameid:null,
@@ -18,6 +18,7 @@ class game {
 			handCount:0,
 			clockCalled: false,
 			handLogSentIndex:0,
+			seven_two_game:true,
 			isSettled: 'no',
 			handLog: [],
 			board:[null,null,null,null,null],
@@ -47,10 +48,16 @@ class game {
 				}
 		};
 
-		if(passedBigBlind!=null & passedSmallBlind!=null){
+		if(passedBigBlind!=null && passedSmallBlind!=null){
+		
 			this.gameTable.smallBlind = parseInt(passedSmallBlind);
 			this.gameTable.bigBlind = parseInt(passedBigBlind);
 		}
+		if(seventwogame) {
+			this.gameTable.seven_two_game=true;
+			console.log('Bluff Master Bonus Activated!');
+		}
+
 		for (var i=0;i<this.gameTable.game_size;i++)
 			this.gameTable.seats[i] = "empty";
 		this.cardsToReveal = [];
@@ -122,7 +129,7 @@ class game {
 			this.gameTable.currentPot=this.gameTable.bettingRound.pots[this.gameTable.bettingRound.pots.length-1];
 
 			//set game data
-
+			this.gameTable.seven_two_game=rebuild.game_data.seven_two_game;
 			this.gameTable.board= rebuild.game_data.board;
 			this.gameTable.deck = rebuild.game_data.deck;
 			this.gameTable.game_size = rebuild.game_data.game_size;
@@ -152,7 +159,13 @@ class game {
 	}
 
 	startGame() {
-		if(this.getNumberPlayersPlaying()>1) {
+		var playersReady=0;
+		for (var i=0;i<this.gameTable.game_size;i++){
+			if(this.gameTable.seats[i].status=='playing' && this.gameTable.seats[i].hasEnough(this.gameTable.bigBlind))
+				playersReady++;
+		}
+
+		if(this.getNumberPlayersPlaying()>1 && playersReady>1) {
 			console.log("This is the first hand!");
 			var lowestSeat = this.getLowestOccupiedSeat();
 
@@ -816,6 +829,14 @@ class game {
 		}
 	}
 
+	sendSevenTwoAlert() {
+		var sendlist = this.getAllPlayerSessionIDs();
+		var data = {gameid:this.gameTable.gameid};
+		for(var i=0; i<=sendlist.length-1;i++) {
+			server.io.to(sendlist[i].sessionid).emit('sevenTwoWinner', data);
+		}
+	}
+
 	whoShouldStartRound() {
 
 		for (var i=this.gameTable.dealer.seat+1;i<this.gameTable.game_size;i++){
@@ -874,10 +895,15 @@ class game {
 
 	checkToRestartGame () {
 		if(this.gameTable.gameRunning==false) {
-			if(this.getNumberPlayersPlaying()>1) {
+			var playersReady=0;
+			for (var i=0;i<this.gameTable.game_size;i++){
+				if(this.gameTable.seats[i].status=='playing' && this.gameTable.seats[i].hasEnough(this.gameTable.bigBlind))
+					playersReady++;
+			}
+			if(this.getNumberPlayersPlaying()>1 && playersReady>1) {
 				console.log("We have enough players, starting up!")
 				this.updateHandLog("We have enough players, starting up!");
-				if(this.handCount==0)
+				if(this.gameTable.handCount==0)
 					this.startGame();
 				else
 					this.nextHand();
@@ -1189,20 +1215,92 @@ class game {
 
 				}
 				//pay the man his money
-				console.log('We gave seat '+lastManStanding.seat+ ' $'+amtToPay);
+				console.log('We gave seat '+lastManStanding.seat+ ' $'+(amtToPay/100).toFixed(2));
 				lastManStanding.givePot(parseInt(amtToPay));
 				
 			}
+			//7-2 magic, if any winner has 7+2 any suit they get paid a big blind by everyone
+			//who is able
+			this.clearRoundData();
+			this.sendDataToAllPlayers();
+
+			if(this.gameTable.seven_two_game==true) {
+				var payers=0;
+				var c1;
+				var c2;
+				var seven_two_winners = [];
+				for (var i=0;i<this.gameTable.bettingRound.pots.length;i++) {
+					for(var a=0;a<this.gameTable.bettingRound.pots[i].winners.length;a++) {
+						c1=(this.gameTable.bettingRound.pots[i].winners[a].winner.card1.slice(0,1));
+						c2=(this.gameTable.bettingRound.pots[i].winners[a].winner.card2.slice(0,1));
+						if((c1=='7' && c2=='2') || (c1=='2' && c2=='7'))
+							seven_two_winners.push(this.gameTable.bettingRound.pots[i].winners[a].winner.hash);
+					}
+				}
+
+				for (var i=0;i<seven_two_winners.length;i++) {
+					delay+=2000;
+					for(var a=0;a<this.gameTable.game_size;a++) {
+						if(this.gameTable.seats[a].status!='empty' && this.gameTable.seats[a].status!='sittingout' && this.gameTable.seats[a].status!='playing')
+							if(this.gameTable.seats[a].hash!=seven_two_winners[i]) {
+								if(this.gameTable.seats[a].balance>=this.gameTable.bigBlind) {
+									this.gameTable.seats[a].addMoneyToLine(this.gameTable.bigBlind);
+									this.gameTable.bettingRound.totalOnLine+=this.gameTable.bigBlind;
+									payers++;
+								}
+
+						}
+					}
+					let scope = this;
+					setTimeout(
+						function() {
+				
+							scope.sendDataToAllPlayers();
+							scope.sendPlayersEndofRound();
+							scope.sendSevenTwoAlert();
+
+							
+						}
+						.bind(scope),
+						3500);
+						this.getPlayerByHash(seven_two_winners[i]).givePot(payers*this.gameTable.bigBlind)
+						console.log(this.getPlayerByHash(seven_two_winners[i]).userid+" won with 7-2, everyone pay up!");
+						this.updateHandLog(this.getPlayerByHash(seven_two_winners[i]).userid+" won with 7-2, everyone pay up!");
+							payers=0;
+					
+				}
+				console.log('Game is now settled.');
+				this.gameTable.isSettled="yes";
+				let scope=this;
+				this.saveThisGame();
+				if(this.gameTable.isTest==false)
+					if(this.getNumberPlayersAllIn()>0)
+						setTimeout(function(){ 
+							scope.clearRoundData();
+							scope.nextHand(); }, 8000+delay);
+					else
+						setTimeout(function(){ 
+							scope.clearRoundData();
+							scope.nextHand(); }, 8000);
+
+
+
+
+			}
+
+
+			else {
 			console.log('Game is now settled.');
 			this.gameTable.isSettled="yes";
 			this.sendDataToAllPlayers();
 			let scope=this;
-
+			this.saveThisGame();
 			if(this.gameTable.isTest==false)
 				if(this.getNumberPlayersAllIn()>0)
 					setTimeout(function(){ scope.nextHand(); }, 6000+delay);
 				else
 					setTimeout(function(){ scope.nextHand(); }, 6000);
+			}
 
 		}
 
@@ -1221,11 +1319,14 @@ class game {
 
 		console.log("Pointer update: "+myPreviousPlayer.userid + " now goes to "+myNextPlayer.userid+".");
 		//player.nextPlayer = "folded";
-
+		return true;
 		}
 		else {
+			console.log(player.userid+" is all in!");
+			this.updateHandLog(player.userid+" is all in!");
 			this.addMoneyLineToPot();
 			this.settleTheHand();
+			return false;
 		}
 	}
 
@@ -1537,9 +1638,17 @@ class game {
 
 						//are they all in?
 						if(player.balance<amtToCall) {
-							this.putPlayerAllIn(player);
-							player.addMoneyToLine(player.balance);
-							this.gameTable.bettingRound.totalOnLine+=player.balance;
+							//putPlayerAllIn actually checks if it shoudl end the game, in which case stop stuff here
+							if(this.putPlayerAllIn(player)) {
+								player.addMoneyToLine(player.balance);
+								this.gameTable.bettingRound.totalOnLine+=player.balance;
+								console.log(player.userid+" is all in!");
+								this.updateHandLog(player.userid+" is all in!");
+							}
+							else
+								return true;
+							
+
 						}
 						else {
 							player.addMoneyToLine(amtToCall);
@@ -1565,10 +1674,12 @@ class game {
 								this.goToNextRound();
 								return true;
 							}
+							//i think this is only if they happen to go call it perfectly and its not caught above with <
 							else {
 							this.putPlayerAllIn(player);
 							console.log(player.userid+" is all in!");
 							this.updateHandLog(player.userid+" is all in!");
+							
 							}
 						}
 

@@ -13,7 +13,12 @@ export default function CreateTable(props) {
   const [dropdown, setDropDown] = useState("008016");
   const [hidden, setHidden] = useState('hidden');
   const [hideLabel, sethideLabel] = useState({display:'none'});
+  const [seven_two, setSevenTwo] = useState(false)
 
+
+function changeSevenTwo () {
+    setSevenTwo(!seven_two);
+}
 
 function changeDropDown(val) {
    // var blinds = e.target.value;
@@ -59,8 +64,10 @@ function changeDropDown(val) {
      if((bigblind==0 && smallblind==0) || (Number(bigblind) > Number(smallblind)))
         if(isNaN(smallblind)==false  && isNaN(bigblind)==false)
             if (bigblind >=0 && smallblind>=0){
+                console.log(seven_two)
                  data = {smallblind:smallblind*100,
-                            bigblind:bigblind*100};
+                            bigblind:bigblind*100,
+                            playSeventwo:seven_two};
                             socket.emit('createGame', data);
 
             }
@@ -68,37 +75,44 @@ function changeDropDown(val) {
     else {
         if(dropdown=='008016') {
             data = {smallblind:.08*100,
-            bigblind:.16*100};
+            bigblind:.16*100,
+            playSeventwo:seven_two};
             socket.emit('createGame', data);
         }
         else if(dropdown=='010020') {
             data = {smallblind:.10*100,
-            bigblind:.20*100};
+            bigblind:.20*100,
+            playSeventwo:seven_two};
             socket.emit('createGame', data);
         }
         else if(dropdown=='020040') {
             data = {smallblind:.20*100,
-            bigblind:.40*100};
+            bigblind:.40*100,
+            playSeventwo:seven_two};
             socket.emit('createGame', data);
         }
         else if(dropdown=='025050') {
             data = {smallblind:.25*100,
-            bigblind:.50*100};
+            bigblind:.50*100,
+            playSeventwo:seven_two};
             socket.emit('createGame', data);
         }
         else if(dropdown=='050100') {
             data = {smallblind:.50*100,
-            bigblind:1.00*100};
+            bigblind:1.00*100,
+            playSeventwo:seven_two};
             socket.emit('createGame', data);
         }
         else if(dropdown=='200400') {
             data = {smallblind:2.00*100,
-            bigblind:4.00*100};
+            bigblind:4.00*100,
+            playSeventwo:seven_two};
             socket.emit('createGame', data);
         }
         else if(dropdown=='5001000') {
             data = {smallblind:5.00*100,
-            bigblind:10.00*100};
+            bigblind:10.00*100,
+            playSeventwo:seven_two};
             socket.emit('createGame', data);
         }
     }
@@ -147,6 +161,9 @@ function changeDropDown(val) {
             onChange={e => setBigBlind(e.target.value)}
           />
         </FormGroup>
+        <Form.Group onChange={changeSevenTwo} checked={seven_two} controlId="formBasicCheckbox">
+            <Form.Check type="checkbox" label="Bluff Master Bonus: Win a hand with 7-2 of any suit and each player pays the winner a big blind bonus." />
+        </Form.Group>
         <Button block bssize="large" disabled={!validateForm()} type="submit">
           Create My Table
         </Button>
