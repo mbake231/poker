@@ -69,6 +69,8 @@ componentDidMount() {
       this.flip.load();
       this.timer = new Audio('/audio/timer.wav');
       this.timer.load();
+      this.seventwowinner = new Audio('/audio/seventwowinner.wav');
+      this.seventwowinner.load();
 
       var gameid = window.location.pathname.slice(7)
 
@@ -119,6 +121,11 @@ componentDidMount() {
      // this.setState({blocking: true});
       console.log('Disconnected.')
     });
+
+    socket.on('sevenTwoWinner', (event) => {
+      // this.setState({blocking: true});
+      try {this.playAudio(this.seventwowinner);} catch (e){}
+     });
 
     socket.on('reconnect', (event) => {
      // this.setState({blocking: false});

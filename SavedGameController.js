@@ -37,6 +37,7 @@ function createDocument(thisGame,savedSeats,cb) {
 
         game_data: {
             gameid: thisGame.gameTable.gameid,
+            seven_two_game: thisGame.gameTable.seven_two_game,
             game_size: thisGame.gameTable.game_size,
             handCount: thisGame.gameTable.handCount,
             handLogSentIndex:thisGame.gameTable.handLogSentIndex,

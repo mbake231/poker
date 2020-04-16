@@ -8,7 +8,10 @@ class deck {
 		//BUILD
 		this.cards = new Array(52);
 		this.ranks = new Array("A", "2", "3", "4", "5", "6", "7", "8", "9", "10","J", "Q", "K");
-	    this.suits = new Array("c", "d", "h", "s");
+		//test deck for 72 game
+		//this.ranks = new Array( "2","7","2","7","2","7","2","7","2","7","2","7","2");
+
+		this.suits = new Array("c", "d", "h", "s");
 	    var i, j;
 	    for (i = 0; i < this.suits.length; i++) {
 	        for (j = 0; j < this.ranks.length; j++) {
