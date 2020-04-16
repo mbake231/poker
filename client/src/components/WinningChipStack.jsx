@@ -3,6 +3,10 @@ import ReactDOM from 'react-dom';
 import ChipStack from './ChipStack'
 import { CSSTransitionGroup } from 'react-transition-group'
 import './WinningChipStack.css'
+import {
+    isTablet,
+    isMobile
+  } from "react-device-detect";
 
 class WinningChipStack extends Component { 
     constructor() {
@@ -10,8 +14,10 @@ class WinningChipStack extends Component {
         this.state = {
             slide:''
         }
+        if(!isTablet && !isMobile) {
         this.raise = new Audio('/audio/raise.wav');
         this.raise.load();
+        }
        // this.componentDidAppear=this.componentDidAppear.bind(this);
     }
 
@@ -32,7 +38,8 @@ class WinningChipStack extends Component {
     componentDidMount() {
         
         this.setState({slide:'slideTo'+this.props.winningSeat});
-        try {this.playAudio(this.raise);} catch (e){console.log(e)}
+        if(!isTablet && !isMobile)
+            try {this.playAudio(this.raise);} catch (e){console.log(e)}
         /*
         var scope=this;
         setTimeout(
