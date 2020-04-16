@@ -17,6 +17,9 @@ import {
   isTablet,
   isMobile
 } from "react-device-detect";
+import AudioPlayer from '../AudioPlayer';
+
+
 class Table extends Component{
   constructor() {
   super();
@@ -57,6 +60,7 @@ toggleAddChipsModal () {
 }
    
 componentDidMount() {
+
       if(isTablet || isMobile)
         console.log('IM an iPad or Phone');
 
@@ -71,8 +75,7 @@ componentDidMount() {
       this.shuffle.load()
       this.yourturn = new Audio('/audio/yourturn.wav')
       this.yourturn.load()
-      this.flip = new Audio('/audio/flipcard.wav');
-      this.flip.load();
+
       this.timer = new Audio('/audio/timer.wav');
       this.timer.load();
       this.seventwowinner = new Audio('/audio/seventwowinner.wav');

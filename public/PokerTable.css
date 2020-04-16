@@ -185,7 +185,7 @@ ul {
 	}
 
 #bottomBar {
-		width: 100%
+		width: 100%;
 
 }
 
@@ -206,6 +206,7 @@ ul {
 .actionButtons:hover {
  background-color:#4095c6;
 }
+
 @media all and (max-width:30em){
  .actionButtons{
   display:block;
