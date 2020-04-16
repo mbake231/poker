@@ -2,37 +2,18 @@ import React, { useState,useEffect,Component } from 'react';
 import "./Chevron.css";
 import socket from '../socket';
 import Badge from 'react-bootstrap/Badge'
-import {
-    isTablet,
-    isMobile
-  } from "react-device-detect";
+
 
     export default function PlayerCards(props) {
 
         const [card1Shown, setcard1Shown] = useState('');
         const [card2Shown, setcard2Shown] = useState('');
-        if(!isTablet && !isMobile) {
-        var flip = new Audio('/audio/flipcard.wav');
-        flip.load();
-        }
-    function  playAudio(audio) {
-            const audioPromise = audio.play()
-            if (audioPromise !== undefined) {
-              audioPromise
-                .then(_ => {
-                  // autoplay started
-                })
-                .catch(err => {
-                  // catch dom exception
-                  console.info(err)
-                })
-            }
-          }
+      
+        
 
 function showCard(e) {
     e.preventDefault();
-    if(!isTablet && !isMobile)
-        try {this.playAudio(flip);} catch (e){}
+
     var cardToShow=e.target.getAttribute('label');
     console.log(cardToShow)
     var data={
