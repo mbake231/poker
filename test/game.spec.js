@@ -631,5 +631,44 @@ this.timeout(20000);
 		
 	
 	})
+
+	it('people joining after gae started', function (done) {
+		let game1 = new game('test',null,100,200,false);		
+		let mike = new player("5e83a80f4aeeda2c0a258d4f",5000,'playing','sid');
+		let kev = new player("5e83ab2844d4db2d4038c095",5500,'playing','sid');
+		let clint = new player("5e83ad4c4e56222def2e3148",100000,'playing','sid');
+		let bob = new player("5e83ad6a0a60bc2e134b1baf",100000,'playing','sid');
+
+		game1.addPlayer(mike,0);
+		game1.addPlayer(kev,1);
+
+		game1.startGame();
+
+		game1.printSeats();
+
+		game1.doAction(kev,'raise',4800);
+
+		game1.addPlayer(bob,3);
+		game1.addPlayer(clint,4);
+
+		game1.addPlayerChips('5e83ad4c4e56222def2e3148',500000);
+		game1.addPlayerChips('5e83ad6a0a60bc2e134b1baf',400000);
+
+		game1.doAction(mike,'call');
+
+		
+		setTimeout(function(){
+			chai.assert.equal(game1.isSettled(),true);
+
+
+			done();
+			
+		}, 7000)
+
+
+		
+		
+	
+	})
 });
 

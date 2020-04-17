@@ -16,6 +16,7 @@ ul{padding:0;}
         visibility:hidden;
         text-align: center;
         opacity: .8;
+        font-weight: 700;
         }
 
         #card2 .showCard {
@@ -27,7 +28,14 @@ ul{padding:0;}
         visibility:hidden;
         text-align: center;
         opacity: .8;
+        font-weight: 700;
             }
+
+.sitButton {
+    position: absolute;
+    top: 5px;
+    right: 50px;
+}
 
 #card1:hover .showCard {
         visibility:visible;
@@ -52,13 +60,16 @@ ul{padding:0;}
 
 .cards {
     position: absolute;
-    margin-left: 45%;
-    top:-15px;
+    margin-left: 20%;
+   top: -40px;
     display: flex;
     align-items: right;
     justify-content: center;
     max-height: 200px;
+    
 }
+
+
 .slideToPot0 {
 
     transition: transform;
@@ -138,6 +149,7 @@ ul{padding:0;}
     
 }
 .card {
+    
     width:200px !important;
     height: 80px !important;
     padding-top: -50px;
@@ -145,7 +157,34 @@ ul{padding:0;}
 }
 
 
+
 .sittingOut {
     font-style: italic;
     color:gray;
+}
+
+.cardBody{
+    position: absolute;
+    background-color: lightgray;
+    width:180px;
+    height: 55px;
+ 
+
+    border-radius: 10px;
+    border: solid 3px gray;
+
+}
+
+.balanceText {
+    position: absolute;
+
+    left:10px;
+    top:28px;
+}
+
+.userid {
+    position: absolute;
+    font-weight: 800;
+    top:5px;
+    left:10px;
 }

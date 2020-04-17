@@ -53,26 +53,26 @@ function validateForm() {
 
         if(props.info=='empty' && props.my_seat==null) {
             return ( 
-                <Card id={'seat'+props.id} className='emptySeat' style={{ width: '14rem' }}>
-                    <Card.Body>
+                <div id={'seat'+props.id} className='cardBody' >
+                    <div>
                         <div className='inputGroup'>
-                        <Button  onClick={handleClick}>Sit here</Button>
+                        <Button className='sitButton' onClick={handleClick}>Sit here</Button>
                         
                         </div>
-                        <Card.Text>
-                        </Card.Text>
-                    </Card.Body>
-                </Card>
+                        <div>
+                        </div>
+                    </div>
+                </div>
 
          );
         }
         if(props.info=='empty' && props.my_seat!=null) {
             return ( 
-                <Card id={'seat'+props.id} style={{ width: '14rem' }} className='emptySeatWhileSititing'>
-                    <Card.Body>
+                <div id={'seat'+props.id} className='cardBody emptySeatWhileSititing'>
+                    <div>
                         
-                    </Card.Body>
-                </Card>
+                    </div>
+                </div>
 
          );
         }
@@ -81,16 +81,17 @@ function validateForm() {
          {
             return ( 
                 <div>
-                <Card className={''+props.passedClassName} id={'seat'+props.id} style={{ width: '14rem' }}>
-                    <Card.Body>
-                        <Card.Title>{props.info.userid}</Card.Title>
-                        <Card.Text>
-                            {"$"+(Number(props.info.balance)/100).toFixed(2)}
-                        </Card.Text>
-                    </Card.Body>
-                    {props.info.card1!=null ? (<PlayerCards my_id={props.my_id} gameid={props.gameid} id={props.id} my_seat_num={props.my_seat_num} my_status={props.my_status} info={props.info} />
+                <div className={''+props.passedClassName} id={'seat'+props.id} style={{ width: '14rem' }}>
+                {props.info.card1!=null ? (<PlayerCards my_id={props.my_id} gameid={props.gameid} id={props.id} my_seat_num={props.my_seat_num} my_status={props.my_status} info={props.info} />
                     ):(<div></div>)}
-                </Card>
+                    <div className='cardBody'>
+                        <div className='userid'>{props.info.userid}</div>
+                        <div className='balanceText'>
+                            {"$"+(Number(props.info.balance)/100).toFixed(2)}
+                        </div>
+                    </div>
+                    
+                </div>
                 {props.my_seat!=null ? (
                     props.roundPot>0 ? (
                         <ChipStack gameid={props.gameid} chipstack={chipstack} id={props.id}></ChipStack>
@@ -108,20 +109,21 @@ function validateForm() {
          {
             return ( 
                 <div>
-                <Card className={''+props.passedClassName} id={'seat'+props.id} style={{ width: '14rem' }}>
-                    <Card.Body>
-                        <Card.Title>{props.info.userid}
+                <div className={''+props.passedClassName} id={'seat'+props.id} style={{ width: '14rem' }}>
+                {props.info.card1!=null ? (<PlayerCards my_id={props.my_id} gameid={props.gameid} id={props.id} my_seat_num={props.my_seat_num} my_status={props.my_status} info={props.info} />
+                    ):(<div></div>)}
+                    <div className='cardBody'>
+                        <div className='userid'>{props.info.userid}
                         {props.clockCalled==true && props.passedClassName=='actionOn'
                         ? (<PieTimer />):(<div></div>)}
                         
-                        </Card.Title>
-                        <Card.Text>
+                        </div>
+                        <div className='balanceText'>
                             {"$"+(Number(props.info.balance)/100).toFixed(2)}
-                        </Card.Text>
-                    </Card.Body>
-                    {props.info.card1!=null ? (<PlayerCards my_id={props.my_id} gameid={props.gameid} id={props.id} my_seat_num={props.my_seat_num} my_status={props.my_status} info={props.info} />
-                    ):(<div></div>)}
-                </Card>
+                        </div>
+                    </div>
+                    
+                </div>
                 {props.my_seat!=null ? (
                     props.roundPot>0 ? (
                         <ChipStack gameid={props.gameid} chipstack={chipstack} id={props.id}></ChipStack>
