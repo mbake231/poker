@@ -36,7 +36,7 @@ export default function Login(props) {
           <FormControl
             value={loginpassword}
             onChange={e => setPassword(e.target.value)}
-            type="loginpassword"
+            type="password"
           />
         </FormGroup>
         <Button block bssize="large" disabled={!validateForm()} type="submit">

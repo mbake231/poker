@@ -21,7 +21,7 @@ export default function Register(props) {
     event.preventDefault();
     var cb = props.postRegLogin;
     registerUser(cb, function(response) {
-        cb(response.email);
+        cb('');
     });
 }
 
@@ -53,11 +53,15 @@ function registerUser (data, callback){
           <FormControl
             autoFocus
             value={dname}
+            autocomplete='off'
+            name='name'
+            maxlength='14'
             onChange={e => setDName(e.target.value)}
           />
           <FormLabel className='mt-3'>Email</FormLabel>
           <FormControl
             type="email"
+            name='email'
             value={email}
             onChange={e => setEmail(e.target.value)}
           />

@@ -556,7 +556,6 @@ class game {
 		var counter=0;
 		for (var i=0;i<this.gameTable.game_size;i++) {
 			if(this.gameTable.seats[i].status=="inhand") {
-				console.log('hello')
 				counter++;
 			}
 		}
@@ -1650,7 +1649,7 @@ class game {
 					if(player.hasEnough(amtToCall)||player.balance<amtToCall) {
 
 						//are they all in?
-						if(player.balance<amtToCall) {
+						if(player.balance<=amtToCall) {
 							//putPlayerAllIn actually checks if it shoudl end the game, in which case stop stuff here
 							if(this.putPlayerAllIn(player)) {
 								player.addMoneyToLine(player.balance);
@@ -1674,7 +1673,6 @@ class game {
 
 						
 						
-						this.advanceToNextPlayer();
 						//console.log('INSIDE ACTION ON:'+this.gameTable.bettingRound.actionOn.userid);
 
 						console.log(player.userid+" has called $"+(this.gameTable.bettingRound.currentRaiseToCall/100).toString());
@@ -1685,6 +1683,7 @@ class game {
 						if(player.balance==0){
 							if(this.isOnlyOnePlayerNotAllIn()==true) {
 								this.goToNextRound();
+								console.log('cucklord')
 								return true;
 							}
 							//i think this is only if they happen to go call it perfectly and its not caught above with <
@@ -1695,7 +1694,7 @@ class game {
 							
 							}
 						}
-
+						
 
 						
 					}
@@ -1703,6 +1702,7 @@ class game {
 						console.log("amount doesnt have enough for call");
 						return false;
 					}
+					this.advanceToNextPlayer();
 					this.getNextAction();
 					this.saveThisGame();
 					return true;

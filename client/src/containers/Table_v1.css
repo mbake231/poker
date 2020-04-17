@@ -1,4 +1,7 @@
-@import url("./TableDesktop_v1.css") only screen and (min-width: 767px);
+@import url("./TableDesktop_v1.css") only screen and (min-width: 1026px);
+
+@import url("./TableTablet_v1.css") only screen and (max-width: 1025px);
+
 
 @import url("./TableMobile_v1.css") only screen and (max-width: 766px);
 
@@ -9,4 +12,11 @@
 
 .emptySeat {
   background-color: lightgrey !important;
+}
+
+.cardfolded {
+  
+  opacity: 0.40;
+
+
 }

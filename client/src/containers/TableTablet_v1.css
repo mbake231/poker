@@ -1,8 +1,7 @@
 #Table {
 
   
-    width: 1440px;
-    height:770px;
+    width: 100%;
     margin: 0 auto;
      background-image: url('/img/table_solo2.png') !important;
      background-repeat: no-repeat;
@@ -120,7 +119,7 @@
       position: absolute;;
       display: inline-block;
     
-      left:370px;
+      left:170px;
       top:590px;
     }
   
@@ -136,8 +135,8 @@
   
   #seat0 {
     position: absolute;
-    left:440px;
-    top:80px;
+    left:250px;
+    top:100px;
   }
   
   #chipstack0 {
@@ -154,8 +153,8 @@
   
   #seat1 {
     position: absolute;
-    left:690px;
-    top:80px;
+    left:550px;
+    top:100px;
   }
   
   #chipstack1 {
@@ -173,7 +172,7 @@
   
   #seat2 {
     position: absolute;
-    left:990px;
+    left:770px;
     top:195px;
   }
   
@@ -196,8 +195,8 @@
   
   #seat3 {
     position: absolute;
-    left:1015px;
-    top:330px;
+    left:815px;
+    top:345px;
   }
   
   #chipstack3 {
@@ -216,7 +215,7 @@
   
   #seat4 {
     position: absolute;
-    left:890px;
+    left:700px;
     top:455px;
     
   }
@@ -237,7 +236,7 @@
   
   #seat5 {
     position: absolute;
-    left:630px;
+    left:430px;
     top:500px;
   }
   #chipstack5 {
@@ -248,13 +247,13 @@
   
   #dealerButton5 {
     position: absolute;
-    left:660px;
+    left:460px;
     top:460px;
   }
   
   #seat6 {
     position: absolute;
-    left:350px;
+    left:150px;
     top:455px;
   }
   
@@ -272,7 +271,7 @@
   
   #seat7 {
     position: absolute;
-    left:235px;
+    left:35px;
     top:330px;
   }
   
@@ -290,7 +289,7 @@
   
   #seat8 {
     position: absolute;
-    left:185px;
+    left:85px;
     top:196px;
   }
   
