@@ -173,11 +173,11 @@ class game {
 			//if we pass seat 0 then the next seat will be dealer. so we will send seat-1 so next seat is 0 or highter
 			this.setDealer(lowestSeat-1);
 			this.runGame();
-			this.gameRunning=true;
+			this.gameTable.gameRunning=true;
 		}
 		else {
 			console.log('not enough players');
-			this.gameRunning=false;
+			this.gameTable.gameRunning=false;
 		}
 	}
 
@@ -203,10 +203,13 @@ class game {
 		if(this.gameTable.isTest==false)
 			this.sendDataToAllPlayers();
 
-		if(this.getNumberPlayersPlaying()>1)
+		if(this.canIDeal())
 			this.runGame();
-		else
-			console.log('not enough players');
+		else {
+			console.log("Not enough players with enough money at the table.");
+			this.updateHandLog("Not enough players with enough money at the table.");
+			this.gameTable.gameRunning=false; 
+		}
 	}
 
 	sendSeatList(sessionid) {
@@ -275,7 +278,14 @@ class game {
 
 
 	canIDeal () {
-		if (this.getNumberPlayersPlaying()>1)
+		
+		var playersReady=0;
+		for (var i=0;i<this.gameTable.game_size;i++){
+			if(this.gameTable.seats[i].status=='playing' && this.gameTable.seats[i].hasEnough(this.gameTable.bigBlind))
+				playersReady++;
+		}
+
+		if (this.getNumberPlayersPlaying()>1 && playersReady>1)
 			return true;
 		else
 			return false;
@@ -909,6 +919,7 @@ class game {
 					this.startGame();
 				else
 					this.nextHand();
+			this.gameTable.gameRunning=true;
 			}
 		}
 	}
