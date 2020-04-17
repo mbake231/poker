@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import "./Table_v1.css";
+import "./Table_v2.css";
 import PlayerChevron from "../components/PlayerChevron"
 import ActionBar from "../components/ActionBar"
 import Board from "../components/Board"

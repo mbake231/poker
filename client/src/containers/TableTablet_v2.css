@@ -1,8 +1,7 @@
 #Table {
 
   
-    width: 1440px;
-    height:770px;
+    width: 100%;
     margin: 0 auto;
      background-image: url('/img/table_solo2.png') !important;
      background-repeat: no-repeat;
@@ -17,8 +16,8 @@
 #Board{
     position: absolute;;
   
-      left:520px;
-      top:270px;
+      left:350px;
+      top:240px;
       display: flex;
   }
   .boardCard{
@@ -42,16 +41,16 @@
   #totalPot {
     position: absolute;;
   
-      left:638px;
-      top:240px;
+      left:460px;
+      top:200px;
       display: flex;
   }
   
   #roundPot {
     position: absolute;;
   
-      left:631px;
-      top:380px;
+      left:460px;
+      top:350px;
       display: flex;
   }
   #ChatInput {
@@ -120,7 +119,7 @@
       position: absolute;;
       display: inline-block;
     
-      left:370px;
+      left:70px;
       top:590px;
     }
   
@@ -136,53 +135,53 @@
   
   #seat0 {
     position: absolute;
-    left:480px;
-    top:80px;
+    left:250px;
+    top:50px;
   }
   
   #chipstack0 {
     position: absolute;
-    left:600px;
-    top:190px;
+    left:380px;
+    top:160px;
   }
   
   #dealerButton0 {
     position: absolute;
-    left:550px;
+    left:350px;
     top:205px;
   }
   
   #seat1 {
     position: absolute;
-    left:750px;
-    top:80px;
+    left:550px;
+    top:50px;
   }
   
   #chipstack1 {
     position: absolute;
-    left:770px;
-    top:200px;
+    left:580px;
+    top:140px;
   }
   
   #dealerButton1 {
     position: absolute;
-    left:750px;
-    top:200px;
+    left:550px;
+    top:160px;
   }
   
   
   #seat2 {
     position: absolute;
-    left:990px;
-    top:195px;
+    left:770px;
+    top:165px;
   }
   
   
   #chipstack2 {
     position: absolute;
     width:100px;
-    left:890px;
-    top:260px;
+    left:700px;
+    top:200px;
   
   }
   
@@ -196,8 +195,8 @@
   
   #seat3 {
     position: absolute;
-    left:1015px;
-    top:330px;
+    left:815px;
+    top:295px;
   }
   
   #chipstack3 {
@@ -216,8 +215,8 @@
   
   #seat4 {
     position: absolute;
-    left:890px;
-    top:455px;
+    left:700px;
+    top:355px;
     
   }
   
@@ -237,31 +236,31 @@
   
   #seat5 {
     position: absolute;
-    left:630px;
+    left:430px;
     top:500px;
   }
   #chipstack5 {
     position: absolute;
-    left:690px;
-    top:450px;
+    left:490px;
+    top:390px;
   }
   
   #dealerButton5 {
     position: absolute;
-    left:660px;
+    left:460px;
     top:460px;
   }
   
   #seat6 {
     position: absolute;
-    left:350px;
-    top:455px;
+    left:200px;
+    top:425px;
   }
   
   #chipstack6 {
     position: absolute;
-    left:555px;
-    top:425px;
+    left:365px;
+    top:345px;
   }
   
   #dealerButton6 {
@@ -272,32 +271,32 @@
   
   #seat7 {
     position: absolute;
-    left:235px;
+    left:35px;
     top:330px;
   }
   
   #chipstack7 {
     position: absolute;
-    left:480px;
-    top:365px;
+    left:250px;
+    top:315px;
   }
   
   #dealerButton7 {
     position: absolute;
-    left:430px;
-    top:365px;
+    left:320px;
+    top:355px;
   }
   
   #seat8 {
     position: absolute;
-    left:255px;
+    left:65px;
     top:196px;
   }
   
   #chipstack8 {
     position: absolute;
-    left:475px;
-    top:255px;
+    left:275px;
+    top:205px;
   }
   
   #dealerButton8 {
