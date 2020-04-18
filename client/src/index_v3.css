@@ -1,6 +1,6 @@
-@import url("./indexDesktop_v1.css") only screen and (min-width: 814px);
-@import url("./indexMobileLandscape_v1.css") only screen and (max-width: 813px);
-@import url("./indexMobilePortrait_v1.css") only screen and (max-width: 420px);
+@import url("./indexDesktop_v3.css") only screen and (min-width: 814px);
+@import url("./indexMobileLandscape_v3.css") only screen and (max-width: 813px);
+@import url("./indexMobilePortrait_v3.css") only screen and (max-width: 420px);
 
 body {
   margin: 0;
