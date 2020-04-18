@@ -230,6 +230,10 @@
     width:60%;
   }
 
+  .alertBanner {
+    z-index:99999;
+  }
+
   .chipStack {
     position: absolute;
   

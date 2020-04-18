@@ -298,7 +298,7 @@ render () {
       <BlockUi id='blocker' tag="div" blocking={this.state.blocking} message="Reconnecting, your game is saved.">
       <CreateTableModal open={this.state.createTableModal} />
       <div id='Table' className="Table">
-      <Alert variant="success" show={this.state.alertShow} onClose={this.toggleAlert}  dismissible>
+      <Alert className='alertBanner' variant="success" show={this.state.alertShow} onClose={this.toggleAlert}  dismissible>
         <Alert.Heading>Now invite your friends!</Alert.Heading>
           Send them your private link so they can join: {window.location.href}
       </Alert>
