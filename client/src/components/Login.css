@@ -12,3 +12,7 @@
 .alertPadding{
   margin-bottom: -40px !important;
 }
+
+.loginErrorAlert {
+  margin-top:-60px;
+}

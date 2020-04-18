@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 import { Button, FormGroup, FormControl, FormLabel } from "react-bootstrap";
 import "./Login.css";
-import axios from 'axios';
-import socket from '../socket'
+import Alert from 'react-bootstrap/Alert'
 
 export default function Login(props) {
   const [email, setEmail] = useState("");
@@ -16,11 +15,13 @@ export default function Login(props) {
 
     event.preventDefault();
     props.login(email,loginpassword);
-    props.close();
 
 }
   return (
     <div className="Login">
+      <Alert className='loginErrorAlert' show={props.showLoginError} variant="danger">
+          Invalid credentials.
+      </Alert>
       <form onSubmit={handleSubmit}>
         <FormGroup controlId="email" bssize="large">
           <FormLabel>Email</FormLabel>

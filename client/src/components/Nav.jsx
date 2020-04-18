@@ -62,7 +62,7 @@ class MyNav extends Component {
       }
         return (
         <Navbar>
-            <LoginModal ref={this.loginModalRef} loginModalOpen={this.props.loginModalOpen} toggleLoginModal={this.props.toggleLoginModal.bind(this)} login={this.props.login.bind(this)} ></LoginModal>
+            <LoginModal showLoginError={this.props.showLoginError} ref={this.loginModalRef} loginModalOpen={this.props.loginModalOpen} toggleLoginModal={this.props.toggleLoginModal.bind(this)} login={this.props.login.bind(this)} ></LoginModal>
             <Navbar.Brand href="#home">The Local Game</Navbar.Brand>
             <Navbar.Toggle />
               <Navbar.Collapse className="justify-content-end">
