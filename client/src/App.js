@@ -6,7 +6,7 @@ import axios from 'axios';
 import Table from './containers/Table';
 import PlayerChevron from './components/PlayerChevron';
 import socket from './socket';
-import './App_v1.css';
+import './App_v3.css';
 import { Route,Switch,Link } from "react-router-dom";
 import Home from "./containers/Home";
 import Login from "./components/Login";
