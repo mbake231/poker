@@ -63,6 +63,7 @@ handleSelect(key) {
                   close={this.handleClose.bind(this)}
                   login={this.props.login.bind(this)}
                   defaultEmail={this.state.defaultEmail}
+                  showLoginError={this.props.showLoginError}
                 ></Login>
               </Modal.Body>
             </Tab>

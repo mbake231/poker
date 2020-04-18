@@ -21,7 +21,8 @@ class App extends Component {
       gameData: {},
       seats: [],
       my_name: null,
-      loginModalOpen: false
+      loginModalOpen: false,
+      showLoginError: false
       
     };
     this.login = this.login.bind(this);
@@ -30,7 +31,6 @@ class App extends Component {
 
   toggleLoginModal() {
     this.setState({loginModalOpen:!this.state.loginModalOpen});
-    console.log('fart');
   }
 
   async login(email,password) {
@@ -44,10 +44,16 @@ class App extends Component {
       const response = await axios.post(url, {
                    email:email,
                   password:password
-                  },{withCredentials: true});
-    
+                  },{withCredentials: true}).catch(error => {
+                    if(error)
+                      this.setState({showLoginError:true})
+                    
+                  })
+                  
+      if(response) {
                     this.handShake();
-                    window.location.reload(false);
+                   window.location.reload(false);
+      }
 
   }
 
@@ -70,7 +76,7 @@ class App extends Component {
     return (
 
       <div id="AppContainer">
-        <MyNav my_id={this.state.my_id} my_name={this.state.my_name} loginModalOpen={this.state.loginModalOpen} toggleLoginModal={this.toggleLoginModal.bind(this)} login={this.login.bind(this)}>
+        <MyNav my_id={this.state.my_id} my_name={this.state.my_name} showLoginError={this.state.showLoginError} loginModalOpen={this.state.loginModalOpen} toggleLoginModal={this.toggleLoginModal.bind(this)} login={this.login.bind(this)}>
             <Link to="/">Scratch</Link>
         </MyNav>
         
