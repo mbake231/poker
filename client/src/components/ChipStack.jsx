@@ -43,7 +43,7 @@ export default function PlayerChevron(props) {
         return (
             <ul id={'chipstack'+props.id} className={'chipStack ' + move+props.id}>
                 {stack.map((chip,i) => {              
-                    return <li className='chip' ><img src={'/img/chip.png'} /></li>
+                    return <li className='chip' ><img className='chipImg' src={'/img/chip.png'} /></li>
 
                     })}
                 <Badge className='stackAmt' variant='light'>{'$'+(parseInt(props.chipstack)/100).toFixed(2)}</Badge>

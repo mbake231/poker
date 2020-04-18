@@ -16,13 +16,17 @@
 }
 #Board{
     position: absolute;;
-  
-      left:520px;
+    width:50%;
+      left:555px;
       top:270px;
       display: flex;
   }
   .boardCard{
     margin-left:3px;
+  }
+  .bcardSize {
+    width: 60px;
+   
   }
   
   #gameMenu{
@@ -42,16 +46,16 @@
   #totalPot {
     position: absolute;;
   
-      left:638px;
-      top:240px;
+      left:658px;
+      top:243px;
       display: flex;
   }
   
   #roundPot {
     position: absolute;;
   
-      left:631px;
-      top:380px;
+      left:660px;
+      top:366px;
       display: flex;
   }
   #ChatInput {
@@ -161,7 +165,7 @@
   #chipstack1 {
     position: absolute;
     left:790px;
-    top:160px;
+    top:180px;
   }
   
   #dealerButton1 {
@@ -180,7 +184,6 @@
   
   #chipstack2 {
     position: absolute;
-    width:100px;
     left:910px;
     top:240px;
   
@@ -302,7 +305,7 @@
   
   #dealerButton8 {
     position: absolute;
-    left:405px;
+    left:435px;
     top:276px;
   }
   

@@ -56,15 +56,12 @@ function changeDropDown(val) {
 
     event.preventDefault();
     
-    console.log(dropdown)
-
     var data;
 
     if(dropdown=='custom') {
      if((bigblind==0 && smallblind==0) || (Number(bigblind) > Number(smallblind)))
         if(isNaN(smallblind)==false  && isNaN(bigblind)==false)
             if (bigblind >=0 && smallblind>=0){
-                console.log(seven_two)
                  data = {smallblind:smallblind*100,
                             bigblind:bigblind*100,
                             playSeventwo:seven_two};
