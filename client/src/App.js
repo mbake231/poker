@@ -39,8 +39,8 @@ class App extends Component {
       url='https://www.thelocalgame.com/login';
     else
     //PC 
-    // url='http://localhost:3000/login';
-      url='http://172.20.10.4:3000/login'
+     url='http://localhost:3000/login';
+    //  url='http://172.20.10.4:3000/login'
       const response = await axios.post(url, {
                    email:email,
                   password:password

@@ -136,7 +136,10 @@
     }
   
   
-  
+  .alertBanner {
+    width:87%;
+    z-index:99999;
+  }
   
   #seat0 {
     position: absolute;
