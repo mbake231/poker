@@ -61,8 +61,6 @@ toggleAddChipsModal () {
    
 componentDidMount() {
 
-      if(isTablet || isMobile)
-        console.log('IM an iPad or Phone');
 
       if(!isTablet && !isMobile) {
       this.call = new Audio('/audio/call.wav')

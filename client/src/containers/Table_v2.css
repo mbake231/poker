@@ -3,7 +3,9 @@
 @import url("./TableTablet_v2.css") only screen and (max-width: 1025px);
 
 
-@import url("./TableMobile_v2.css") only screen and (max-width: 766px);
+@import url("./TableMobileLandscape_v2.css") only screen and (max-width: 813px);
+@import url("./TableMobilePortrait_v2.css") only screen and (max-width: 420px);
+
 
 #blocker {
   height: 100%;

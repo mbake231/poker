@@ -50,6 +50,7 @@ if(process.env.NODE_ENV === 'production') {
 }
 else {
 	app.use(cors({origin: 'http://localhost:8000',credentials: true}));
+	app.use(cors({origin: 'http://172.20.10.4:8000',credentials: true}));
 
 }
 

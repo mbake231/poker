@@ -36,8 +36,8 @@ if(props.info!=null) {
             return ( 
                 
                     <div className="cards">
-                        <div id="card1"><img className={'card'+props.my_status} src={'/img/cards/'+props.info.card1+".svg"} width='65px' /></div>
-                        <div id="card2"><img className={'card'+props.my_status} src={'/img/cards/'+props.info.card2+".svg"} width='65px' /></div>
+                        <div id="card1"><img className={'card'+props.my_status+' cardSize'} src={'/img/cards/'+props.info.card1+".svg"} width='65px' /></div>
+                        <div id="card2"><img className={'card'+props.my_status+' cardSize'} src={'/img/cards/'+props.info.card2+".svg"} width='65px' /></div>
                     </div>
                 
 
@@ -50,11 +50,11 @@ if(props.info!=null) {
             
                     <div className="cards">
                         <div id="card1" className={card1Shown}>
-                            <img  src={'/img/cards/'+props.info.card1+".svg"} width='65px' />
+                            <img className='cardSize' src={'/img/cards/'+props.info.card1+".svg"} width='65px' />
                            {props.id==props.my_seat_num ? (<p className='showCard' label='card1' onClick={showCard} >Show</p>):(<div></div>)} 
                         </div>
                         <div id="card2" className={card2Shown}>
-                            <img  src={'/img/cards/'+props.info.card2+".svg"} width='65px' />
+                            <img className='cardSize' src={'/img/cards/'+props.info.card2+".svg"} width='65px' />
                             {props.id==props.my_seat_num ? (<p className='showCard' label='card2' onClick={showCard}>Show</p>):(<div></div>)} 
                         </div>
                     </div>

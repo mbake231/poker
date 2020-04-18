@@ -1,3 +1,5 @@
+
+ @media only screen and (min-width: 421px) {
 ul{padding:0;}
 
 .pieTimer {
@@ -188,3 +190,130 @@ ul{padding:0;}
     top:5px;
     left:10px;
 }
+ }
+
+
+ @media only screen and (max-width: 420px) {
+    ul{padding:0;}
+    
+    .pieTimer {
+        display:none;
+    }
+
+    .cardSize {
+        display:none;
+    }
+    
+    #card1 .showCard {
+        display:none;
+            }
+    
+            #card2 .showCard {
+                display:none;
+                }
+    
+    .sitButton {
+        display:none;
+    }
+    
+    #card1:hover .showCard {
+        display:none;        }
+        #card2:hover .showCard {
+            display:none;        }
+    
+    
+    .card1Shown{
+        display:none;            }
+    .card2Shown{
+        display:none;    
+    }
+    
+    #card2:hover .showCard {
+        display:none;        }
+    
+    
+    .cards {
+        display:none;
+        
+    }
+    
+    
+    .slideToPot0 {
+    
+        display:none;
+    
+    }
+    .slideToPot1 {
+    
+        display:none;
+    
+    }
+    .slideToPot2 {
+    
+        display:none;
+    
+    }
+    .slideToPot3 {
+    
+        display:none;
+    
+    }
+    .slideToPot4 {
+    
+        display:none;
+    
+    }
+    
+    .slideToPot5 {
+    
+        display:none;
+    }
+    .slideToPot6 {
+    
+        display:none;
+    
+    }
+    .slideToPot7 {
+    
+        display:none;
+    
+    }
+    .slideToPot8 {
+    
+        display:none;
+    
+    }
+    
+    .actionOn {
+        display:none;    }
+    
+    .inputGroup {
+        display:none;
+       
+        
+    }
+    .card {
+        
+        display:none;
+        
+    }
+    
+    
+    
+    .sittingOut {
+        display:none;
+    }
+    
+    .cardBody{
+        display:none;
+    
+    }
+    
+    .balanceText {
+        display:none;
+    }
+    
+    .userid {
+        display:none;
+    }
+     }

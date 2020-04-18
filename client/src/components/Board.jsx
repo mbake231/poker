@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import ReactCardFlip from 'react-card-flip';
-
+import './Chevron.css'
 
 class PlayerChevron extends Component {
   constructor() {
@@ -119,9 +119,9 @@ class PlayerChevron extends Component {
 
                               return (
                             <ReactCardFlip isFlipped={this.state['card'+i+'Flipped']} flipDirection="horizontal">
-                              <div  id={"card"+i} className='boardCard'><img src={'/img/cards/private.svg'} width='65px' /></div>
+                              <div  id={"card"+i} className='boardCard'><img className='bcardSize' src={'/img/cards/private.svg'} width='65px' /></div>
                               
-                              <div id={"card"+i} className='boardCard'><img src={'/img/cards/'+this.props.board[+i]+".svg"} width='65px' /></div>
+                              <div id={"card"+i} className='boardCard'><img className='bcardSize' src={'/img/cards/'+this.props.board[+i]+".svg"} width='65px' /></div>
                              </ReactCardFlip>)
                              }
                          })

@@ -13,7 +13,6 @@ import './ActionButtons_v1.css'
  
  function handleClick(e) {
     e.preventDefault();
-    console.log(amt);
     var actionpackage = {gameid:props.gameid,
                         hash:props.my_id,
                         action:'raise',
