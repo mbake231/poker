@@ -30,7 +30,7 @@ render() {
           <div id='ButtonContainer' className="mb-2">
             <FoldButton  my_id={this.props.my_id} currentRaiseToCall={this.props.currentRaiseToCall} gameid={this.props.gameid} text={'Fold'}></FoldButton>
             <CallButton  my_seat={this.props.my_seat} currentRaiseToCall={this.props.currentRaiseToCall} my_id={this.props.my_id} gameid={this.props.gameid}></CallButton>
-            <RaiseButton  my_id={this.props.my_id} gameid={this.props.gameid}></RaiseButton>
+            <RaiseButton  bigBlind={this.props.bigBlind} my_seat={this.props.my_seat} my_id={this.props.my_id} gameid={this.props.gameid}></RaiseButton>
             </div>
          );
       }
@@ -40,7 +40,7 @@ render() {
           <div id='ButtonContainer' className="mb-2">
             <CheckButton my_id={this.props.my_id} gameid={this.props.gameid} text={"Check"}></CheckButton>
             <GhostButton></GhostButton>
-            <RaiseButton  my_id={this.props.my_id} gameid={this.props.gameid}></RaiseButton>            
+            <RaiseButton  bigBlind={this.props.bigBlind} my_seat={this.props.my_seat} my_id={this.props.my_id} gameid={this.props.gameid}></RaiseButton>            
             </div>
          );
       }

@@ -20,3 +20,22 @@
     visibility: hidden;
     pointer-events: none;
 }
+
+.raiseSlider {
+    top: 80px;
+    left: -20px;
+    
+}
+
+.raiseButton {
+    position: absolute;
+    top: 0px;
+}
+
+.raiseControls {
+    width:200px;
+}
+
+.rangeslider__fill {
+    background-color: darkgrey !important;
+}

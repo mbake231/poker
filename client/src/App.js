@@ -22,7 +22,8 @@ class App extends Component {
       seats: [],
       my_name: null,
       loginModalOpen: false,
-      showLoginError: false
+      showLoginError: false,
+      defaultLoginModalTab: 'login'
       
     };
     this.login = this.login.bind(this);
@@ -31,6 +32,12 @@ class App extends Component {
 
   toggleLoginModal() {
     this.setState({loginModalOpen:!this.state.loginModalOpen});
+  }
+
+  toggleRegistrationModal() {
+    this.setState({defaultLoginModalTab:'register'});
+    this.setState({loginModalOpen:!this.state.loginModalOpen});
+
   }
 
   async login(email,password) {
@@ -76,14 +83,14 @@ class App extends Component {
     return (
 
       <div id="AppContainer">
-        <MyNav my_id={this.state.my_id} my_name={this.state.my_name} showLoginError={this.state.showLoginError} loginModalOpen={this.state.loginModalOpen} toggleLoginModal={this.toggleLoginModal.bind(this)} login={this.login.bind(this)}>
+        <MyNav my_id={this.state.my_id} defaultLoginModalTab={this.state.defaultLoginModalTab} my_name={this.state.my_name} showLoginError={this.state.showLoginError} loginModalOpen={this.state.loginModalOpen} toggleLoginModal={this.toggleLoginModal.bind(this)} login={this.login.bind(this)}>
             <Link to="/">Scratch</Link>
         </MyNav>
         
         <Switch>
             <Route path="/" exact exact exact render={(props) =><Home {...props} />} />
             <Route path="/login" exact component={Login} />
-            <Route path="/table/*" exact render={(props) => <Table my_id={this.state.my_id} toggleLoginModal={this.toggleLoginModal.bind(this)} 
+            <Route path="/table/*" exact render={(props) => <Table my_id={this.state.my_id} toggleRegistrationModal={this.toggleRegistrationModal.bind(this)} 
             {...props}  />} />
         </Switch>
     </div>

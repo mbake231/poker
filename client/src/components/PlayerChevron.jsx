@@ -45,7 +45,7 @@ function validateForm() {
         props.toggleAddChipsModal();
     }
     else {
-        props.toggleLoginModal();
+        props.toggleRegistrationModal();
 
     }
       
