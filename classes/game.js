@@ -1098,7 +1098,7 @@ class game {
 			for(var i=0;i<this.gameTable.board.length;i++){
 				if(this.gameTable.board[i]==null) {
 					this.gameTable.board[i]=this.deck.dealCard();
-					delay+=1500;
+					delay+=2000;
 					}
 				}
 				this.sendDataToAllPlayers();
@@ -1119,6 +1119,8 @@ class game {
 		*/
 		//check to see if someone didnt win by fold
 		if(this.gameTable.bettingRound.endByFold==false || NumberofAllInPlayers>0) {
+		//delay if we ran cards
+		setTimeout(function(){  
 
 			var selectedPot;
 			for(var i=0;i<this.gameTable.bettingRound.pots.length;i++) {
@@ -1185,7 +1187,8 @@ class game {
 					playerCards:[]
 				};
 				}
-				
+				this.sendDataToAllPlayers();
+			}.bind(this), delay);
 			}
 			//everyone folded and no one was all in
 			else if (this.gameTable.bettingRound.endByFold==true && NumberofAllInPlayers==0) {
