@@ -15,7 +15,7 @@ class CreateTableModal extends React.Component {
     };
   }
 
- 
+
 
   componentDidMount() {
       this.setState({show:this.props.open})

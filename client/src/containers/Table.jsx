@@ -48,7 +48,9 @@ class Table extends Component{
     alertShow:true,
     numPlayersInHand: null,
     my_seat_num:null,
-    addChipsModalOpen:false
+    addChipsModalOpen:false,
+    bigBlind:null,
+    smallBlind:null
   }
   this.toggleAlert=this.toggleAlert.bind(this);
   this.toggleAddChipsModal=this.toggleAddChipsModal.bind(this);
@@ -182,6 +184,11 @@ componentDidMount() {
           this.setState({actionOnMe:false});
         }
 
+        //blinds
+        this.setState({bigBlind:data.bigBlind});
+        this.setState({smallBlind:data.smallBlind});
+
+
         //issettled
         if(this.state.isSettled == 'yes' && data.isSettled=='no') {
           if(!isTablet && !isMobile)
@@ -305,9 +312,9 @@ render () {
         <div id='seatbox'>
           {this.state.seats.map((seat,i) => {
             if(this.state.actionOnSeat==i)
-              return <PlayerChevron toggleAddChipsModal={this.toggleAddChipsModal.bind(this)} clockCalled={this.state.clockCalled} my_seat_num={this.state.my_seat_num}  id={i} roundPot={Number(this.state.roundPot)} my_status={this.state.my_status} toggleLoginModal={this.props.toggleLoginModal.bind(this)} dealerSeat={this.state.dealerSeat} my_seat={this.state.my_seat} passedClassName={'actionOn'} info={this.state.seats[i]} gameid={this.state.gameid} my_id={this.props.my_id}></PlayerChevron>
+              return <PlayerChevron toggleAddChipsModal={this.toggleAddChipsModal.bind(this)} clockCalled={this.state.clockCalled} my_seat_num={this.state.my_seat_num}  id={i} roundPot={Number(this.state.roundPot)} my_status={this.state.my_status} toggleRegistrationModal={this.props.toggleRegistrationModal.bind(this)} dealerSeat={this.state.dealerSeat} my_seat={this.state.my_seat} passedClassName={'actionOn'} info={this.state.seats[i]} gameid={this.state.gameid} my_id={this.props.my_id}></PlayerChevron>
             else
-              return <PlayerChevron toggleAddChipsModal={this.toggleAddChipsModal.bind(this)} clockCalled={this.state.clockCalled} my_seat_num={this.state.my_seat_num} id={i} roundPot={Number(this.state.roundPot)} my_status={this.state.my_status} toggleLoginModal={this.props.toggleLoginModal.bind(this)} dealerSeat={this.state.dealerSeat} my_seat={this.state.my_seat} passedClassName={''} info={this.state.seats[i]} gameid={this.state.gameid} my_id={this.props.my_id}></PlayerChevron>
+              return <PlayerChevron toggleAddChipsModal={this.toggleAddChipsModal.bind(this)} clockCalled={this.state.clockCalled} my_seat_num={this.state.my_seat_num} id={i} roundPot={Number(this.state.roundPot)} my_status={this.state.my_status} toggleRegistrationModal={this.props.toggleRegistrationModal.bind(this)} dealerSeat={this.state.dealerSeat} my_seat={this.state.my_seat} passedClassName={''} info={this.state.seats[i]} gameid={this.state.gameid} my_id={this.props.my_id}></PlayerChevron>
 
         })}
           </div>
@@ -332,7 +339,7 @@ render () {
         <Chat chat={this.state.chat} my_id={this.props.my_id} gameid={this.state.gameid}></Chat>
         {this.state.actionOnMe ? (
         <div id='ActionBar'>
-          <ActionBar my_seat={this.state.my_seat} lastBet={this.state.lastBet} currentRaiseToCall={parseInt(this.state.currentRaiseToCall)} my_actions={this.state.my_actions} my_id={this.props.my_id} gameid={this.state.gameid}></ActionBar>
+          <ActionBar bigBlind={this.state.bigBlind} my_seat={this.state.my_seat} lastBet={this.state.lastBet} currentRaiseToCall={parseInt(this.state.currentRaiseToCall)} my_actions={this.state.my_actions} my_id={this.props.my_id} gameid={this.state.gameid}></ActionBar>
         </div>)
         :(<div></div>)}
         <div id='OffActionBar'>

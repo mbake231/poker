@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Popover, Tooltip, Modal, Tabs, Tab, TabList, TabPanel } from "react-bootstrap";
+import { Popover, Tooltip, Modal, Tabs, Tab, TabContainer, TabList, TabPanel } from "react-bootstrap";
 import Login from "./Login";
 import "./Login.css";
 import Register from "./Register";
@@ -47,15 +47,14 @@ handleSelect(key) {
           </Modal.Header>
           
           <Tabs
-            defaultActiveKey="login"
+            defaultActiveKey={this.props.defaultLoginModalTab}
             transition={false}
-            id="controlled-tab-example"
+            id="uncontrolled-tab-example"
             activeKey={this.state.tab}
             onSelect={this.handleSelect}
           >
             
             <Tab eventKey="login" title="Login" >
-              <Modal.Body>
               <Alert className={this.state.regSuccessShow+' alertPadding'} key='reg-success' variant='success'>
     Successfully registered! Login below.
   </Alert>
@@ -65,7 +64,6 @@ handleSelect(key) {
                   defaultEmail={this.state.defaultEmail}
                   showLoginError={this.props.showLoginError}
                 ></Login>
-              </Modal.Body>
             </Tab>
             <Tab eventKey="register" title="Register">
               <Modal.Body>
