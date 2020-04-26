@@ -1,9 +1,12 @@
+import selenium
+
 from xpath import LoginLocators
 import time
 import unittest
 from selenium import webdriver
 # from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.chrome.options import Options
 
 class mike(unittest.TestCase):
     def setUp(self):
@@ -11,13 +14,18 @@ class mike(unittest.TestCase):
 
     def test_login(self):
         ##################### BOT 2
-        driver2 = webdriver.Chrome(executable_path='./chromedriver.exe')
+        user_agent = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.50 Safari/537.36'
+        options = Options()
+        options.add_argument(LoginLocators.HEADLESS)
+        options.add_argument(f'user-agent={user_agent}')
+        driver2 = webdriver.Chrome(options=options, executable_path=r'./chromedriver.exe')
+
         driver2.implicitly_wait(10)
         driver2.get(LoginLocators.URL)
         time.sleep(8)
         login_menu_button = driver2.find_element_by_xpath(LoginLocators.LOGIN_MENU_BUTTON)
         login_menu_button.click()
-        time.sleep(5)
+        time.sleep(9)
 
         BOTNAME1 = 'mike_bot@bot'
         BOTPASS1 = 'testbot'
@@ -47,23 +55,46 @@ class mike(unittest.TestCase):
                     break
 
 
-        time.sleep(5)
+        time.sleep(14)
 
         seat = driver2.find_element_by_xpath(LoginLocators.SEAT_1)
         seat.click()
 
-        time.sleep(3)
+        time.sleep(10)
         add_chips = driver2.find_element_by_xpath(LoginLocators.ADD_CHIPS_INPUT)
         add_chips.send_keys(CHIPS1)
         add_chips_button = driver2.find_element_by_xpath(LoginLocators.ADD_CHIPS_BUTTON)
         add_chips_button.click()
-        time.sleep(25)
+        time.sleep(15)
 
         # assert user_mail.text == "au"
+        x = 2
+        for i in range(10000):
+            try:
+                time.sleep(1)
+                try:
+                    raise_input = driver2.find_element_by_xpath(LoginLocators.RAISE_INPUT)
+                    raise_input.send_keys(Keys.CLEAR, x)
+                    x += 1
+                except (selenium.common.exceptions.NoSuchElementException, selenium.common.exceptions.StaleElementReferenceException):
+                    pass
+                raise_button = driver2.find_element_by_xpath(LoginLocators.RAISE_BUTTON)
+                raise_button.click()
+            except (selenium.common.exceptions.NoSuchElementException, selenium.common.exceptions.StaleElementReferenceException):
+                try:
+                    time.sleep(1)
+                    call_button = driver2.find_element_by_xpath(LoginLocators.CALL_BUTTON)
+                    call_button.click()
+                except (selenium.common.exceptions.NoSuchElementException, selenium.common.exceptions.StaleElementReferenceException):
+                    try:
 
-        # for i in range(10):
-        raise_button = driver2.find_element_by_xpath(LoginLocators.RAISE_BUTTON)
-        raise_button.click()
+                        time.sleep(1)
+                        check_button = driver2.find_element_by_xpath(LoginLocators.CHECK_BUTTON)
+                        check_button.click()
+                    except (selenium.common.exceptions.NoSuchElementException, selenium.common.exceptions.StaleElementReferenceException):
+                        time.sleep(5)
+
+
 
 if __name__ == "__main__":
     unittest.main()
