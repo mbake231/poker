@@ -1,5 +1,5 @@
+#!/usr/bin/python3
 import selenium
-
 from xpath import LoginLocators
 import time
 import unittest
@@ -17,9 +17,14 @@ class clint(unittest.TestCase):
         user_agent = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.50 Safari/537.36'
         options = Options()
         options.add_argument(LoginLocators.HEADLESS)
-        options.add_argument(f'user-agent={user_agent}')
-        driver8 = webdriver.Chrome(options=options, executable_path=r'./chromedriver.exe')
-        driver8.implicitly_wait(10)
+        options.add_argument(LoginLocators.MAXIMIZED)
+        options.add_argument("--disable-extensions")
+        options.add_argument("--disable-gpu")
+        options.add_argument("--no-sandbox")
+        options.add_argument("--disable-dev-shm-usage")
+        # options.add_argument(f'user-agent={user_agent}')
+        driver8 = webdriver.Chrome(options=options, executable_path=r'./chromedriver')
+        driver8.implicitly_wait(30)
         driver8.get(LoginLocators.URL)
         time.sleep(8)
         login_menu_button = driver8.find_element_by_xpath(LoginLocators.LOGIN_MENU_BUTTON)
@@ -36,7 +41,7 @@ class clint(unittest.TestCase):
         name_field.send_keys(BOTNAME1)
         password_field.send_keys(BOTPASS1)
         login_button.click()
-
+        print("Clint Login successful")
         time.sleep(40)
 
         for i in range(10):
@@ -55,7 +60,10 @@ class clint(unittest.TestCase):
 
 
         time.sleep(15)
-
+        time.sleep(3)
+        close_button = driver8.find_element_by_xpath(LoginLocators.CLOSE_ALLERT)
+        close_button.click()
+        time.sleep(3)
         seat = driver8.find_element_by_xpath(LoginLocators.SEAT_3)
         seat.click()
 
@@ -64,6 +72,7 @@ class clint(unittest.TestCase):
         add_chips.send_keys(CHIPS1)
         add_chips_button = driver8.find_element_by_xpath(LoginLocators.ADD_CHIPS_BUTTON)
         add_chips_button.click()
+        print("Clint: Chips added successful")
         time.sleep(40)
 
         for i in range(10000):
@@ -71,19 +80,22 @@ class clint(unittest.TestCase):
                 time.sleep(1)
                 check_button = driver8.find_element_by_xpath(LoginLocators.CHECK_BUTTON)
                 check_button.click()
+                print("Clint: Check button clicked")
             except (selenium.common.exceptions.NoSuchElementException, selenium.common.exceptions.StaleElementReferenceException):
                 try:
                     time.sleep(1)
                     call_button = driver8.find_element_by_xpath(LoginLocators.CALL_BUTTON)
                     call_button.click()
+                    print("Clint: Call button clicked")
                 except (selenium.common.exceptions.NoSuchElementException, selenium.common.exceptions.StaleElementReferenceException):
                     try:
                         time.sleep(1)
                         raise_button = driver8.find_element_by_xpath(LoginLocators.RAISE_BUTTON)
                         raise_button.click()
+                        print("Clint: Raise button clicked")
                     except (selenium.common.exceptions.NoSuchElementException, selenium.common.exceptions.StaleElementReferenceException):
                         time.sleep(5)
-
+                        print("Mike: None button available")
 
 
 if __name__ == "__main__":

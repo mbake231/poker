@@ -1,5 +1,6 @@
 class LoginLocators:
-    HEADLESS = 'start-maximized'
+    HEADLESS = '--headless'
+    MAXIMIZED = 'start-maximized'
 
     URL = 'https://www.thelocalgame.com/'
     LOGIN_MENU_BUTTON = "//button[@class='btn btn-primary' and contains (text(), 'Login')]"
@@ -27,3 +28,5 @@ class LoginLocators:
     CHECK_BUTTON = "//button[@class='actionItem btn btn-dark' and contains(text(), 'Check')]"
     RESULT = "//div[@id='seat5']/div[@class='card-body']/p[@class='card-text']"
     BALANCE = "//div[@class='balanceText']"
+
+    CLOSE_ALLERT = "//button[@class='close']"
