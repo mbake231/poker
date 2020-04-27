@@ -1,3 +1,4 @@
+#!/usr/bin/python3
 import selenium
 from selenium.webdriver.chrome.options import Options
 from xpath import LoginLocators
@@ -16,8 +17,13 @@ class shane(unittest.TestCase):
         user_agent = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.50 Safari/537.36'
         options = Options()
         options.add_argument(LoginLocators.HEADLESS)
-        options.add_argument(f'user-agent={user_agent}')
-        driver3 = webdriver.Chrome(options=options, executable_path=r'./chromedriver.exe')
+        options.add_argument(LoginLocators.MAXIMIZED)
+        options.add_argument("--disable-extensions")
+        options.add_argument("--disable-gpu")
+        options.add_argument("--no-sandbox")
+        options.add_argument("--disable-dev-shm-usage")
+        # options.add_argument(f'user-agent={user_agent}')
+        driver3 = webdriver.Chrome(options=options, executable_path=r'./chromedriver')
 
         driver3.implicitly_wait(30)
         driver3.get(LoginLocators.URL)
@@ -36,7 +42,7 @@ class shane(unittest.TestCase):
         name_field.send_keys(BOTNAME1)
         password_field.send_keys(BOTPASS1)
         login_button.click()
-
+        print("Shane Login successful")
         time.sleep(40)
 
         for i in range(10):
@@ -53,6 +59,10 @@ class shane(unittest.TestCase):
                     driver3.get(data)
                     break
 
+        time.sleep(3)
+        close_button = driver3.find_element_by_xpath(LoginLocators.CLOSE_ALLERT)
+        close_button.click()
+        time.sleep(3)
 
         time.sleep(13)
 
@@ -64,6 +74,7 @@ class shane(unittest.TestCase):
         add_chips.send_keys(CHIPS1)
         add_chips_button = driver3.find_element_by_xpath(LoginLocators.ADD_CHIPS_BUTTON)
         add_chips_button.click()
+        print("Shane: Chips added successful")
         time.sleep(20)
 
         for i in range(10000):
@@ -71,18 +82,22 @@ class shane(unittest.TestCase):
                 time.sleep(1)
                 check_button = driver3.find_element_by_xpath(LoginLocators.CHECK_BUTTON)
                 check_button.click()
+                print("Shane: Check button clicked")
             except (selenium.common.exceptions.NoSuchElementException, selenium.common.exceptions.StaleElementReferenceException):
                 try:
                     time.sleep(1)
                     call_button = driver3.find_element_by_xpath(LoginLocators.CALL_BUTTON)
                     call_button.click()
+                    print("Shane: Call button clicked")
                 except (selenium.common.exceptions.NoSuchElementException, selenium.common.exceptions.StaleElementReferenceException):
                     try:
                         time.sleep(1)
                         raise_button = driver3.find_element_by_xpath(LoginLocators.RAISE_BUTTON)
                         raise_button.click()
+                        print("Shane: Raise button clicked")
                     except (selenium.common.exceptions.NoSuchElementException, selenium.common.exceptions.StaleElementReferenceException):
                         time.sleep(5)
+                        print("Shane: None button available")
 
 if __name__ == "__main__":
     unittest.main()
