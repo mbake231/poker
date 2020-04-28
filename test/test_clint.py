@@ -24,7 +24,7 @@ class clint(unittest.TestCase):
         options.add_argument("--disable-dev-shm-usage")
         # options.add_argument(f'user-agent={user_agent}')
         driver8 = webdriver.Chrome(options=options, executable_path=r'./chromedriver')
-        driver8.implicitly_wait(30)
+        driver8.implicitly_wait(15)
         driver8.get(LoginLocators.URL)
         time.sleep(8)
         login_menu_button = driver8.find_element_by_xpath(LoginLocators.LOGIN_MENU_BUTTON)
@@ -41,7 +41,7 @@ class clint(unittest.TestCase):
         name_field.send_keys(BOTNAME1)
         password_field.send_keys(BOTPASS1)
         login_button.click()
-        print("Clint Login successful")
+        print("Clint: Login successful")
         time.sleep(40)
 
         for i in range(10):
@@ -66,6 +66,7 @@ class clint(unittest.TestCase):
         time.sleep(3)
         seat = driver8.find_element_by_xpath(LoginLocators.SEAT_3)
         seat.click()
+        print("Clint: Sit on seat3 successful")
 
         time.sleep(8)
         add_chips = driver8.find_element_by_xpath(LoginLocators.ADD_CHIPS_INPUT)

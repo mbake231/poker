@@ -24,7 +24,7 @@ class todd(unittest.TestCase):
         options.add_argument("--disable-dev-shm-usage")
         # options.add_argument(f'user-agent={user_agent}')
         driver5 = webdriver.Chrome(options=options, executable_path=r'./chromedriver')
-        driver5.implicitly_wait(30)
+        driver5.implicitly_wait(15)
         driver5.get(LoginLocators.URL)
         time.sleep(8)
         login_menu_button = driver5.find_element_by_xpath(LoginLocators.LOGIN_MENU_BUTTON)
@@ -66,6 +66,7 @@ class todd(unittest.TestCase):
         time.sleep(3)
         seat = driver5.find_element_by_xpath(LoginLocators.SEAT_5)
         seat.click()
+        print("Todd: Sit on seat5 successful")
 
         time.sleep(12)
         add_chips = driver5.find_element_by_xpath(LoginLocators.ADD_CHIPS_INPUT)
