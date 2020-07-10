@@ -24,7 +24,11 @@ class kyle(unittest.TestCase):
         options.add_argument("--disable-dev-shm-usage")
         # options.add_argument(f'user-agent={user_agent}')
         driver4 = webdriver.Chrome(options=options, executable_path=r'./chromedriver')
+<<<<<<< HEAD
         driver4.implicitly_wait(30)
+=======
+        driver4.implicitly_wait(15)
+>>>>>>> 91b09633d5a63f4305aca5ded9f1468eccbd9c88
         driver4.get(LoginLocators.URL)
         time.sleep(8)
         login_menu_button = driver4.find_element_by_xpath(LoginLocators.LOGIN_MENU_BUTTON)
@@ -41,7 +45,11 @@ class kyle(unittest.TestCase):
         name_field.send_keys(BOTNAME1)
         password_field.send_keys(BOTPASS1)
         login_button.click()
+<<<<<<< HEAD
         print("Kyle Login successful")
+=======
+        print("Kyle: Login successful")
+>>>>>>> 91b09633d5a63f4305aca5ded9f1468eccbd9c88
         time.sleep(40)
 
         for i in range(10):
@@ -66,6 +74,10 @@ class kyle(unittest.TestCase):
         time.sleep(3)
         seat = driver4.find_element_by_xpath(LoginLocators.SEAT_4)
         seat.click()
+<<<<<<< HEAD
+=======
+        print("Kyle: Sit on seat4 successful")
+>>>>>>> 91b09633d5a63f4305aca5ded9f1468eccbd9c88
 
         time.sleep(15)
         add_chips = driver4.find_element_by_xpath(LoginLocators.ADD_CHIPS_INPUT)

@@ -24,7 +24,11 @@ class mike(unittest.TestCase):
         options.add_argument("--disable-dev-shm-usage")
         # options.add_argument(f'user-agent={user_agent}')
         driver2 = webdriver.Chrome(options=options, executable_path=r'./chromedriver')
+<<<<<<< HEAD
         driver2.implicitly_wait(30)
+=======
+        driver2.implicitly_wait(15)
+>>>>>>> 91b09633d5a63f4305aca5ded9f1468eccbd9c88
         driver2.get(LoginLocators.URL)
         time.sleep(8)
         login_menu_button = driver2.find_element_by_xpath(LoginLocators.LOGIN_MENU_BUTTON)
@@ -41,7 +45,11 @@ class mike(unittest.TestCase):
         name_field.send_keys(BOTNAME1)
         password_field.send_keys(BOTPASS1)
         login_button.click()
+<<<<<<< HEAD
         print("Mike Login successful")
+=======
+        print("Mike: Login successful")
+>>>>>>> 91b09633d5a63f4305aca5ded9f1468eccbd9c88
 
 
         time.sleep(40)
@@ -69,6 +77,10 @@ class mike(unittest.TestCase):
 
         seat = driver2.find_element_by_xpath(LoginLocators.SEAT_1)
         seat.click()
+<<<<<<< HEAD
+=======
+        print("Mike: Sit on seat1 successful")
+>>>>>>> 91b09633d5a63f4305aca5ded9f1468eccbd9c88
 
         time.sleep(10)
         add_chips = driver2.find_element_by_xpath(LoginLocators.ADD_CHIPS_INPUT)

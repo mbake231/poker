@@ -25,7 +25,11 @@ class shane(unittest.TestCase):
         # options.add_argument(f'user-agent={user_agent}')
         driver3 = webdriver.Chrome(options=options, executable_path=r'./chromedriver')
 
+<<<<<<< HEAD
         driver3.implicitly_wait(30)
+=======
+        driver3.implicitly_wait(15)
+>>>>>>> 91b09633d5a63f4305aca5ded9f1468eccbd9c88
         driver3.get(LoginLocators.URL)
         time.sleep(8)
         login_menu_button = driver3.find_element_by_xpath(LoginLocators.LOGIN_MENU_BUTTON)
@@ -64,10 +68,18 @@ class shane(unittest.TestCase):
         close_button.click()
         time.sleep(3)
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 91b09633d5a63f4305aca5ded9f1468eccbd9c88
         time.sleep(13)
 
         seat = driver3.find_element_by_xpath(LoginLocators.SEAT_2)
         seat.click()
+<<<<<<< HEAD
+=======
+        print("Shane: Sit on seat2 successful")
+>>>>>>> 91b09633d5a63f4305aca5ded9f1468eccbd9c88
 
         time.sleep(11)
         add_chips = driver3.find_element_by_xpath(LoginLocators.ADD_CHIPS_INPUT)

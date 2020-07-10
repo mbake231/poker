@@ -23,7 +23,11 @@ class jim(unittest.TestCase):
         options.add_argument("--disable-dev-shm-usage")
         # options.add_argument(f'user-agent={user_agent}')
         driver = webdriver.Chrome(options=options, executable_path=r'./chromedriver')
+<<<<<<< HEAD
         driver.implicitly_wait(30)
+=======
+        driver.implicitly_wait(15)
+>>>>>>> 91b09633d5a63f4305aca5ded9f1468eccbd9c88
         driver.get(LoginLocators.URL)
         time.sleep(6)
 
@@ -69,6 +73,10 @@ class jim(unittest.TestCase):
     # def sit(self):
         seat = driver.find_element_by_xpath(LoginLocators.SEAT_0)
         seat.click()
+<<<<<<< HEAD
+=======
+        print("Jim: Sit on seat0 successful")
+>>>>>>> 91b09633d5a63f4305aca5ded9f1468eccbd9c88
 
     # def add_chips(self, chips):
         time.sleep(16)
